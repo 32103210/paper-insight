@@ -46,7 +46,7 @@ def analyze_paper(client: OpenAI, paper: dict) -> str:
     user_prompt = build_user_prompt(paper)
 
     response = client.chat.completions.create(
-        model="M2.7",
+        model="MiniMax-M2.7",
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": user_prompt},
