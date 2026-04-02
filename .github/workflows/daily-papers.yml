@@ -50,7 +50,10 @@ jobs:
       - name: Check for new files
         id: new-files
         run: |
-          git status --short _posts/
+          NEW_FILES=$(git status --short _posts/)
+          echo "stdout=$NEW_FILES" >> $GITHUB_OUTPUT
+          echo "Files to commit:"
+          echo "$NEW_FILES"
 
       - name: Commit and push
         if: steps.new-files.outputs.stdout != ''
