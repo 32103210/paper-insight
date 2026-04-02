@@ -1,0 +1,11 @@
+title: Paper Insight
+subtitle: 论文情报搜集系统
+description: 每天自动抓取推荐算法相关论文，AI 分析报告
+theme: minima
+timezone: Asia/Shanghai
+future: false
+show_excerpts: true
+collections:
+  posts:
+    output: true
+    permalink: /:year/:month/:day/:title/
