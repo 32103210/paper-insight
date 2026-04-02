@@ -5,6 +5,7 @@ arXiv 论文爬虫
 """
 
 import arxiv
+import json
 import os
 from datetime import datetime, timedelta
 from typing import List
@@ -83,14 +84,14 @@ def search_papers(days_back: int = 7, max_results: int = MAX_RESULTS) -> List[di
 def load_processed_ids(filepath: str = "processed_ids.txt") -> set:
     """加载已处理的论文 ID"""
     if os.path.exists(filepath):
-        with open(filepath, "r") as f:
+        with open(filepath, "r", encoding="utf-8") as f:
             return set(line.strip() for line in f if line.strip())
     return set()
 
 
 def save_processed_id(paper_id: str, filepath: str = "processed_ids.txt"):
     """保存已处理的论文 ID"""
-    with open(filepath, "a") as f:
+    with open(filepath, "a", encoding="utf-8") as f:
         f.write(f"{paper_id}\n")
 
 
@@ -106,9 +107,10 @@ def main():
     new_papers = [p for p in papers if p["id"] not in processed]
 
     print(f"New papers to process: {len(new_papers)}")
+    for p in new_papers:
+        save_processed_id(p["id"])
 
     # 输出 JSON 格式供后续脚本使用
-    import json
     print("\n---PAPERS_JSON---")
     print(json.dumps(new_papers, ensure_ascii=False, indent=2))
     print("---END_JSON---")
