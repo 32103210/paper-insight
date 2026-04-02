@@ -27,6 +27,7 @@ jobs:
       - name: Run crawler
         id: crawler
         run: |
+          set -e
           python scripts/crawler.py > crawler_output.txt 2>&1
           cat crawler_output.txt
 
@@ -41,16 +42,19 @@ jobs:
       - name: Run analyzer
         env:
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
-          MINIMAX_BASE_URL: ${{ secrets.MINIMAX_BASE_URL || 'https://api.minimax.chat/v1' }}
+          MINIMAX_BASE_URL: ${{ secrets.MINIMAX_BASE_URL }}
         run: |
+          # Set default if not provided
+          if [ -z "$MINIMAX_BASE_URL" ]; then
+            export MINIMAX_BASE_URL="https://api.minimax.chat/v1"
+          fi
           # 将 JSON 传递给 analyzer
-          JSON_OUTPUT=$(grep -A 1000 "---PAPERS_JSON---" crawler_output.txt | grep -B 1000 "---END_JSON---" | sed '1d;$d')
-          echo "$JSON_OUTPUT" | python scripts/analyzer.py
+          echo "${{ steps.extract.outputs.papers_json }}" | python scripts/analyzer.py
 
       - name: Check for new files
         id: new-files
         run: |
-          NEW_FILES=$(git status --short _posts/)
+          NEW_FILES=$(git status --short _posts/ || true)
           echo "stdout=$NEW_FILES" >> $GITHUB_OUTPUT
           echo "Files to commit:"
           echo "$NEW_FILES"
