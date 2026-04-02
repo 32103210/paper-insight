@@ -18,7 +18,7 @@ load_dotenv()
 
 # MiniMax API 配置
 MINIMAX_API_KEY = os.getenv("MINIMAX_API_KEY")
-MINIMAX_BASE_URL = os.getenv("MINIMAX_BASE_URL", "https://api.minimax.chat/v1")
+MINIMAX_BASE_URL = os.getenv("MINIMAX_BASE_URL", "https://api.minimax.io/v1")
 
 # 导入 prompt 模板
 from prompts import SYSTEM_PROMPT, build_user_prompt

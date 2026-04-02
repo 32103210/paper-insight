@@ -46,7 +46,7 @@ jobs:
         run: |
           # Set default if not provided
           if [ -z "$MINIMAX_BASE_URL" ]; then
-            export MINIMAX_BASE_URL="https://api.minimax.chat/v1"
+            export MINIMAX_BASE_URL="https://api.minimax.io/v1"
           fi
           # 将 JSON 传递给 analyzer
           echo "${{ steps.extract.outputs.papers_json }}" | python scripts/analyzer.py
