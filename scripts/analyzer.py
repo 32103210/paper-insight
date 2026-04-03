@@ -185,16 +185,18 @@ def main():
         print("Error: MINIMAX_API_KEY not set")
         sys.exit(1)
 
-    # 从 stdin 读取论文列表（由 crawler.py 输出）
-    stdin_input = sys.stdin.read()
-    papers_json = None
+    # 从 stdin 读取论文列表（由 crawler.py 输出，grep 已提取 JSON 部分）
+    stdin_input = sys.stdin.read().strip()
 
     # 解析 JSON
-    if "---PAPERS_JSON---" in stdin_input:
-        parts = stdin_input.split("---PAPERS_JSON---")
-        if len(parts) > 1:
-            json_part = parts[1].split("---END_JSON---")[0].strip()
-            papers_json = json.loads(json_part)
+    papers_json = None
+    if stdin_input:
+        try:
+            papers_json = json.loads(stdin_input)
+        except json.JSONDecodeError as e:
+            print(f"Error parsing JSON: {e}")
+            print(f"Received input: {stdin_input[:500]}...")
+            sys.exit(1)
 
     if not papers_json:
         print("No papers to analyze")
