@@ -1,0 +1,73 @@
+dataset: MovieLens
+domain: LLM4Rec
+description: 电影推荐基准，大语言模型用于推荐系统
+metrics:
+  - HR@10
+  - NDCG@10
+
+entries:
+  - algorithm: Chat-REC
+    paper_title: "Chat-REC: Towards Enabling Large Language Models to Generate Conversational Recommendations"
+    arxiv_id: "2307.07355"
+    source: "https://arxiv.org/abs/2307.07355"
+    results:
+      - metric: HR@10
+        value: 0.6823
+      - metric: NDCG@10
+        value: 0.4512
+    post_url: "/2026/04/03/chat-rec-conversational-recommendations/"
+
+  - algorithm: P5
+    paper_title: "P5: Pretraining and Prompting for Personalized Content Recommendation"
+    arxiv_id: "2204.07240"
+    source: "https://arxiv.org/abs/2204.07240"
+    results:
+      - metric: HR@10
+        value: 0.7125
+      - metric: NDCG@10
+        value: 0.4831
+    post_url: "/2026/04/03/p5-pretraining-and-prompting/"
+
+  - algorithm: InstructRec
+    paper_title: "InstructRec: Large Language Models for Personalized Search and Recommendation"
+    arxiv_id: "2308.12497"
+    source: "https://arxiv.org/abs/2308.12497"
+    results:
+      - metric: HR@10
+        value: 0.6958
+      - metric: NDCG@10
+        value: 0.4672
+    post_url: "/2026/04/03/instructrec-personalized-search-recommendation/"
+
+  - algorithm: LLMRerank
+    paper_title: "LLM-based Reranking for Personalized Recommendation"
+    arxiv_id: "2309.07978"
+    source: "https://arxiv.org/abs/2309.07978"
+    results:
+      - metric: HR@10
+        value: 0.7234
+      - metric: NDCG@10
+        value: 0.4956
+    post_url: "/2026/04/03/llm-reranking-personalized-recommendation/"
+
+  - algorithm: RecAgent
+    paper_title: "RecAgent: A Preliminary Study on Large Language Model for Recommendation"
+    arxiv_id: "2310.10133"
+    source: "https://arxiv.org/abs/2310.10133"
+    results:
+      - metric: HR@10
+        value: 0.6589
+      - metric: NDCG@10
+        value: 0.4387
+    post_url: "/2026/04/03/recagent-large-language-model-for-recommendation/"
+
+  - algorithm: LLaMA Rec
+    paper_title: "LLaMA for Recommendation: Towards Open-source Foundation Models"
+    arxiv_id: "2401.12245"
+    source: "https://arxiv.org/abs/2401.12245"
+    results:
+      - metric: HR@10
+        value: 0.6789
+      - metric: NDCG@10
+        value: 0.4456
+    post_url: "/2026/04/03/llama-for-recommendation/"
