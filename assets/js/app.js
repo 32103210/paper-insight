@@ -3,11 +3,8 @@
  * Handles category navigation and search functionality
  */
 
-// CATEGORIES object - will be populated by Jekyll Liquid tags
-const CATEGORIES = {};
-
-// Posts data - will be populated by Jekyll Liquid tags
-const POSTS_DATA = [];
+// CATEGORIES and POSTS_DATA are populated by Jekyll Liquid tags in index.md
+// We reference them via window to ensure we get the populated values
 
 // Current filter state
 let currentState = {
@@ -22,7 +19,7 @@ let currentState = {
  */
 function initApp() {
   renderCategoryTree();
-  renderPosts(POSTS_DATA);
+  renderPosts(window.POSTS_DATA || []);
   initSearch();
   initBreadcrumb();
 }
@@ -61,8 +58,9 @@ function renderCategoryTree() {
   container.appendChild(allItem);
 
   // Render each top-level category
-  Object.keys(CATEGORIES).forEach(level1Name => {
-    const level1 = CATEGORIES[level1Name];
+  const cats = window.CATEGORIES || {};
+  Object.keys(cats).forEach(level1Name => {
+    const level1 = cats[level1Name];
     const level1Count = countPostsAtLevel(level1);
 
     const level1Item = createCategoryItem(level1Name, 'level1', level1Name, level1Count);
@@ -211,7 +209,7 @@ function handleCategoryClick(e) {
  * Get filtered posts based on current state
  */
 function getFilteredPosts() {
-  return POSTS_DATA.filter(post => {
+  return (window.POSTS_DATA || []).filter(post => {
     // Category filter
     if (currentState.level1) {
       if (!post.categories || !post.categories.includes(currentState.level1)) {
