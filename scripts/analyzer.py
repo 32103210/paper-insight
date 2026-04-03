@@ -85,12 +85,17 @@ def extract_categories(analysis: str) -> list:
         categories = []
         for line in yaml_content.split('\n'):
             line = line.strip()
-            if line.startswith('- 任务类型:'):
-                categories.append(line.replace('- 任务类型:', '任务类型').strip())
-            elif line.startswith('- 应用场景:'):
-                categories.append(line.replace('- 应用场景:', '应用场景').strip())
-            elif line.startswith('- 技术方向:'):
-                categories.append(line.replace('- 技术方向:', '技术方向').strip())
+            # 处理多种格式："- 任务类型: CTR预估" 或 "- 任务类型 CTR预估"
+            if '任务类型' in line:
+                # 提取标签值（冒号或空格分隔）
+                val = re.sub(r'^-\s*任务类型[:\s]+', '', line).strip()
+                categories.append(f"任务类型: {val}")
+            elif '应用场景' in line:
+                val = re.sub(r'^-\s*应用场景[:\s]+', '', line).strip()
+                categories.append(f"应用场景: {val}")
+            elif '技术方向' in line:
+                val = re.sub(r'^-\s*技术方向[:\s]+', '', line).strip()
+                categories.append(f"技术方向: {val}")
         return categories
     return []
 
@@ -139,6 +144,13 @@ def save_analysis(paper: dict, analysis: str, output_dir: str = "_posts"):
 
     # 移除 YAML 代码块（如果存在）
     analysis_content = re.sub(r'```yaml\s*\n.*?```\s*', '', analysis, flags=re.DOTALL).strip()
+
+    # 清理模型输出的内部标记
+    analysis_content = re.sub(r'&\lt;!--.*?--&gt;', '', analysis_content, flags=re.DOTALL)  # HTML注释
+    analysis_content = re.sub(r'&lt;!--.*?--&gt;', '', analysis_content, flags=re.DOTALL)  # HTML注释变体
+    analysis_content = re.sub(r'&lt;!--.*', '', analysis_content)  # 未闭合注释
+    analysis_content = re.sub(r'&lt;!--.*', '', analysis_content)  # 未闭合注释
+    analysis_content = analysis_content.strip()
 
     # 生成文件名
     date_str = datetime.now().strftime("%Y-%m-%d")
