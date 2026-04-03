@@ -86,26 +86,11 @@ def slugify(title: str, max_length: int = 50) -> str:
 
 def extract_categories(analysis: str) -> list:
     """从分析报告中提取分类标签"""
-    # 查找 ```yaml ... ``` 代码块
-    yaml_match = re.search(r'```yaml\s*\n(categories:.*?)```', analysis, re.DOTALL)
-    if yaml_match:
-        yaml_content = yaml_match.group(1).strip()
-        # 解析 YAML 格式的分类
-        categories = []
-        for line in yaml_content.split('\n'):
-            line = line.strip()
-            # 处理多种格式："- 任务类型: CTR预估" 或 "- 任务类型 CTR预估"
-            if '任务类型' in line:
-                # 提取标签值（冒号或空格分隔）
-                val = re.sub(r'^-\s*任务类型[:\s]+', '', line).strip()
-                categories.append(f"任务类型: {val}")
-            elif '应用场景' in line:
-                val = re.sub(r'^-\s*应用场景[:\s]+', '', line).strip()
-                categories.append(f"应用场景: {val}")
-            elif '技术方向' in line:
-                val = re.sub(r'^-\s*技术方向[:\s]+', '', line).strip()
-                categories.append(f"技术方向: {val}")
-        return categories
+    # 查找 "分类: xxx, xxx, xxx" 格式
+    cat_match = re.search(r'分类:\s*(.+)', analysis)
+    if cat_match:
+        cats = cat_match.group(1).strip().split(',')
+        return [c.strip() for c in cats if c.strip()]
     return []
 
 
@@ -151,8 +136,9 @@ def save_analysis(paper: dict, analysis: str, output_dir: str = "_posts"):
     # 提取分类
     categories = extract_categories(analysis)
 
-    # 移除 YAML 代码块（如果存在）
-    analysis_content = re.sub(r'```yaml\s*\n.*?```\s*', '', analysis, flags=re.DOTALL).strip()
+    # 移除分类行（如果存在）
+    analysis_content = re.sub(r'```\s*分类:.*?```', '', analysis, flags=re.DOTALL).strip()
+    analysis_content = re.sub(r'^分类:.*$', '', analysis_content, flags=re.MULTILINE).strip()
 
     # 清理模型输出的内部标记（HTML 注释）
     analysis_content = re.sub(r'<!--.*?-->', '', analysis_content, flags=re.DOTALL)  # HTML注释
