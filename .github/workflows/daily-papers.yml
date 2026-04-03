@@ -30,8 +30,6 @@ jobs:
           MINIMAX_BASE_URL: ${{ secrets.MINIMAX_BASE_URL }}
         run: |
           set -e
-          # 删除已处理记录，确保每次都重新分析
-          rm -f processed_ids.txt
 
           # 设置默认 URL
           if [ -z "$MINIMAX_BASE_URL" ]; then

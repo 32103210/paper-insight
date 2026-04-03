@@ -7,9 +7,14 @@ arXiv 论文爬虫
 import arxiv
 import json
 import os
+import time
 from datetime import datetime, timedelta
 from typing import List
+import logging
 
+# 配置日志
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # 搜索关键词配置
 SEARCH_QUERIES = [
@@ -22,6 +27,50 @@ SEARCH_QUERIES = [
 
 # 每次最多获取论文数
 MAX_RESULTS = 5
+
+# arXiv API 速率限制: 每秒最多 1 次请求
+# 为安全起见，使用 3.5 秒间隔
+REQUEST_INTERVAL = 3.5
+
+# 最大重试次数
+MAX_RETRIES = 5
+
+# 初始重试等待时间（秒）
+INITIAL_RETRY_DELAY = 10
+
+
+def search_with_retry(client, search, max_retries=MAX_RETRIES):
+    """
+    带重试的搜索，使用指数退避策略处理速率限制
+
+    Args:
+        client: arxiv.Client
+        search: arxiv.Search
+        max_retries: 最大重试次数
+
+    Returns:
+        results迭代器
+
+    Raises:
+        Exception: 所有重试都失败后抛出异常
+    """
+    for attempt in range(max_retries):
+        try:
+            return client.results(search)
+        except Exception as e:
+            error_str = str(e)
+            if "429" in error_str or "rate" in error_str.lower():
+                # 速率限制，使用指数退避
+                wait_time = INITIAL_RETRY_DELAY * (2 ** attempt)
+                logger.warning(f"arXiv rate limit hit (attempt {attempt + 1}/{max_retries}). Waiting {wait_time}s before retry...")
+                time.sleep(wait_time)
+            else:
+                # 其他错误，重试一次后放弃
+                if attempt < max_retries - 1:
+                    logger.warning(f"Error searching arXiv (attempt {attempt + 1}/{max_retries}): {e}")
+                    time.sleep(INITIAL_RETRY_DELAY)
+                else:
+                    raise
 
 
 def search_papers(days_back: int = 7, max_results: int = MAX_RESULTS) -> List[dict]:
@@ -44,8 +93,12 @@ def search_papers(days_back: int = 7, max_results: int = MAX_RESULTS) -> List[di
 
     print(f"Searching arXiv with query: {query}")
 
-    # 使用 arxiv 库搜索
+    # 使用 arxiv 库搜索，带速率限制
     client = arxiv.Client()
+
+    # 设置下载延迟（每秒请求数限制）
+    client._throttle = REQUEST_INTERVAL
+
     search = arxiv.Search(
         query=query,
         max_results=max_results,
@@ -55,7 +108,8 @@ def search_papers(days_back: int = 7, max_results: int = MAX_RESULTS) -> List[di
 
     papers = []
     try:
-        results = client.results(search)
+        # 使用带重试的搜索
+        results = search_with_retry(client, search)
 
         for result in results:
             # 过滤日期
