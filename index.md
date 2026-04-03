@@ -46,17 +46,6 @@ title: Paper Insight
 <script>
   // CATEGORIES object - built from Jekyll post categories
   window.CATEGORIES = {};
-  {% assign category_map = "" | split: "" %}
-  {% for post in site.posts %}
-    {% if post.categories %}
-      {% for cat in post.categories %}
-        {% assign cat_key = cat | strip %}
-        {% unless category_map contains cat_key %}
-          {% assign category_map = category_map | push: cat_key %}
-        {% endunless %}
-      {% endfor %}
-    {% endif %}
-  {% endfor %}
 
   // POSTS_DATA - embedded post metadata for JavaScript
   window.POSTS_DATA = [
@@ -68,7 +57,7 @@ title: Paper Insight
       arxiv_id: {{ post.arxiv_id | jsonify }},
       categories: {{ post.categories | jsonify }},
       excerpt: {{ post.description | jsonify }},
-      tags: {{ post.categories | jsonify }}
+      tags: []
     }{% unless forloop.last %},{% endunless %}
     {% endfor %}
   ];

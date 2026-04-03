@@ -287,23 +287,15 @@ function updateBreadcrumb() {
     breadcrumb.appendChild(currentLi);
   }
 
-  // Add click handlers to breadcrumb links
-  breadcrumb.querySelectorAll('a[data-path]').forEach(link => {
-    link.addEventListener('click', (e) => {
+  // Add click handlers to breadcrumb links using event delegation
+  breadcrumb.addEventListener('click', (e) => {
+    const link = e.target.closest('a[data-path]');
+    if (link) {
       e.preventDefault();
-      const path = e.target.dataset.path;
-      const parts = path.split('|');
-
-      if (parts.length === 1) {
-        // Click on level1
-        const item = document.querySelector(`.category-item[data-path="${path}"]`);
-        if (item) item.click();
-      } else if (parts.length === 2) {
-        // Click on level2
-        const item = document.querySelector(`.category-item[data-path="${path}"]`);
-        if (item) item.click();
-      }
-    });
+      const path = link.dataset.path;
+      const item = document.querySelector(`.category-item[data-path="${path}"]`);
+      if (item) item.click();
+    }
   });
 }
 
