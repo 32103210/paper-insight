@@ -86,12 +86,32 @@ def slugify(title: str, max_length: int = 50) -> str:
 
 def extract_categories(analysis: str) -> list:
     """从分析报告中提取分类标签"""
-    # 查找 "分类: xxx, xxx, xxx" 格式
-    cat_match = re.search(r'分类:\s*(.+)', analysis)
-    if cat_match:
-        cats = cat_match.group(1).strip().split(',')
-        return [c.strip() for c in cats if c.strip()]
-    return []
+    # 预定义的标签集合（严格匹配）
+    VALID_TAGS = {
+        # 任务类型
+        "CTR预估", "序列推荐", "KG推荐", "GNN推荐", "冷启动", "多兴趣", "对比学习", "通用",
+        # 应用场景
+        "电商", "新闻", "短视频", "音乐", "POI",
+        # 技术方向
+        "自监督", "对比学习", "LLM增强", "多模态", "偏差修正", "因果推断", "知识蒸馏", "缩放定律",
+    }
+
+    cat_match = re.search(r'分类:\s*([^\\n]+)', analysis)
+    if not cat_match:
+        return []
+
+    cats = cat_match.group(1).strip().split(',')
+    result = []
+    for c in cats:
+        tag = c.strip()
+        # 清理可能的多余符号（如 **）
+        tag = tag.strip('*').strip()
+        # 只接受有效标签
+        if tag in VALID_TAGS:
+            result.append(tag)
+
+    # 最多返回3个标签
+    return result[:3]
 
 
 def generate_frontmatter(paper: dict, categories: list = None) -> str:

@@ -3,3 +3,4 @@ __pycache__/
 .env
 .venv/
 processed_ids.txt
+_site/
