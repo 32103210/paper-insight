@@ -53,7 +53,7 @@ function renderCategoryTree() {
   container.innerHTML = '';
 
   // Add "All Posts" option
-  const allItem = createCategoryItem('全部文章', 'all', null, POSTS_DATA.length);
+  const allItem = createCategoryItem('全部文章', 'all', null, (window.POSTS_DATA || []).length);
   allItem.classList.add('active');
   container.appendChild(allItem);
 
