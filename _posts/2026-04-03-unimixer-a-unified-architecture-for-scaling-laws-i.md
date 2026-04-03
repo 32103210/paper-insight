@@ -7,9 +7,9 @@ authors: "Mingming Ha, Guanchen Wang, Linxun Chen, Xuan Rao, Yuexin Shi, Tianbao
 source: https://arxiv.org/pdf/2604.00590v2
 description: "In recent years, the scaling laws of recommendation models have attracted increasing attention, which govern the relationship between performance and parameters/FLOPs of recommenders."
 categories:
-  - 通用
-  - 电商
-  - 缩放定律
+  - general
+  - e-commerce
+  - scaling-laws
 ---
 
 <think>

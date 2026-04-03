@@ -7,9 +7,9 @@ authors: "Srivaths Ranganathan, Nikhil Khani, Shawn Andrews, Chieh Lo, Li Wei, G
 source: https://arxiv.org/pdf/2603.28994v1
 description: "Knowledge Distillation (KD) has been widely used to improve the quality of latency sensitive models serving live traffic."
 categories:
-  - 多任务学习
-  - 音乐
-  - 知识蒸馏
+  - multi-task-learning
+  - music
+  - knowledge-distillation
 ---
 
 <think>

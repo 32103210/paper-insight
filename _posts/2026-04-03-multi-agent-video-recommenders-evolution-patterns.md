@@ -7,9 +7,9 @@ authors: "Srivaths Ranganathan, Abhishek Dharmaratnakar, Anushree Sinha, Debansh
 source: https://arxiv.org/pdf/2604.02211v1
 description: "Video recommender systems are among the most popular and impactful applications of AI, shaping content consumption and influencing culture for billions of users."
 categories:
-  - 通用
-  - 短视频
-  - 多模态
+  - general
+  - short-video
+  - multimodal
 ---
 
 <think>

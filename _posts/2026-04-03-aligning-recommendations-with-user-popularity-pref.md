@@ -7,9 +7,9 @@ authors: "Mona Schirmer, Anton Thielmann, Pola Schwöbel, Thomas Martynec, Giuse
 source: https://arxiv.org/pdf/2604.01036v1
 description: "Popularity bias is a pervasive problem in recommender systems, where recommendations disproportionately favor popular items."
 categories:
-  - 序列推荐
-  - 通用
-  - 偏差修正
+  - sequential-recommendation
+  - general
+  - bias-correction
 ---
 
 <think>

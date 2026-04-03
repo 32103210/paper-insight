@@ -7,9 +7,9 @@ authors: "Hejin Huang, Jusheng Zhang, Kaitong Cai, Jian Wang, Rong Pan"
 source: https://arxiv.org/pdf/2603.29259v1
 description: "Preference-based alignment objectives have been widely adopted, from RLHF-style pairwise learning in large language models to emerging applications in recommender systems."
 categories:
-  - 序列推荐
-  - 电商
-  - 自监督
+  - sequential-recommendation
+  - e-commerce
+  - self-supervised
 ---
 
 <think>
