@@ -153,7 +153,7 @@ def search_papers(days_back: int = 7, max_results: int = MAX_RESULTS) -> List[di
 
         # 在处理结果前等待一段时间，避免触发速率限制
         if results:
-            logger.info(f"Got {len(results)} papers from arXiv, processing...")
+            print(f"Got {len(results)} papers from arXiv, processing...")
 
         for result in results:
             # 过滤日期
