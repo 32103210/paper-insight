@@ -75,7 +75,27 @@ def slugify(title: str, max_length: int = 50) -> str:
     return slug
 
 
-def generate_frontmatter(paper: dict) -> str:
+def extract_categories(analysis: str) -> list:
+    """从分析报告中提取分类标签"""
+    # 查找 ```yaml ... ``` 代码块
+    yaml_match = re.search(r'```yaml\s*\n(categories:.*?)```', analysis, re.DOTALL)
+    if yaml_match:
+        yaml_content = yaml_match.group(1).strip()
+        # 解析 YAML 格式的分类
+        categories = []
+        for line in yaml_content.split('\n'):
+            line = line.strip()
+            if line.startswith('- 任务类型:'):
+                categories.append(line.replace('- 任务类型:', '任务类型').strip())
+            elif line.startswith('- 应用场景:'):
+                categories.append(line.replace('- 应用场景:', '应用场景').strip())
+            elif line.startswith('- 技术方向:'):
+                categories.append(line.replace('- 技术方向:', '技术方向').strip())
+        return categories
+    return []
+
+
+def generate_frontmatter(paper: dict, categories: list = None) -> str:
     """生成 Jekyll frontmatter"""
     arxiv_id = extract_arxiv_id(paper['pdf_url'])
     date_str = datetime.now().strftime("%Y-%m-%d")
@@ -83,16 +103,24 @@ def generate_frontmatter(paper: dict) -> str:
     # 提取一句话摘要用于 description
     abstract_first_line = paper['abstract'].split('.')[0] + '.'
 
-    return f"""---
+    frontmatter = f"""---
 title: "{paper['title']}"
 date: {date_str}
 arxiv_id: {arxiv_id}
 authors: "{', '.join(paper['authors'])}"
 source: {paper['pdf_url'].replace('.pdf', '')}
 description: "{abstract_first_line[:200]}"
----
-
 """
+    # 添加分类
+    if categories:
+        frontmatter += "categories:\n"
+        for cat in categories:
+            frontmatter += f"  - {cat}\n"
+    else:
+        frontmatter += "categories:\n  - 任务类型: 通用\n  - 应用场景: 通用\n  - 技术方向: 通用\n"
+
+    frontmatter += "---\n\n"
+    return frontmatter
 
 
 def save_analysis(paper: dict, analysis: str, output_dir: str = "_posts"):
@@ -106,6 +134,12 @@ def save_analysis(paper: dict, analysis: str, output_dir: str = "_posts"):
     """
     Path(output_dir).mkdir(exist_ok=True)
 
+    # 提取分类
+    categories = extract_categories(analysis)
+
+    # 移除 YAML 代码块（如果存在）
+    analysis_content = re.sub(r'```yaml\s*\n.*?```\s*', '', analysis, flags=re.DOTALL).strip()
+
     # 生成文件名
     date_str = datetime.now().strftime("%Y-%m-%d")
     slug = slugify(paper['title'])
@@ -113,13 +147,15 @@ def save_analysis(paper: dict, analysis: str, output_dir: str = "_posts"):
     filepath = Path(output_dir) / filename
 
     # 生成 frontmatter + 分析内容
-    frontmatter = generate_frontmatter(paper)
-    content = frontmatter + analysis
+    frontmatter = generate_frontmatter(paper, categories)
+    content = frontmatter + analysis_content
 
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(content)
 
     print(f"Saved: {filepath}")
+    if categories:
+        print(f"  Categories: {', '.join(categories)}")
     return filepath
 
 
