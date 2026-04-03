@@ -429,3 +429,229 @@ a:hover {
 .hidden {
   display: none !important;
 }
+
+/* ========== Benchmark Styles ========== */
+
+/* Sidebar Benchmark Nav */
+.sidebar-divider {
+  height: 1px;
+  background-color: var(--border);
+  margin: 16px 0;
+}
+
+.benchmark-nav {
+  list-style: none;
+}
+
+.benchmark-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.benchmark-link:hover {
+  background-color: var(--border);
+  color: var(--text-primary);
+}
+
+.benchmark-icon {
+  font-size: 16px;
+}
+
+.benchmark-name {
+  font-weight: 500;
+}
+
+/* Benchmark Cards (index page) */
+.benchmark-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin: 32px 0;
+}
+
+.benchmark-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.benchmark-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.benchmark-card p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.benchmark-card table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.benchmark-card th,
+.benchmark-card td {
+  padding: 8px 0;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.benchmark-card th {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.benchmark-card a {
+  color: var(--accent);
+}
+
+.benchmark-card .view-all {
+  display: inline-block;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+/* Benchmark Table */
+.benchmark-table-container {
+  margin: 24px 0;
+  overflow-x: auto;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.leaderboard-table th {
+  background-color: var(--bg-sidebar);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.leaderboard-table tr:last-child td {
+  border-bottom: none;
+}
+
+.leaderboard-table tr:hover td {
+  background-color: var(--bg-primary);
+}
+
+/* Rank Badge */
+.rank-cell {
+  width: 50px;
+  text-align: center;
+}
+
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.rank-badge.gold {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: #000;
+}
+
+.rank-badge.silver {
+  background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+  color: #000;
+}
+
+.rank-badge.bronze {
+  background: linear-gradient(135deg, #CD7F32, #A0522D);
+  color: #fff;
+}
+
+.rank-number {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Algorithm Cell */
+.algo-cell {
+  min-width: 200px;
+}
+
+.algorithm-name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.paper-title {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Metric Cell */
+.metric-cell {
+  text-align: right;
+  font-family: 'SF Mono', Consolas, monospace;
+  font-size: 14px;
+}
+
+.metric-value {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.metric-na {
+  color: var(--text-muted);
+}
+
+/* Source Links */
+.source-links {
+  display: flex;
+  gap: 8px;
+}
+
+.source-links a {
+  font-size: 12px;
+  padding: 4px 10px;
+  background-color: var(--bg-sidebar);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.source-links a:hover {
+  background-color: var(--accent);
+  color: white;
+}
