@@ -37,7 +37,10 @@ jobs:
           fi
 
           # 运行爬虫并保存输出
-          python scripts/crawler.py > crawler_output.txt 2>&1
+          python scripts/crawler.py 2>&1 | tee crawler_output.txt
+
+          # 打印爬虫输出的前30行（非JSON部分）用于调试
+          head -30 crawler_output.txt | grep -v "---PAPERS_JSON---\|---END_JSON---" || true
 
           # 从输出中提取 JSON 并运行分析器
           grep -A 1000 -- "---PAPERS_JSON---" crawler_output.txt | grep -B 1000 -- "---END_JSON---" | sed '1d;$d' | python scripts/analyzer.py
