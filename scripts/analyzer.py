@@ -2,16 +2,22 @@
 """
 论文分析脚本
 调用 MiniMax API 生成论文分析报告
+支持并行分析（使用 --parallel 参数）
 """
 
 import os
 import json
 import sys
 import re
+import argparse
 from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
 from openai import OpenAI
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+# 确保可以导入同目录下的模块
+sys.path.insert(0, str(Path(__file__).parent))
 
 # 加载环境变量
 load_dotenv()
@@ -19,6 +25,9 @@ load_dotenv()
 # MiniMax API 配置
 MINIMAX_API_KEY = os.getenv("MINIMAX_API_KEY")
 MINIMAX_BASE_URL = os.getenv("MINIMAX_BASE_URL", "https://api.minimax.io/v1")
+
+# 并行分析的最大线程数
+MAX_WORKERS = 3
 
 # 导入 prompt 模板
 from prompts import SYSTEM_PROMPT, build_user_prompt
@@ -171,8 +180,22 @@ def save_analysis(paper: dict, analysis: str, output_dir: str = "_posts"):
     return filepath
 
 
+def analyze_single_paper(paper: dict, client: OpenAI) -> tuple:
+    """分析单篇论文，返回 (paper, analysis, error)"""
+    try:
+        analysis = analyze_paper(client, paper)
+        return (paper, analysis, None)
+    except Exception as e:
+        return (paper, None, str(e))
+
+
 def main():
     """主函数"""
+    parser = argparse.ArgumentParser(description='论文分析脚本')
+    parser.add_argument('--parallel', action='store_true', help='启用并行分析')
+    parser.add_argument('--workers', type=int, default=MAX_WORKERS, help=f'并行工作线程数 (默认 {MAX_WORKERS})')
+    args = parser.parse_args()
+
     # 检查 API Key
     if not MINIMAX_API_KEY:
         print("Error: MINIMAX_API_KEY not set")
@@ -195,20 +218,34 @@ def main():
 
     print(f"Analyzing {len(papers_json)} papers...")
 
-    # 创建客户端
-    client = create_client()
+    if args.parallel and len(papers_json) > 1:
+        # 并行分析
+        print(f"Using parallel mode with {args.workers} workers")
+        client = create_client()
 
-    # 分析每篇论文
-    for i, paper in enumerate(papers_json):
-        print(f"\n[{i+1}/{len(papers_json)}] Analyzing: {paper['title'][:60]}...")
+        with ThreadPoolExecutor(max_workers=args.workers) as executor:
+            futures = {executor.submit(analyze_single_paper, paper, client): paper for paper in papers_json}
 
-        try:
-            analysis = analyze_paper(client, paper)
-            save_analysis(paper, analysis)
-            print(f"  Done!")
-        except Exception as e:
-            print(f"  Error: {e}")
-            continue
+            for i, future in enumerate(as_completed(futures), 1):
+                paper, analysis, error = future.result()
+                if error:
+                    print(f"[{i}/{len(papers_json)}] {paper['title'][:60]}... Error: {error}")
+                else:
+                    save_analysis(paper, analysis)
+                    print(f"[{i}/{len(papers_json)}] {paper['title'][:60]}... Done!")
+    else:
+        # 串行分析
+        client = create_client()
+        for i, paper in enumerate(papers_json, 1):
+            print(f"\n[{i}/{len(papers_json)}] Analyzing: {paper['title'][:60]}...")
+
+            try:
+                analysis = analyze_paper(client, paper)
+                save_analysis(paper, analysis)
+                print(f"  Done!")
+            except Exception as e:
+                print(f"  Error: {e}")
+                continue
 
     print("\nAll papers analyzed!")
 
