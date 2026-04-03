@@ -1,4 +1,5 @@
 ---
+layout: post
 title: "Multi-Agent Video Recommenders: Evolution, Patterns, and Open Challenges"
 date: 2026-04-03
 arxiv_id: 2604.02211

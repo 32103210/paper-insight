@@ -1,4 +1,5 @@
 ---
+layout: post
 title: "Aligning Recommendations with User Popularity Preferences"
 date: 2026-04-03
 arxiv_id: 2604.01036
