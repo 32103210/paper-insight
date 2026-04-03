@@ -8,8 +8,13 @@ import arxiv
 import json
 import os
 import time
+import logging
 from datetime import datetime, timedelta
 from typing import List
+
+# 配置日志
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # 搜索关键词配置
 SEARCH_QUERIES = [
