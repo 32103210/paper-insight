@@ -28,6 +28,8 @@ jobs:
         id: crawler
         run: |
           set -e
+          # 删除已处理记录，确保每次都重新分析
+          rm -f processed_ids.txt
           python scripts/crawler.py > crawler_output.txt 2>&1
           cat crawler_output.txt
 
@@ -35,7 +37,7 @@ jobs:
         id: extract
         run: |
           # 从 crawler 输出中提取 JSON
-          JSON_OUTPUT=$(grep -A 1000 "---PAPERS_JSON---" crawler_output.txt | grep -B 1000 "---END_JSON---" | sed '1d;$d')
+          JSON_OUTPUT=$(grep -A 1000 -- "---PAPERS_JSON---" crawler_output.txt | grep -B 1000 -- "---END_JSON---" | sed '1d;$d')
           echo "papers_json=$JSON_OUTPUT" >> $GITHUB_OUTPUT
           echo "papers_json: $JSON_OUTPUT"
 
