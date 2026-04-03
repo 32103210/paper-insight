@@ -5,7 +5,7 @@ title: Paper Insight
 
 <!-- Breadcrumb navigation -->
 <nav class="breadcrumb" id="breadcrumb">
-  <li><a href="/">首页</a></li>
+  <li><a href="{{ "/" | relative_url }}">首页</a></li>
   <li class="separator">/</li>
   <li class="current">全部文章</li>
 </nav>
@@ -19,7 +19,7 @@ title: Paper Insight
   <article class="post-card">
     <div class="post-card-header">
       <h3 class="post-card-title">
-        <a href="{{ post.url }}">{{ post.title }}</a>
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
       </h3>
       <span class="post-card-date">{{ post.date | date: "%Y-%m-%d" }}</span>
     </div>
