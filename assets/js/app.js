@@ -353,9 +353,8 @@ function initSearch() {
   });
 }
 
-// Initialize when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initApp);
-} else {
-  initApp();
-}
+// Initialize when DOM is fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+  // Wait a tiny bit to ensure inline scripts have run
+  setTimeout(initApp, 0);
+});
