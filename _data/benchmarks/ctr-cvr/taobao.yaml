@@ -5,6 +5,22 @@ metrics:
   - AUC
 
 entries:
+  - algorithm: SIM
+    paper_title: "Search-based User Interest Modeling with Sequential Behavior Sequences"
+    arxiv_id: "2005.00675"
+    source: "https://arxiv.org/abs/2005.00675"
+    results:
+      AUC: 0.9150
+    post_url: "/2026/04/03/sim/"
+
+  - algorithm: MIMN
+    paper_title: "Multi-Channel Machine Learning for Modeling User Interest Sequences"
+    arxiv_id: "1905.10646"
+    source: "https://arxiv.org/abs/1905.10646"
+    results:
+      AUC: 0.9075
+    post_url: "/2026/04/03/mimn/"
+
   - algorithm: DIEN
     paper_title: "Deep Interest Evolution Network for Click-Through Rate Prediction"
     arxiv_id: "1808.02813"
@@ -21,22 +37,6 @@ entries:
       AUC: 0.9069
     post_url: "/2026/04/03/dsin/"
 
-  - algorithm: MIMN
-    paper_title: "Multi-Channel Machine Learning for Modeling User Interest Sequences"
-    arxiv_id: "1905.10646"
-    source: "https://arxiv.org/abs/1905.10646"
-    results:
-      AUC: 0.9075
-    post_url: "/2026/04/03/mimn/"
-
-  - algorithm: SIM
-    paper_title: "Search-based User Interest Modeling with Sequential Behavior Sequences"
-    arxiv_id: "2005.00675"
-    source: "https://arxiv.org/abs/2005.00675"
-    results:
-      AUC: 0.9150
-    post_url: "/2026/04/03/sim/"
-
   - algorithm: DIN
     paper_title: "Deep Interest Network for Click-Through Rate Prediction"
     arxiv_id: "1706.07478"
@@ -52,3 +52,19 @@ entries:
     results:
       AUC: 0.8945
     post_url: "/2026/04/03/deepfm/"
+
+  - algorithm: xDeepFM
+    paper_title: "xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems"
+    arxiv_id: "1801.06854"
+    source: "https://arxiv.org/abs/1801.06854"
+    results:
+      AUC: 0.9012
+    post_url: "/2026/04/03/xdeepfm/"
+
+  - algorithm: DCN V2
+    paper_title: "DCN V2: Improved Deep & Cross Network for CTR Prediction"
+    arxiv_id: "2008.01335"
+    source: "https://arxiv.org/abs/2008.01335"
+    results:
+      AUC: 0.9056
+    post_url: "/2026/04/03/dcn-v2/"

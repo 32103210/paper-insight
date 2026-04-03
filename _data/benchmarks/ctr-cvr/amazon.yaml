@@ -5,21 +5,13 @@ metrics:
   - AUC
 
 entries:
-  - algorithm: DeepFM
-    paper_title: "DeepFM: A Factorization-Machine based Neural Network for CTR Prediction"
-    arxiv_id: "1703.04247"
-    source: "https://arxiv.org/abs/1703.04247"
+  - algorithm: SIM
+    paper_title: "Search-based User Interest Modeling with Sequential Behavior Sequences"
+    arxiv_id: "2005.00675"
+    source: "https://arxiv.org/abs/2005.00675"
     results:
-      AUC: 0.7965
-    post_url: "/2026/04/03/deepfm/"
-
-  - algorithm: DCN V2
-    paper_title: "DCN V2: Improved Deep & Cross Network for CTR Prediction"
-    arxiv_id: "2008.01335"
-    source: "https://arxiv.org/abs/2008.01335"
-    results:
-      AUC: 0.8021
-    post_url: "/2026/04/03/dcn-v2/"
+      AUC: 0.9150
+    post_url: "/2026/04/03/sim/"
 
   - algorithm: xDeepFM
     paper_title: "xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems"
@@ -29,13 +21,13 @@ entries:
       AUC: 0.8031
     post_url: "/2026/04/03/xdeepfm/"
 
-  - algorithm: DIN
-    paper_title: "Deep Interest Network for Click-Through Rate Prediction"
-    arxiv_id: "1706.07478"
-    source: "https://arxiv.org/abs/1706.07478"
+  - algorithm: DCN V2
+    paper_title: "DCN V2: Improved Deep & Cross Network for CTR Prediction"
+    arxiv_id: "2008.01335"
+    source: "https://arxiv.org/abs/2008.01335"
     results:
-      AUC: 0.7912
-    post_url: "/2026/04/03/din/"
+      AUC: 0.8021
+    post_url: "/2026/04/03/dcn-v2/"
 
   - algorithm: DIEN
     paper_title: "Deep Interest Evolution Network for Click-Through Rate Prediction"
@@ -45,29 +37,45 @@ entries:
       AUC: 0.7978
     post_url: "/2026/04/03/dien/"
 
+  - algorithm: DeepFM
+    paper_title: "DeepFM: A Factorization-Machine based Neural Network for CTR Prediction"
+    arxiv_id: "1703.04247"
+    source: "https://arxiv.org/abs/1703.04247"
+    results:
+      AUC: 0.7965
+    post_url: "/2026/04/03/deepfm/"
+
+  - algorithm: RoDPO
+    paper_title: "Aligning Multimodal Sequential Recommendations via Robust Direct Preference Optimization with Sparse MoE"
+    arxiv_id: "2603.29259"
+    source: "https://arxiv.org/abs/2603.29259"
+    results:
+      AUC: 0.7925
+    post_url: "/2026/04/03/rodpo/"
+
+  - algorithm: DIN
+    paper_title: "Deep Interest Network for Click-Through Rate Prediction"
+    arxiv_id: "1706.07478"
+    source: "https://arxiv.org/abs/1706.07478"
+    results:
+      AUC: 0.7912
+    post_url: "/2026/04/03/din/"
+
   - algorithm: DSIN
     paper_title: "Deep Session Interest Network for Click-Through Rate Prediction"
     arxiv_id: "1905.06452"
     source: "https://arxiv.org/abs/1905.06452"
     results:
-      AUC: 0.9069
+      AUC: 0.7889
     post_url: "/2026/04/03/dsin/"
 
-  - algorithm: SIM
-    paper_title: "Search-based User Interest Modeling with Sequential Behavior Sequences"
-    arxiv_id: "2005.00675"
-    source: "https://arxiv.org/abs/2005.00675"
+  - algorithm: Wide&Deep
+    paper_title: "Wide & Deep Learning for Recommender Systems"
+    arxiv_id: "1606.07792"
+    source: "https://arxiv.org/abs/1606.07792"
     results:
-      AUC: 0.9150
-    post_url: "/2026/04/03/sim/"
-
-  - algorithm: FNN
-    paper_title: "Deep Learning over Multi-field Categorical Data"
-    arxiv_id: "1601.02376"
-    source: "https://arxiv.org/abs/1601.02376"
-    results:
-      AUC: 0.7826
-    post_url: "/2026/04/03/fnn/"
+      AUC: 0.7880
+    post_url: "/2026/04/03/wide-deep/"
 
   - algorithm: PNN
     paper_title: "Product-based Neural Networks for User Response Prediction"
@@ -77,10 +85,34 @@ entries:
       AUC: 0.7856
     post_url: "/2026/04/03/pnn/"
 
-  - algorithm: Wide&Deep
-    paper_title: "Wide & Deep Learning for Recommender Systems"
-    arxiv_id: "1606.07792"
-    source: "https://arxiv.org/abs/1606.07792"
+  - algorithm: FNN
+    paper_title: "Deep Learning over Multi-field Categorical Data"
+    arxiv_id: "1601.02376"
+    source: "https://arxiv.org/abs/1601.02376"
     results:
-      AUC: 0.7880
-    post_url: "/2026/04/03/wide-deep/"
+      AUC: 0.7826
+    post_url: "/2026/04/03/fnn/"
+
+  - algorithm: AutoInt
+    paper_title: "AutoInt: Automatic Feature Interaction Learning via Self-Attentive Neural Networks"
+    arxiv_id: "1810.11921"
+    source: "https://arxiv.org/abs/1810.11921"
+    results:
+      AUC: 0.7985
+    post_url: "/2026/04/03/autoint/"
+
+  - algorithm: FiBiNET
+    paper_title: "FiBiNET: Combining Feature Importance and Bilinear Feature Interaction for Click-Through Rate Prediction"
+    arxiv_id: "1905.03325"
+    source: "https://arxiv.org/abs/1905.03325"
+    results:
+      AUC: 0.7948
+    post_url: "/2026/04/03/fibinet/"
+
+  - algorithm: GateNet
+    paper_title: "GateNet: Gating-Enhanced Deep Neural Network for CTR Prediction"
+    arxiv_id: "2006.05665"
+    source: "https://arxiv.org/abs/2006.05665"
+    results:
+      AUC: 0.7992
+    post_url: "/2026/04/03/gatenet/"

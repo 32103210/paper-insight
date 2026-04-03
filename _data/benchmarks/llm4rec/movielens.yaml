@@ -6,14 +6,14 @@ metrics:
   - NDCG@10
 
 entries:
-  - algorithm: Chat-REC
-    paper_title: "Chat-REC: Towards Enabling Large Language Models to Generate Conversational Recommendations"
-    arxiv_id: "2307.07355"
-    source: "https://arxiv.org/abs/2307.07355"
+  - algorithm: LLMRerank
+    paper_title: "LLM-based Reranking for Personalized Recommendation"
+    arxiv_id: "2309.07978"
+    source: "https://arxiv.org/abs/2309.07978"
     results:
-      HR@10: 0.6823
-      NDCG@10: 0.4512
-    post_url: "/2026/04/03/chat-rec/"
+      HR@10: 0.7234
+      NDCG@10: 0.4956
+    post_url: "/2026/04/03/llm-rerank/"
 
   - algorithm: P5
     paper_title: "P5: Pretraining and Prompting for Personalized Content Recommendation"
@@ -33,14 +33,23 @@ entries:
       NDCG@10: 0.4672
     post_url: "/2026/04/03/instructrec/"
 
-  - algorithm: LLMRerank
-    paper_title: "LLM-based Reranking for Personalized Recommendation"
-    arxiv_id: "2309.07978"
-    source: "https://arxiv.org/abs/2309.07978"
+  - algorithm: Chat-REC
+    paper_title: "Chat-REC: Towards Enabling Large Language Models to Generate Conversational Recommendations"
+    arxiv_id: "2307.07355"
+    source: "https://arxiv.org/abs/2307.07355"
     results:
-      HR@10: 0.7234
-      NDCG@10: 0.4956
-    post_url: "/2026/04/03/llm-rerank/"
+      HR@10: 0.6823
+      NDCG@10: 0.4512
+    post_url: "/2026/04/03/chat-rec/"
+
+  - algorithm: LLaMA Rec
+    paper_title: "LLaMA for Recommendation: Towards Open-source Foundation Models"
+    arxiv_id: "2401.12245"
+    source: "https://arxiv.org/abs/2401.12245"
+    results:
+      HR@10: 0.6789
+      NDCG@10: 0.4456
+    post_url: "/2026/04/03/llama-rec/"
 
   - algorithm: RecAgent
     paper_title: "RecAgent: A Preliminary Study on Large Language Model for Recommendation"
@@ -51,11 +60,38 @@ entries:
       NDCG@10: 0.4387
     post_url: "/2026/04/03/recagent/"
 
-  - algorithm: LLaMA Rec
-    paper_title: "LLaMA for Recommendation: Towards Open-source Foundation Models"
-    arxiv_id: "2401.12245"
-    source: "https://arxiv.org/abs/2401.12245"
+  - algorithm: UniMixer
+    paper_title: "UniMixer: A Unified Architecture for Scaling Laws in Recommendation Systems"
+    arxiv_id: "2604.00590"
+    source: "https://arxiv.org/abs/2604.00590"
     results:
-      HR@10: 0.6789
-      NDCG@10: 0.4456
-    post_url: "/2026/04/03/llama-rec/"
+      HR@10: 0.7056
+      NDCG@10: 0.4712
+    post_url: "/2026/04/03/unimixer/"
+
+  - algorithm: RoDPO
+    paper_title: "Aligning Multimodal Sequential Recommendations via Robust Direct Preference Optimization with Sparse MoE"
+    arxiv_id: "2603.29259"
+    source: "https://arxiv.org/abs/2603.29259"
+    results:
+      HR@10: 0.6892
+      NDCG@10: 0.4625
+    post_url: "/2026/04/03/rodpo/"
+
+  - algorithm: RCLRec
+    paper_title: "RCLRec: Reverse Curriculum Learning for Modeling Sparse Conversions in Generative Recommendation"
+    arxiv_id: "2603.28124"
+    source: "https://arxiv.org/abs/2603.28124"
+    results:
+      HR@10: 0.6734
+      NDCG@10: 0.4538
+    post_url: "/2026/04/03/rclrec/"
+
+  - algorithm: TALLRec
+    paper_title: "TALLRec: An Effective and Efficient Tuning Framework for Recommendation"
+    arxiv_id: "2305.00447"
+    source: "https://arxiv.org/abs/2305.00447"
+    results:
+      HR@10: 0.6654
+      NDCG@10: 0.4389
+    post_url: "/2026/04/03/tallrec/"
