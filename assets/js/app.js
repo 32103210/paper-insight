@@ -24,6 +24,26 @@ function initApp() {
   renderCategoryTree();
   renderPosts(POSTS_DATA);
   initSearch();
+  initBreadcrumb();
+}
+
+/**
+ * Initialize breadcrumb click handler (called once)
+ */
+function initBreadcrumb() {
+  const breadcrumb = document.getElementById('breadcrumb');
+  if (!breadcrumb) return;
+
+  // Use event delegation - listener added once at init
+  breadcrumb.addEventListener('click', (e) => {
+    const link = e.target.closest('a[data-path]');
+    if (link) {
+      e.preventDefault();
+      const path = link.dataset.path;
+      const item = document.querySelector(`.category-item[data-path="${path}"]`);
+      if (item) item.click();
+    }
+  });
 }
 
 /**
@@ -286,17 +306,6 @@ function updateBreadcrumb() {
     currentLi.textContent = '全部文章';
     breadcrumb.appendChild(currentLi);
   }
-
-  // Add click handlers to breadcrumb links using event delegation
-  breadcrumb.addEventListener('click', (e) => {
-    const link = e.target.closest('a[data-path]');
-    if (link) {
-      e.preventDefault();
-      const path = link.dataset.path;
-      const item = document.querySelector(`.category-item[data-path="${path}"]`);
-      if (item) item.click();
-    }
-  });
 }
 
 /**
