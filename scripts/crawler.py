@@ -10,11 +10,6 @@ import os
 import time
 from datetime import datetime, timedelta
 from typing import List
-import logging
-
-# 配置日志
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
 
 # 搜索关键词配置
 SEARCH_QUERIES = [
@@ -57,46 +52,54 @@ def search_with_retry(client, search, max_retries=MAX_RETRIES):
     all_results = []
 
     for attempt in range(max_retries):
-        try:
-            # 每次请求前等待，避免触发速率限制
-            if attempt > 0:
-                wait_time = INITIAL_RETRY_DELAY * (2 ** (attempt - 1))
-                logger.info(f"Waiting {wait_time}s before retry...")
-                time.sleep(wait_time)
+        # 每次请求前等待，避免触发速率限制
+        if attempt > 0:
+            wait_time = INITIAL_RETRY_DELAY * (2 ** (attempt - 1))
+            print(f"Waiting {wait_time}s before retry...")
+            time.sleep(wait_time)
 
-            # 执行搜索
+        try:
+            # 执行搜索 - 注意: arxiv 库返回懒加载迭代器
+            # 实际 HTTP 请求在迭代时发生
             results = client.results(search)
 
-            # 收集所有结果
-            for result in results:
-                all_results.append(result)
+            # 手动迭代收集结果，这样可以在迭代过程中捕获异常
+            collected = []
+            try:
+                for result in results:
+                    collected.append(result)
+            except Exception as e:
+                # 迭代过程中出错，可能是速率限制
+                error_str = str(e).lower()
+                if "429" in str(e) or "rate" in error_str or "timeout" in error_str:
+                    print(f"Rate limit or timeout during iteration (attempt {attempt + 1}/{max_retries}): {e}")
+                    if attempt < max_retries - 1:
+                        continue
+                    else:
+                        raise
+                else:
+                    raise
 
             # 如果有结果，返回它们
-            if all_results:
-                return all_results
+            if collected:
+                print(f"Got {len(collected)} papers from arXiv")
+                return collected
             else:
                 # 空结果，可能是速率限制
+                print(f"Empty results from arXiv (attempt {attempt + 1}/{max_retries})")
                 if attempt < max_retries - 1:
-                    wait_time = INITIAL_RETRY_DELAY * (2 ** attempt)
-                    logger.warning(f"Empty results from arXiv (attempt {attempt + 1}/{max_retries}). Waiting {wait_time}s...")
                     continue
                 else:
                     return []
 
         except Exception as e:
-            error_str = str(e)
-            if "429" in error_str or "rate" in error_str.lower() or "timeout" in error_str.lower():
-                # 速率限制或超时，使用指数退避
+            print(f"Error searching arXiv (attempt {attempt + 1}/{max_retries}): {e}")
+            if attempt < max_retries - 1:
                 wait_time = INITIAL_RETRY_DELAY * (2 ** attempt)
-                logger.warning(f"arXiv error (attempt {attempt + 1}/{max_retries}): {e}. Waiting {wait_time}s...")
+                print(f"Waiting {wait_time}s before retry...")
                 time.sleep(wait_time)
             else:
-                # 其他错误，重试一次后放弃
-                if attempt < max_retries - 1:
-                    logger.warning(f"Error searching arXiv (attempt {attempt + 1}/{max_retries}): {e}")
-                    time.sleep(INITIAL_RETRY_DELAY)
-                else:
-                    raise
+                raise
 
     return all_results if all_results else []
 
@@ -122,7 +125,7 @@ def search_papers(days_back: int = 7, max_results: int = MAX_RESULTS) -> List[di
     print(f"Searching arXiv with query: {query}")
 
     # 首次请求前等待，避免被限流
-    logger.info("Waiting 5s before first request to avoid rate limiting...")
+    print("Waiting 5s before first request to avoid rate limiting...")
     time.sleep(5)
 
     # 使用 arxiv 库搜索，带速率限制
