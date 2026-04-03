@@ -8,9 +8,3 @@ show_excerpts: true
 # Custom includes and layouts paths
 includes_dir: _includes
 layouts_dir: _layouts
-
-# Minima theme settings
-minima:
-  skin: auto
-  social_links:
-    github: null
