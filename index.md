@@ -3,17 +3,102 @@ layout: page
 title: Paper Insight
 ---
 
-# Paper Insight
+<!-- Breadcrumb navigation -->
+<nav class="breadcrumb" id="breadcrumb">
+  <li><a href="/">首页</a></li>
+  <li class="separator">/</li>
+  <li class="current">全部文章</li>
+</nav>
 
-每天自动抓取工业界推荐算法相关论文，AI 生成结构化分析报告。
+<!-- Search box -->
+{% include header.html %}
 
-论文来源: [arXiv](https://arxiv.org/)
-分析方法: 基于李继刚论文深读框架
+<!-- Posts container -->
+<div id="posts-container">
+  {% for post in site.posts %}
+  <article class="post-card">
+    <div class="post-card-header">
+      <h3 class="post-card-title">
+        <a href="{{ post.url }}">{{ post.title }}</a>
+      </h3>
+      <span class="post-card-date">{{ post.date | date: "%Y-%m-%d" }}</span>
+    </div>
+    <div class="post-card-meta">
+      {% if post.arxiv_id %}
+      <span class="arxiv-id">arXiv: {{ post.arxiv_id }}</span>
+      {% endif %}
+      {% if post.categories %}
+      <div class="post-card-tags">
+        {% for category in post.categories %}
+        <span class="post-card-tag">{{ category }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% if post.description %}
+    <p class="post-card-excerpt">{{ post.description }}</p>
+    {% endif %}
+  </article>
+  {% endfor %}
+</div>
 
-{% for post in site.posts %}
-## [{{ post.title }}]({{ post.url }})
+<!-- Embedded data for JavaScript -->
+<script>
+  // CATEGORIES object - built from Jekyll post categories
+  window.CATEGORIES = {};
+  {% assign category_map = "" | split: "" %}
+  {% for post in site.posts %}
+    {% if post.categories %}
+      {% for cat in post.categories %}
+        {% assign cat_key = cat | strip %}
+        {% unless category_map contains cat_key %}
+          {% assign category_map = category_map | push: cat_key %}
+        {% endunless %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
 
-{{ post.date | date: "%Y-%m-%d" }} | arXiv: {{ post.arxiv_id }}
+  // POSTS_DATA - embedded post metadata for JavaScript
+  window.POSTS_DATA = [
+    {% for post in site.posts %}
+    {
+      title: {{ post.title | jsonify }},
+      url: {{ post.url | jsonify }},
+      date: {{ post.date | date: "%Y-%m-%d" | jsonify }},
+      arxiv_id: {{ post.arxiv_id | jsonify }},
+      categories: {{ post.categories | jsonify }},
+      excerpt: {{ post.description | jsonify }},
+      tags: {{ post.categories | jsonify }}
+    }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ];
 
-{{ post.description }}
-{% endfor %}
+  // Build CATEGORIES structure from posts
+  window.POSTS_DATA.forEach(function(post) {
+    if (post.categories && post.categories.length > 0) {
+      var level1 = post.categories[0];
+      if (!window.CATEGORIES[level1]) {
+        window.CATEGORIES[level1] = { children: {}, posts: [] };
+      }
+
+      if (post.categories.length > 1) {
+        var level2 = post.categories[1];
+        if (!window.CATEGORIES[level1].children[level2]) {
+          window.CATEGORIES[level1].children[level2] = { children: {}, posts: [] };
+        }
+
+        if (post.categories.length > 2) {
+          var level3 = post.categories[2];
+          if (!window.CATEGORIES[level1].children[level2].children[level3]) {
+            window.CATEGORIES[level1].children[level2].children[level3] = { posts: [] };
+          }
+          window.CATEGORIES[level1].children[level2].children[level3].posts.push(post);
+        } else {
+          window.CATEGORIES[level1].children[level2].posts.push(post);
+        }
+      } else {
+        window.CATEGORIES[level1].posts.push(post);
+      }
+    }
+  });
+</script>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title }}</title>
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+</head>
+<body>
+  <div class="layout-container">
+    {% include sidebar.html %}
+    <main class="main-content">
+      <article class="post-detail">
+        <a href="{{ '/' | relative_url }}" class="back-link">
+          <span>&larr;</span> 返回文章列表
+        </a>
+
+        <header class="post-header">
+          <h1 class="post-title">{{ page.title }}</h1>
+          <div class="post-meta">
+            <span class="date">{{ page.date | date: "%Y-%m-%d" }}</span>
+            {% if page.arxiv_id %}
+            <a href="{{ page.source | default: page.url }}" class="arxiv-link" target="_blank" rel="noopener">
+              arXiv: {{ page.arxiv_id }}
+            </a>
+            {% endif %}
+          </div>
+          {% if page.categories %}
+          <div class="post-tags">
+            {% for category in page.categories %}
+            <span class="post-tag">{{ category }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </header>
+
+        <div class="post-content">
+          {{ content }}
+        </div>
+      </article>
+    </main>
+  </div>
+  <script src="{{ '/assets/js/app.js' | relative_url }}"></script>
+</body>
+</html>
