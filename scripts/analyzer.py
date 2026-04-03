@@ -154,11 +154,9 @@ def save_analysis(paper: dict, analysis: str, output_dir: str = "_posts"):
     # 移除 YAML 代码块（如果存在）
     analysis_content = re.sub(r'```yaml\s*\n.*?```\s*', '', analysis, flags=re.DOTALL).strip()
 
-    # 清理模型输出的内部标记
-    analysis_content = re.sub(r'&\lt;!--.*?--&gt;', '', analysis_content, flags=re.DOTALL)  # HTML注释
-    analysis_content = re.sub(r'&lt;!--.*?--&gt;', '', analysis_content, flags=re.DOTALL)  # HTML注释变体
-    analysis_content = re.sub(r'&lt;!--.*', '', analysis_content)  # 未闭合注释
-    analysis_content = re.sub(r'&lt;!--.*', '', analysis_content)  # 未闭合注释
+    # 清理模型输出的内部标记（HTML 注释）
+    analysis_content = re.sub(r'<!--.*?-->', '', analysis_content, flags=re.DOTALL)  # HTML注释
+    analysis_content = re.sub(r'<!--.*', '', analysis_content)  # 未闭合注释
     analysis_content = analysis_content.strip()
 
     # 生成文件名
