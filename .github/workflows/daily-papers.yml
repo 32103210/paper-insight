@@ -24,48 +24,36 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Run crawler
-        id: crawler
-        run: |
-          set -e
-          # 删除已处理记录，确保每次都重新分析
-          rm -f processed_ids.txt
-          python scripts/crawler.py > crawler_output.txt 2>&1
-          cat crawler_output.txt
-
-      - name: Extract papers JSON
-        id: extract
-        run: |
-          # 从 crawler 输出中提取 JSON
-          JSON_OUTPUT=$(grep -A 1000 -- "---PAPERS_JSON---" crawler_output.txt | grep -B 1000 -- "---END_JSON---" | sed '1d;$d')
-          echo "papers_json=$JSON_OUTPUT" >> $GITHUB_OUTPUT
-          echo "papers_json: $JSON_OUTPUT"
-
-      - name: Run analyzer
+      - name: Run crawler and analyzer
         env:
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
           MINIMAX_BASE_URL: ${{ secrets.MINIMAX_BASE_URL }}
         run: |
-          # Set default if not provided
+          set -e
+          # 删除已处理记录，确保每次都重新分析
+          rm -f processed_ids.txt
+
+          # 设置默认 URL
           if [ -z "$MINIMAX_BASE_URL" ]; then
             export MINIMAX_BASE_URL="https://api.minimax.io/v1"
           fi
-          # 将 JSON 传递给 analyzer
-          echo "${{ steps.extract.outputs.papers_json }}" | python scripts/analyzer.py
 
-      - name: Check for new files
-        id: new-files
-        run: |
-          NEW_FILES=$(git status --short _posts/ || true)
-          echo "stdout=$NEW_FILES" >> $GITHUB_OUTPUT
-          echo "Files to commit:"
-          echo "$NEW_FILES"
+          # 运行爬虫并保存输出
+          python scripts/crawler.py > crawler_output.txt 2>&1
+
+          # 从输出中提取 JSON 并运行分析器
+          grep -A 1000 -- "---PAPERS_JSON---" crawler_output.txt | grep -B 1000 -- "---END_JSON---" | sed '1d;$d' | python scripts/analyzer.py
 
       - name: Commit and push
-        if: steps.new-files.outputs.stdout != ''
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add _posts/
-          git commit -m "feat: daily paper analysis $(date +'%Y-%m-%d')"
-          git push
+          # 检查是否有新文件
+          NEW_FILES=$(git status --short _posts/ | grep -v ".gitkeep" || true)
+          if [ -n "$NEW_FILES" ]; then
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add _posts/
+            git commit -m "feat: daily paper analysis $(date +'%Y-%m-%d')"
+            git push
+          else
+            echo "No new papers to commit"
+          fi
