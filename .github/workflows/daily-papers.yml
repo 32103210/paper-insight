@@ -57,6 +57,8 @@ jobs:
             git config --local user.name "GitHub Action"
             git add _posts/
             git commit -m "feat: daily paper analysis $(date +'%Y-%m-%d')"
+            # Pull and rebase to handle concurrent runs
+            git pull --rebase origin main
             git push
           else
             echo "No new papers to commit"
