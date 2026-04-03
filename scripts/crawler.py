@@ -36,7 +36,7 @@ REQUEST_INTERVAL = 3.5
 MAX_RETRIES = 5
 
 # 初始重试等待时间（秒）
-INITIAL_RETRY_DELAY = 10
+INITIAL_RETRY_DELAY = 15
 
 
 def search_with_retry(client, search, max_retries=MAX_RETRIES):
@@ -121,6 +121,10 @@ def search_papers(days_back: int = 7, max_results: int = MAX_RESULTS) -> List[di
 
     print(f"Searching arXiv with query: {query}")
 
+    # 首次请求前等待，避免被限流
+    logger.info("Waiting 5s before first request to avoid rate limiting...")
+    time.sleep(5)
+
     # 使用 arxiv 库搜索，带速率限制
     client = arxiv.Client()
 
@@ -138,6 +142,10 @@ def search_papers(days_back: int = 7, max_results: int = MAX_RESULTS) -> List[di
     try:
         # 使用带重试的搜索（返回列表）
         results = search_with_retry(client, search)
+
+        # 在处理结果前等待一段时间，避免触发速率限制
+        if results:
+            logger.info(f"Got {len(results)} papers from arXiv, processing...")
 
         for result in results:
             # 过滤日期
