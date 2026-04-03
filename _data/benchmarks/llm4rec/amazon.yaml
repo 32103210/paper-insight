@@ -11,52 +11,42 @@ entries:
     arxiv_id: "2310.10456"
     source: "https://arxiv.org/abs/2310.10456"
     results:
-      - metric: HR@10
-        value: 0.6543
-      - metric: NDCG@10
-        value: 0.4231
-    post_url: "/2026/04/03/recommending-products-with-llms/"
+      HR@10: 0.6543
+      NDCG@10: 0.4231
+    post_url: "/2026/04/03/gpt4-rec/"
 
   - algorithm: LLaMA Rec
     paper_title: "LLaMA for Recommendation: Towards Open-source Foundation Models"
     arxiv_id: "2401.12245"
     source: "https://arxiv.org/abs/2401.12245"
     results:
-      - metric: HR@10
-        value: 0.6789
-      - metric: NDCG@10
-        value: 0.4456
-    post_url: "/2026/04/03/llama-for-recommendation-amazon/"
+      HR@10: 0.6789
+      NDCG@10: 0.4456
+    post_url: "/2026/04/03/llama-rec/"
 
   - algorithm: MiniCPM-Rec
     paper_title: "MiniCPM for On-Device Recommendation"
     arxiv_id: "2404.12345"
     source: "https://arxiv.org/abs/2404.12345"
     results:
-      - metric: HR@10
-        value: 0.6612
-      - metric: NDCG@10
-        value: 0.4315
-    post_url: "/2026/04/03/minicpm-on-device-recommendation/"
+      HR@10: 0.6612
+      NDCG@10: 0.4315
+    post_url: "/2026/04/03/minicpm-rec/"
 
   - algorithm: TEMOS
     paper_title: "TEMOS: Generating Movies from Text Descriptions"
     arxiv_id: "2312.11631"
     source: "https://arxiv.org/abs/2312.11631"
     results:
-      - metric: HR@10
-        value: 0.6234
-      - metric: NDCG@10
-        value: 0.4056
-    post_url: "/2026/04/03/temos-generating-movies-from-text/"
+      HR@10: 0.6234
+      NDCG@10: 0.4056
+    post_url: "/2026/04/03/temos/"
 
   - algorithm: RAGRec
     paper_title: "RAGRec: Retrieval-Augmented Generation for Recommendation"
     arxiv_id: "2403.13382"
     source: "https://arxiv.org/abs/2403.13382"
     results:
-      - metric: HR@10
-        value: 0.6892
-      - metric: NDCG@10
-        value: 0.4534
-    post_url: "/2026/04/03/ragrec-retrieval-augmented-generation/"
+      HR@10: 0.6892
+      NDCG@10: 0.4534
+    post_url: "/2026/04/03/ragrec/"

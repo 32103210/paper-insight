@@ -3,7 +3,7 @@ layout: page
 title: LLM4Rec Benchmark
 ---
 
-# LLM4Rec Leaderboard
+# LLM4Rec Benchmark
 
 <script>
 window.location.href = '/benchmark/#llm4rec';

@@ -395,13 +395,17 @@ def aggregate_benchmarks(posts_data: List[dict]) -> Dict[str, Dict[str, dict]]:
                 if metric_name not in bench['metrics']:
                     bench['metrics'].append(metric_name)
 
-            # 添加条目
+            # 添加条目 - 转换 results 为简单对象格式
+            results_dict = {}
+            for m in post['metrics']:
+                results_dict[m['metric']] = m['value']
+
             entry = {
                 'algorithm': post['algorithm'],
                 'paper_title': post['paper_title'],
                 'arxiv_id': post['arxiv_id'],
                 'source': post['source'],
-                'results': post['metrics'],
+                'results': results_dict,
                 'post_url': post['post_url'],
             }
             bench['entries'].append(entry)
@@ -412,10 +416,7 @@ def aggregate_benchmarks(posts_data: List[dict]) -> Dict[str, Dict[str, dict]]:
 def sort_entries_by_metric(entries: List[dict], primary_metric: str) -> List[dict]:
     """按指定指标排序条目"""
     def get_metric_value(entry):
-        for result in entry['results']:
-            if result['metric'] == primary_metric:
-                return result['value']
-        return -1
+        return entry['results'].get(primary_metric, -1)
 
     return sorted(entries, key=get_metric_value, reverse=True)
 

@@ -10,87 +10,77 @@ entries:
     arxiv_id: "1703.04247"
     source: "https://arxiv.org/abs/1703.04247"
     results:
-      - metric: AUC
-        value: 0.7965
-    post_url: "/2026/04/03/deepfm-a-factorization-machine-based-neural-network-for-ctr-prediction/"
+      AUC: 0.7965
+    post_url: "/2026/04/03/deepfm/"
 
   - algorithm: DCN V2
     paper_title: "DCN V2: Improved Deep & Cross Network for CTR Prediction"
     arxiv_id: "2008.01335"
     source: "https://arxiv.org/abs/2008.01335"
     results:
-      - metric: AUC
-        value: 0.8021
-    post_url: "/2026/04/03/dcn-v2-improved-deep-cross-network-for-ctr-prediction/"
+      AUC: 0.8021
+    post_url: "/2026/04/03/dcn-v2/"
 
   - algorithm: xDeepFM
     paper_title: "xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems"
     arxiv_id: "1801.06854"
     source: "https://arxiv.org/abs/1801.06854"
     results:
-      - metric: AUC
-        value: 0.8031
-    post_url: "/2026/04/03/xdeepfm-combining-explicit-and-implicit-feature-interactions/"
+      AUC: 0.8031
+    post_url: "/2026/04/03/xdeepfm/"
 
   - algorithm: DIN
     paper_title: "Deep Interest Network for Click-Through Rate Prediction"
     arxiv_id: "1706.07478"
     source: "https://arxiv.org/abs/1706.07478"
     results:
-      - metric: AUC
-        value: 0.7912
-    post_url: "/2026/04/03/deep-interest-network-for-click-through-rate-prediction/"
+      AUC: 0.7912
+    post_url: "/2026/04/03/din/"
 
   - algorithm: DIEN
     paper_title: "Deep Interest Evolution Network for Click-Through Rate Prediction"
     arxiv_id: "1808.02813"
     source: "https://arxiv.org/abs/1808.02813"
     results:
-      - metric: AUC
-        value: 0.7978
-    post_url: "/2026/04/03/deep-interest-evolution-network-for-click-through-rate-prediction/"
+      AUC: 0.7978
+    post_url: "/2026/04/03/dien/"
 
   - algorithm: DSIN
     paper_title: "Deep Session Interest Network for Click-Through Rate Prediction"
     arxiv_id: "1905.06452"
     source: "https://arxiv.org/abs/1905.06452"
     results:
-      - metric: AUC
-        value: 0.9069
-    post_url: "/2026/04/03/deep-session-interest-network-for-ctr-prediction/"
+      AUC: 0.9069
+    post_url: "/2026/04/03/dsin/"
 
   - algorithm: SIM
     paper_title: "Search-based User Interest Modeling with Sequential Behavior Sequences"
     arxiv_id: "2005.00675"
     source: "https://arxiv.org/abs/2005.00675"
     results:
-      - metric: AUC
-        value: 0.9150
-    post_url: "/2026/04/03/sim-search-based-user-interest-modeling/"
+      AUC: 0.9150
+    post_url: "/2026/04/03/sim/"
 
   - algorithm: FNN
     paper_title: "Deep Learning over Multi-field Categorical Data"
     arxiv_id: "1601.02376"
     source: "https://arxiv.org/abs/1601.02376"
     results:
-      - metric: AUC
-        value: 0.7826
-    post_url: "/2026/04/03/fnn-deep-learning-over-multi-field-categorical-data/"
+      AUC: 0.7826
+    post_url: "/2026/04/03/fnn/"
 
   - algorithm: PNN
     paper_title: "Product-based Neural Networks for User Response Prediction"
     arxiv_id: "1611.00144"
     source: "https://arxiv.org/abs/1611.00144"
     results:
-      - metric: AUC
-        value: 0.7856
-    post_url: "/2026/04/03/pnn-product-based-neural-networks/"
+      AUC: 0.7856
+    post_url: "/2026/04/03/pnn/"
 
   - algorithm: Wide&Deep
     paper_title: "Wide & Deep Learning for Recommender Systems"
     arxiv_id: "1606.07792"
     source: "https://arxiv.org/abs/1606.07792"
     results:
-      - metric: AUC
-        value: 0.7880
-    post_url: "/2026/04/03/wide-deep-learning-for-recommender-systems/"
+      AUC: 0.7880
+    post_url: "/2026/04/03/wide-deep/"

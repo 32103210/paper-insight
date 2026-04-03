@@ -3,7 +3,7 @@ layout: page
 title: CTR/CVR Modeling Benchmark
 ---
 
-# CTR/CVR Modeling Leaderboard
+# CTR/CVR Modeling Benchmark
 
 <script>
 window.location.href = '/benchmark/#ctr-cvr';
