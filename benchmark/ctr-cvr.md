@@ -7,19 +7,22 @@ title: CTR/CVR Modeling Benchmark
 
 电商场景点击率/转化率预估论文性能排行榜。
 
-{% if site.data.benchmarks.ctr-cvr %}
+{% assign ctr_data = site.data.benchmarks["ctr-cvr"] %}
+{% if ctr_data %}
 
-{% for dataset in site.data.benchmarks.ctr-cvr %}
-## {{ dataset[1].dataset }} {#{{ dataset[0] }}}
+{% for item in ctr_data %}
+{% assign dataset_name = item[0] %}
+{% assign dataset = item[1] %}
+## {{ dataset.dataset }}
 
-{{ dataset[1].description }}
+{{ dataset.description }}
 
-{% if dataset[1].metrics %}
-**主要指标:** {{ dataset[1].metrics | join: ', ' }}
+{% if dataset.metrics %}
+**主要指标:** {{ dataset.metrics | join: ', ' }}
 {% endif %}
 
-{% if dataset[1].entries.size > 0 %}
-{% include benchmark_table.html data=dataset[1] %}
+{% if dataset.entries.size > 0 %}
+{% include benchmark_table.html data=dataset %}
 {% else %}
 暂无数据
 {% endif %}

@@ -15,16 +15,18 @@ title: Benchmark Leaderboard
 ### CTR/CVR 建模
 电商场景点击率/转化率预估
 
-{% if site.data.benchmarks.ctr-cvr %}
+{% assign ctr_data = site.data.benchmarks["ctr-cvr"] %}
+{% if ctr_data %}
 | 数据集 | 论文数 |
 |--------|--------|
-{% for dataset in site.data.benchmarks.ctr-cvr %}
-| {{ dataset[1].dataset }} | {{ dataset[1].entries.size }} |
+{% for item in ctr_data %}
+{% assign dataset = item[1] %}
+| {{ dataset.dataset }} | {{ dataset.entries.size }} |
 {% endfor %}
 
 [View CTR/CVR Leaderboard →](ctr-cvr.html)
 {% else %}
-暂无数据，运行 `python scripts/benchmark_extractor.py` 提取数据。
+暂无数据
 {% endif %}
 </div>
 
@@ -32,16 +34,18 @@ title: Benchmark Leaderboard
 ### LLM4Rec
 大语言模型在推荐系统中的应用
 
-{% if site.data.benchmarks.llm4rec %}
+{% assign llm_data = site.data.benchmarks["llm4rec"] %}
+{% if llm_data %}
 | 数据集 | 论文数 |
 |--------|--------|
-{% for dataset in site.data.benchmarks.llm4rec %}
-| {{ dataset[1].dataset }} | {{ dataset[1].entries.size }} |
+{% for item in llm_data %}
+{% assign dataset = item[1] %}
+| {{ dataset.dataset }} | {{ dataset.entries.size }} |
 {% endfor %}
 
 [View LLM4Rec Leaderboard →](llm4rec.html)
 {% else %}
-暂无数据，运行 `python scripts/benchmark_extractor.py` 提取数据。
+暂无数据
 {% endif %}
 </div>
 

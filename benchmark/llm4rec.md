@@ -7,19 +7,22 @@ title: LLM4Rec Benchmark
 
 大语言模型在推荐系统中应用的论文性能排行榜。
 
-{% if site.data.benchmarks.llm4rec %}
+{% assign llm_data = site.data.benchmarks["llm4rec"] %}
+{% if llm_data %}
 
-{% for dataset in site.data.benchmarks.llm4rec %}
-## {{ dataset[1].dataset }} {#{{ dataset[0] }}}
+{% for item in llm_data %}
+{% assign dataset_name = item[0] %}
+{% assign dataset = item[1] %}
+## {{ dataset.dataset }}
 
-{{ dataset[1].description }}
+{{ dataset.description }}
 
-{% if dataset[1].metrics %}
-**主要指标:** {{ dataset[1].metrics | join: ', ' }}
+{% if dataset.metrics %}
+**主要指标:** {{ dataset.metrics | join: ', ' }}
 {% endif %}
 
-{% if dataset[1].entries.size > 0 %}
-{% include benchmark_table.html data=dataset[1] %}
+{% if dataset.entries.size > 0 %}
+{% include benchmark_table.html data=dataset %}
 {% else %}
 暂无数据
 {% endif %}
