@@ -2,7 +2,78 @@
   <div class="sidebar-header">
     <a href="{{ "/" | relative_url }}">Paper Insight</a>
   </div>
+
   <ul id="category-tree" class="category-tree">
-    <!-- Category tree will be rendered by JavaScript -->
+    <li class="category-all">
+      <a href="{{ "/" | relative_url }}" class="category-link active">
+        <span class="category-name">全部文章</span>
+        <span class="category-count">{{ site.posts.size }}</span>
+      </a>
+    </li>
+
+    {% comment %}Build category hierarchy{% endcomment %}
+    {% assign categories = "" | split: "" %}
+    {% for post in site.posts %}
+      {% if post.categories %}
+        {% assign cat1 = post.categories[0] %}
+        {% unless categories contains cat1 %}
+          {% assign categories = categories | push: cat1 %}
+        {% endunless %}
+      {% endif %}
+    {% endfor %}
+
+    {% for cat1 in categories %}
+    <li class="category-item">
+      {% comment %}Count posts for this level1{% endcomment %}
+      {% assign count1 = 0 %}
+      {% for post in site.posts %}
+        {% if post.categories and post.categories[0] == cat1 %}
+          {% assign count1 = count1 | plus: 1 %}
+        {% endif %}
+      {% endfor %}
+
+      <div class="category-item" data-level="1">
+        <span class="category-toggle">▶</span>
+        <a href="{{ cat1 | url_encode | prepend: "/category/" | relative_url }}" class="category-link">
+          <span class="category-name">{{ cat1 }}</span>
+          <span class="category-count">{{ count1 }}</span>
+        </a>
+      </div>
+
+      {% comment %}Level 2 categories{% endcomment %}
+      {% assign level2_cats = "" | split: "" %}
+      {% for post in site.posts %}
+        {% if post.categories and post.categories[0] == cat1 and post.categories[1] %}
+          {% assign cat2 = post.categories[1] %}
+          {% unless level2_cats contains cat2 %}
+            {% assign level2_cats = level2_cats | push: cat2 %}
+          {% endunless %}
+        {% endif %}
+      {% endfor %}
+
+      {% if level2_cats.size > 0 %}
+      <ul class="category-children">
+        {% for cat2 in level2_cats %}
+        <li class="category-item">
+          {% assign count2 = 0 %}
+          {% for post in site.posts %}
+            {% if post.categories and post.categories[0] == cat1 and post.categories[1] == cat2 %}
+              {% assign count2 = count2 | plus: 1 %}
+            {% endif %}
+          {% endfor %}
+
+          <div class="category-item" data-level="2">
+            <span class="category-toggle">▶</span>
+            <a href="{{ cat2 | url_encode | prepend: "/category/" | relative_url }}" class="category-link">
+              <span class="category-name">{{ cat2 }}</span>
+              <span class="category-count">{{ count2 }}</span>
+            </a>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </li>
+    {% endfor %}
   </ul>
 </aside>
