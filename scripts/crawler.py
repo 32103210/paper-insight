@@ -49,20 +49,46 @@ def search_with_retry(client, search, max_retries=MAX_RETRIES):
         max_retries: 最大重试次数
 
     Returns:
-        results迭代器
+        list of results (论文列表)
 
     Raises:
         Exception: 所有重试都失败后抛出异常
     """
+    all_results = []
+
     for attempt in range(max_retries):
         try:
-            return client.results(search)
+            # 每次请求前等待，避免触发速率限制
+            if attempt > 0:
+                wait_time = INITIAL_RETRY_DELAY * (2 ** (attempt - 1))
+                logger.info(f"Waiting {wait_time}s before retry...")
+                time.sleep(wait_time)
+
+            # 执行搜索
+            results = client.results(search)
+
+            # 收集所有结果
+            for result in results:
+                all_results.append(result)
+
+            # 如果有结果，返回它们
+            if all_results:
+                return all_results
+            else:
+                # 空结果，可能是速率限制
+                if attempt < max_retries - 1:
+                    wait_time = INITIAL_RETRY_DELAY * (2 ** attempt)
+                    logger.warning(f"Empty results from arXiv (attempt {attempt + 1}/{max_retries}). Waiting {wait_time}s...")
+                    continue
+                else:
+                    return []
+
         except Exception as e:
             error_str = str(e)
-            if "429" in error_str or "rate" in error_str.lower():
-                # 速率限制，使用指数退避
+            if "429" in error_str or "rate" in error_str.lower() or "timeout" in error_str.lower():
+                # 速率限制或超时，使用指数退避
                 wait_time = INITIAL_RETRY_DELAY * (2 ** attempt)
-                logger.warning(f"arXiv rate limit hit (attempt {attempt + 1}/{max_retries}). Waiting {wait_time}s before retry...")
+                logger.warning(f"arXiv error (attempt {attempt + 1}/{max_retries}): {e}. Waiting {wait_time}s...")
                 time.sleep(wait_time)
             else:
                 # 其他错误，重试一次后放弃
@@ -71,6 +97,8 @@ def search_with_retry(client, search, max_retries=MAX_RETRIES):
                     time.sleep(INITIAL_RETRY_DELAY)
                 else:
                     raise
+
+    return all_results if all_results else []
 
 
 def search_papers(days_back: int = 7, max_results: int = MAX_RESULTS) -> List[dict]:
@@ -108,7 +136,7 @@ def search_papers(days_back: int = 7, max_results: int = MAX_RESULTS) -> List[di
 
     papers = []
     try:
-        # 使用带重试的搜索
+        # 使用带重试的搜索（返回列表）
         results = search_with_retry(client, search)
 
         for result in results:
