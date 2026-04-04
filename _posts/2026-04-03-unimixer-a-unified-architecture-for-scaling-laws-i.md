@@ -1,3 +1,4 @@
+---
 layout: post
 ---
 title: "UniMixer: A Unified Architecture for Scaling Laws in Recommendation Systems"

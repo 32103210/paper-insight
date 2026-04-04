@@ -1,3 +1,4 @@
+---
 layout: post
 ---
 title: "Aligning Multimodal Sequential Recommendations via Robust Direct Preference Optimization with Sparse MoE"
