@@ -2,6 +2,7 @@
 """
 Benchmark Extractor - 从已分析的论文中提取 benchmark 数据
 自动从 _posts/ 目录的论文分析文章中提取实验结果，生成 leaderboard 数据
+支持增量更新：同一模型的多来源结果全部保留
 """
 
 import os
@@ -54,6 +55,122 @@ METRIC_ALIASES = {
     'LogLoss': 'LogLoss',
     'Logloss': 'LogLoss',
 }
+
+
+def _convert_entry_to_new_format(entry: dict) -> dict:
+    """Convert old format entry to new format with sources array."""
+    if 'sources' in entry:
+        # Already in new format
+        return entry
+
+    # Convert old format to new format
+    # Old: {algorithm, paper_title, arxiv_id, source, results, post_url}
+    # New: {algorithm, sources: [{arxiv_id, paper_title, source, results, post_url, paper_date}]}
+    return {
+        'algorithm': entry.get('algorithm', ''),
+        'sources': [{
+            'arxiv_id': entry.get('arxiv_id', ''),
+            'paper_title': entry.get('paper_title', ''),
+            'source': entry.get('source', ''),
+            'post_url': entry.get('post_url', ''),
+            'results': entry.get('results', {}),
+            'paper_date': entry.get('paper_date', ''),
+        }]
+    }
+
+
+def load_existing_data() -> Dict[str, Dict[str, dict]]:
+    """Load existing _data/benchmarks/*.yaml data"""
+    benchmarks = defaultdict(lambda: defaultdict(lambda: {
+        'dataset': '',
+        'domain': '',
+        'description': '',
+        'metrics': [],
+        'entries': []  # each entry: {algorithm: str, sources: [source1, source2]}
+    }))
+
+    output_dir = Path('_data/benchmarks')
+    if not output_dir.exists():
+        return benchmarks
+
+    for domain_dir in output_dir.iterdir():
+        if not domain_dir.is_dir():
+            continue
+        domain = domain_dir.name
+
+        for yaml_file in domain_dir.glob('*.yaml'):
+            dataset = yaml_file.stem
+            try:
+                with open(yaml_file, 'r', encoding='utf-8') as f:
+                    data = yaml.safe_load(f)
+                    if data:
+                        # Ensure entries are in new format
+                        entries = data.get('entries', [])
+                        converted_entries = [_convert_entry_to_new_format(e) for e in entries]
+                        data['entries'] = converted_entries
+                        benchmarks[domain][dataset] = data
+                    else:
+                        benchmarks[domain][dataset] = {
+                            'dataset': dataset,
+                            'domain': domain,
+                            'description': '',
+                            'metrics': [],
+                            'entries': [],
+                        }
+            except Exception as e:
+                print(f"  Warning: Failed to load {yaml_file}: {e}")
+                benchmarks[domain][dataset] = {
+                    'dataset': dataset,
+                    'domain': domain,
+                    'description': '',
+                    'metrics': [],
+                    'entries': [],
+                }
+
+    return benchmarks
+
+
+def merge_entry(existing_entries: list, new_entry: dict) -> list:
+    """Merge new entry into existing entries, deduplicate by arXiv ID.
+
+    If the new entry's arXiv ID doesn't exist in any source, append it.
+    If it exists, keep BOTH (don't overwrite - each paper's results are independent).
+    """
+    # Find existing entry by algorithm name
+    algorithm = new_entry.get('algorithm', '')
+    existing_entry = None
+    for entry in existing_entries:
+        if entry.get('algorithm', '') == algorithm:
+            existing_entry = entry
+            break
+
+    if existing_entry is None:
+        # New algorithm, just append
+        existing_entries.append(new_entry)
+        return existing_entries
+
+    # Algorithm exists - merge sources
+    existing_sources = existing_entry.get('sources', [])
+    new_sources = new_entry.get('sources', [])
+
+    # Collect existing arXiv IDs
+    existing_arxiv_ids = set()
+    for source in existing_sources:
+        if source.get('arxiv_id'):
+            existing_arxiv_ids.add(source['arxiv_id'])
+
+    # Add new sources that don't already exist (by arXiv ID)
+    for new_source in new_sources:
+        new_arxiv_id = new_source.get('arxiv_id', '')
+        if new_arxiv_id and new_arxiv_id not in existing_arxiv_ids:
+            existing_sources.append(new_source)
+            existing_arxiv_ids.add(new_arxiv_id)
+        elif not new_arxiv_id:
+            # If no arXiv ID, just append to avoid duplicates
+            existing_sources.append(new_source)
+
+    existing_entry['sources'] = existing_sources
+    return existing_entries
 
 
 def extract_frontmatter(content: str) -> tuple[dict, str]:
@@ -295,7 +412,20 @@ def get_improvement_text(text: str) -> str:
 
 
 def extract_benchmark_from_post(filepath: Path) -> dict:
-    """从单篇论文分析中提取 benchmark 数据"""
+    """从单篇论文分析中提取 benchmark 数据
+
+    Returns new format: {
+        algorithm: str,
+        sources: [{
+            arxiv_id: str,
+            paper_title: str,
+            source: str,
+            post_url: str,
+            results: dict,
+            paper_date: str
+        }]
+    }
+    """
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
 
@@ -349,106 +479,103 @@ def extract_benchmark_from_post(filepath: Path) -> dict:
                 algorithm = cat
                 break
 
+    # 构建 results dict
+    results_dict = {}
+    for m in metrics:
+        results_dict[m['metric']] = m['value']
+
+    # 返回新格式（sources 数组）
     return {
         'algorithm': algorithm or 'Unknown',
-        'paper_title': title,
-        'arxiv_id': arxiv_id,
-        'source': source,
-        'authors': str(authors)[:100],  # 截断
-        'post_url': post_url,
         'domain': domain,
         'datasets': datasets,
-        'metrics': metrics,
-        'categories': categories,
-        'improvement': get_improvement_text(body),
+        'sources': [{
+            'arxiv_id': arxiv_id,
+            'paper_title': title,
+            'source': source,
+            'post_url': post_url,
+            'results': results_dict,
+            'paper_date': date,
+        }]
     }
-
-
-def aggregate_benchmarks(posts_data: List[dict]) -> Dict[str, Dict[str, dict]]:
-    """将论文数据聚合成 benchmark 数据"""
-    # 按领域-数据集组织
-    benchmarks = defaultdict(lambda: defaultdict(lambda: {
-        'dataset': '',
-        'domain': '',
-        'description': '',
-        'metrics': [],
-        'entries': []
-    }))
-
-    for post in posts_data:
-        if not post or not post['metrics']:
-            continue
-
-        domain = post['domain']
-        datasets = post['datasets'] if post['datasets'] else ['Unknown']
-
-        for dataset in datasets:
-            key = f"{domain}/{dataset}"
-            bench = benchmarks[domain][dataset]
-
-            bench['dataset'] = dataset
-            bench['domain'] = DOMAIN_NAMES.get(domain, domain)
-
-            # 添加指标到列表
-            for metric in post['metrics']:
-                metric_name = metric['metric']
-                if metric_name not in bench['metrics']:
-                    bench['metrics'].append(metric_name)
-
-            # 添加条目 - 转换 results 为简单对象格式
-            results_dict = {}
-            for m in post['metrics']:
-                results_dict[m['metric']] = m['value']
-
-            entry = {
-                'algorithm': post['algorithm'],
-                'paper_title': post['paper_title'],
-                'arxiv_id': post['arxiv_id'],
-                'source': post['source'],
-                'results': results_dict,
-                'post_url': post['post_url'],
-            }
-            bench['entries'].append(entry)
-
-    return benchmarks
 
 
 def sort_entries_by_metric(entries: List[dict], primary_metric: str) -> List[dict]:
     """按指定指标排序条目"""
     def get_metric_value(entry):
-        return entry['results'].get(primary_metric, -1)
+        # Get best source result for the primary metric
+        best_value = -1
+        for source in entry.get('sources', []):
+            results = source.get('results', {})
+            value = results.get(primary_metric, -1)
+            if value > best_value:
+                best_value = value
+        return best_value
 
     return sorted(entries, key=get_metric_value, reverse=True)
 
 
 def main():
-    """主函数"""
-    # 路径配置
+    """主函数 - 增量更新 benchmark 数据"""
+    # 1. load_existing_data() 加载现有数据
+    print("Loading existing benchmark data...")
+    benchmarks = load_existing_data()
+    total_existing = sum(len(d['entries']) for ds in benchmarks.values() for d in ds.values())
+    print(f"  Loaded {total_existing} existing entries")
+
+    # 2. 遍历 _posts/*.md 提取新数据
     posts_dir = Path('_posts')
-    output_dir = Path('_data/benchmarks')
+    print(f"\nScanning {posts_dir} for new benchmark data...")
 
-    print(f"Scanning {posts_dir} for benchmark data...")
-
-    # 提取所有论文的 benchmark 数据
     posts_data = []
     for filepath in posts_dir.glob('*.md'):
         print(f"  Processing: {filepath.name}")
         data = extract_benchmark_from_post(filepath)
-        if data:
+        if data and data.get('sources'):
             posts_data.append(data)
-            print(f"    -> Found {len(data['metrics'])} metrics, {len(data['datasets'])} datasets")
+            print(f"    -> Found algorithm={data['algorithm']}, sources={len(data['sources'])}")
         else:
             print(f"    -> No benchmark data found")
 
     print(f"\nExtracted data from {len(posts_data)} posts")
 
-    # 聚合成 benchmark
-    benchmarks = aggregate_benchmarks(posts_data)
+    # 3. 调用 merge_entry() for each new data
+    for post in posts_data:
+        domain = post['domain']
+        datasets = post['datasets'] if post['datasets'] else ['Unknown']
 
-    # 创建输出目录
+        for dataset in datasets:
+            # Normalize dataset name to prevent duplicates (Amazon vs amazon)
+            normalized_dataset = dataset.lower().replace('-', '').replace(' ', '')
+            bench = benchmarks[domain][normalized_dataset]
+
+            # Ensure entries structure
+            if 'entries' not in bench:
+                bench['entries'] = []
+            if 'metrics' not in bench:
+                bench['metrics'] = []
+            if 'dataset' not in bench or not bench['dataset']:
+                bench['dataset'] = dataset
+            if 'domain' not in bench or not bench['domain']:
+                bench['domain'] = DOMAIN_NAMES.get(domain, domain)
+
+            # Collect metrics from new sources
+            for source in post['sources']:
+                for metric_name in source.get('results', {}).keys():
+                    if metric_name not in bench['metrics']:
+                        bench['metrics'].append(metric_name)
+
+            # Merge entry - pass only algorithm and sources, not the full post
+            entry_to_merge = {
+                'algorithm': post['algorithm'],
+                'sources': post['sources']
+            }
+            bench['entries'] = merge_entry(bench['entries'], entry_to_merge)
+
+    # 4. 将合并结果写入 _data/benchmarks/*.yaml
+    output_dir = Path('_data/benchmarks')
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # 保存到 YAML 文件
     total_files = 0
     for domain, datasets in benchmarks.items():
         domain_dir = output_dir / domain
@@ -464,12 +591,15 @@ def main():
 
             # 写入文件
             filename = domain_dir / f"{dataset.lower().replace('-', '')}.yaml"
+            # Normalize dataset name to prevent duplicate files for same dataset with different casing
+            normalized_dataset = dataset.lower().replace('-', '').replace(' ', '')
+            filename = domain_dir / f"{normalized_dataset}.yaml"
             with open(filename, 'w', encoding='utf-8') as f:
                 yaml.dump(bench, f, allow_unicode=True, sort_keys=False)
             total_files += 1
             print(f"  Written: {filename}")
 
-    print(f"\nDone! Generated {total_files} benchmark files in {output_dir}/")
+    print(f"\nDone! Updated {total_files} benchmark files in {output_dir}/")
 
 
 if __name__ == '__main__':
