@@ -1,70 +1,79 @@
 dataset: Taobao
 domain: CTR/CVR Modeling
-description: 淘宝用户行为数据，广告点击率预估
+description: taobao dataset for CTR/CVR Modeling
 metrics:
-  - AUC
-
+- AUC
 entries:
-  - algorithm: SIM
-    paper_title: "Search-based User Interest Modeling with Sequential Behavior Sequences"
-    arxiv_id: "2005.00675"
-    source: "https://arxiv.org/abs/2005.00675"
+- algorithm: SIM
+  sources:
+  - arxiv_id: '2005.00675'
+    paper_title: Search-based User Interest Modeling with Sequential Behavior Sequences
+    source: https://arxiv.org/abs/2005.00675
+    post_url: /2026/04/03/sim/
     results:
-      AUC: 0.9150
-    post_url: "/2026/04/03/sim/"
-
-  - algorithm: MIMN
-    paper_title: "Multi-Channel Machine Learning for Modeling User Interest Sequences"
-    arxiv_id: "1905.10646"
-    source: "https://arxiv.org/abs/1905.10646"
-    results:
-      AUC: 0.9075
-    post_url: "/2026/04/03/mimn/"
-
-  - algorithm: DIEN
-    paper_title: "Deep Interest Evolution Network for Click-Through Rate Prediction"
-    arxiv_id: "1808.02813"
-    source: "https://arxiv.org/abs/1808.02813"
+      AUC: 0.915
+    paper_date: ''
+- algorithm: DIEN
+  sources:
+  - arxiv_id: '1808.02813'
+    paper_title: Deep Interest Evolution Network for Click-Through Rate Prediction
+    source: https://arxiv.org/abs/1808.02813
+    post_url: /2026/04/03/dien/
     results:
       AUC: 0.9085
-    post_url: "/2026/04/03/dien/"
-
-  - algorithm: DSIN
-    paper_title: "Deep Session Interest Network for Click-Through Rate Prediction"
-    arxiv_id: "1905.06452"
-    source: "https://arxiv.org/abs/1905.06452"
+    paper_date: ''
+- algorithm: MIMN
+  sources:
+  - arxiv_id: '1905.10646'
+    paper_title: Multi-Channel Machine Learning for Modeling User Interest Sequences
+    source: https://arxiv.org/abs/1905.10646
+    post_url: /2026/04/03/mimn/
+    results:
+      AUC: 0.9075
+    paper_date: ''
+- algorithm: DSIN
+  sources:
+  - arxiv_id: '1905.06452'
+    paper_title: Deep Session Interest Network for Click-Through Rate Prediction
+    source: https://arxiv.org/abs/1905.06452
+    post_url: /2026/04/03/dsin/
     results:
       AUC: 0.9069
-    post_url: "/2026/04/03/dsin/"
-
-  - algorithm: DIN
-    paper_title: "Deep Interest Network for Click-Through Rate Prediction"
-    arxiv_id: "1706.07478"
-    source: "https://arxiv.org/abs/1706.07478"
-    results:
-      AUC: 0.8974
-    post_url: "/2026/04/03/din/"
-
-  - algorithm: DeepFM
-    paper_title: "DeepFM: A Factorization-Machine based Neural Network for CTR Prediction"
-    arxiv_id: "1703.04247"
-    source: "https://arxiv.org/abs/1703.04247"
-    results:
-      AUC: 0.8945
-    post_url: "/2026/04/03/deepfm/"
-
-  - algorithm: xDeepFM
-    paper_title: "xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems"
-    arxiv_id: "1801.06854"
-    source: "https://arxiv.org/abs/1801.06854"
-    results:
-      AUC: 0.9012
-    post_url: "/2026/04/03/xdeepfm/"
-
-  - algorithm: DCN V2
-    paper_title: "DCN V2: Improved Deep & Cross Network for CTR Prediction"
-    arxiv_id: "2008.01335"
-    source: "https://arxiv.org/abs/2008.01335"
+    paper_date: ''
+- algorithm: DCN V2
+  sources:
+  - arxiv_id: '2008.01335'
+    paper_title: 'DCN V2: Improved Deep & Cross Network for CTR Prediction'
+    source: https://arxiv.org/abs/2008.01335
+    post_url: /2026/04/03/dcn-v2/
     results:
       AUC: 0.9056
-    post_url: "/2026/04/03/dcn-v2/"
+    paper_date: ''
+- algorithm: xDeepFM
+  sources:
+  - arxiv_id: '1801.06854'
+    paper_title: 'xDeepFM: Combining Explicit and Implicit Feature Interactions for
+      Recommender Systems'
+    source: https://arxiv.org/abs/1801.06854
+    post_url: /2026/04/03/xdeepfm/
+    results:
+      AUC: 0.9012
+    paper_date: ''
+- algorithm: DIN
+  sources:
+  - arxiv_id: '1706.07478'
+    paper_title: Deep Interest Network for Click-Through Rate Prediction
+    source: https://arxiv.org/abs/1706.07478
+    post_url: /2026/04/03/din/
+    results:
+      AUC: 0.8974
+    paper_date: ''
+- algorithm: DeepFM
+  sources:
+  - arxiv_id: '1703.04247'
+    paper_title: 'DeepFM: A Factorization-Machine based Neural Network for CTR Prediction'
+    source: https://arxiv.org/abs/1703.04247
+    post_url: /2026/04/03/deepfm/
+    results:
+      AUC: 0.8945
+    paper_date: ''
