@@ -10,8 +10,25 @@ title: Benchmark Leaderboard
 <style>
 /* Benchmark Page Specific Styles */
 .benchmark-page {
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
+}
+
+/* Container with Sidebar Layout */
+.benchmark-container {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 32px;
+  align-items: start;
+}
+
+.benchmark-main {
+  min-width: 0;
+}
+
+.benchmark-sidebar {
+  position: sticky;
+  top: 20px;
 }
 
 /* Domain Tabs */
@@ -261,7 +278,134 @@ title: Benchmark Leaderboard
   margin-bottom: 16px;
 }
 
+/* Sidebar Styles */
+.sidebar-section {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e5e5;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.sidebar-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e5e5e5;
+}
+
+/* Timeline Styles */
+.timeline-month {
+  margin-bottom: 16px;
+}
+
+.timeline-month:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-month-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: #333;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.timeline-item {
+  padding: 6px 0;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.timeline-item a {
+  color: #2563eb;
+  text-decoration: none;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.timeline-item a:hover {
+  text-decoration: underline;
+}
+
+.timeline-item .arxiv-id {
+  font-size: 11px;
+  color: #999;
+}
+
+/* Popular Papers Styles */
+.popular-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.popular-item:last-child {
+  border-bottom: none;
+}
+
+.popular-rank {
+  font-weight: 700;
+  width: 24px;
+  min-width: 24px;
+  color: #666;
+  font-size: 14px;
+}
+
+.popular-rank.top-1 { color: #FFD700; }
+.popular-rank.top-2 { color: #C0C0C0; }
+.popular-rank.top-3 { color: #CD7F32; }
+
+.popular-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.popular-title {
+  font-size: 13px;
+  color: #333;
+  font-weight: 500;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.popular-title:hover {
+  color: #2563eb;
+}
+
+.popular-meta {
+  font-size: 11px;
+  color: #999;
+}
+
 /* Responsive */
+@media (max-width: 1100px) {
+  .benchmark-container {
+    grid-template-columns: 1fr;
+  }
+
+  .benchmark-sidebar {
+    position: static;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .sidebar-section {
+    margin-bottom: 0;
+  }
+}
+
 @media (max-width: 768px) {
   .domain-tabs {
     overflow-x: auto;
@@ -284,7 +428,13 @@ title: Benchmark Leaderboard
 
 <div class="benchmark-page">
 
-  <!-- Domain Tabs -->
+  <!-- Main Content + Sidebar Container -->
+  <div class="benchmark-container">
+
+    <!-- Main Content Area -->
+    <div class="benchmark-main">
+
+      <!-- Domain Tabs -->
   <div class="domain-tabs">
     <button class="domain-tab active" data-domain="ctr-cvr">
       CTR/CVR Modeling
@@ -393,6 +543,24 @@ title: Benchmark Leaderboard
     </div>
   </div>
 
+    <!-- Sidebar -->
+    <aside class="benchmark-sidebar">
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">时间线</h3>
+        <div id="timeline-container">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">热门论文</h3>
+        <div id="popular-container">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
 </div>
 
 <script>
@@ -427,6 +595,19 @@ const DATA = {
   },
 {% endfor %}
 };
+
+// Posts data for timeline and popular papers
+const POSTS = [
+{% for post in site.posts %}
+  {
+    title: "{{ post.title }}",
+    url: "{{ post.url | relative_url }}",
+    date: "{{ post.date | date: "%Y-%m-%d" }}",
+    arxiv_id: "{{ post.arxiv_id }}",
+    categories: [{% for cat in post.categories %}"{{ cat }}"{% if forloop.last != true %},{% endif %}{% endfor %}]
+  }{% if forloop.last != true %},{% endif %}
+{% endfor %}
+];
 
 // Flatten entries with sources for sorting and rendering
 // Each source becomes a separate row, but we track algorithm groups for rank display
@@ -620,6 +801,76 @@ function renderLLMSection() {
     .join('');
 }
 
+// Render Timeline - papers organized by month
+function renderTimeline() {
+  const timeline = {};
+
+  // Group posts by year-month
+  POSTS.forEach(post => {
+    if (!post.date) return;
+    const [year, month] = post.date.split('-');
+    const key = `${year}-${month}`;
+    if (!timeline[key]) timeline[key] = [];
+    timeline[key].push(post);
+  });
+
+  // Sort months descending
+  const sortedMonths = Object.keys(timeline).sort((a, b) => b.localeCompare(a));
+
+  let html = '';
+  sortedMonths.forEach(month => {
+    const [year, m] = month.split('-');
+    const monthName = `${year}年${parseInt(m)}月`;
+    const posts = timeline[month];
+
+    html += `<div class="timeline-month">`;
+    html += `<div class="timeline-month-title">${monthName}</div>`;
+
+    posts.forEach(post => {
+      html += `<div class="timeline-item">`;
+      html += `<a href="${post.url}" title="${post.title}">${post.title}</a>`;
+      if (post.arxiv_id) {
+        html += `<div class="arxiv-id">arXiv: ${post.arxiv_id}</div>`;
+      }
+      html += `</div>`;
+    });
+
+    html += `</div>`;
+  });
+
+  const container = document.getElementById('timeline-container');
+  if (container) container.innerHTML = html;
+}
+
+// Render Popular Papers - sorted by date (newest first)
+function renderPopularPapers() {
+  // Sort by date descending
+  const sorted = [...POSTS].sort((a, b) => {
+    if (!a.date) return 1;
+    if (!b.date) return -1;
+    return b.date.localeCompare(a.date);
+  });
+
+  let html = '';
+  sorted.slice(0, 10).forEach((post, index) => {
+    const rank = index + 1;
+    const rankClass = rank <= 3 ? `top-${rank}` : '';
+
+    html += `<div class="popular-item">`;
+    html += `<span class="popular-rank ${rankClass}">${rank}</span>`;
+    html += `<div class="popular-content">`;
+    html += `<a href="${post.url}" class="popular-title" title="${post.title}">${post.title}</a>`;
+    if (post.date) {
+      html += `<div class="popular-meta">${post.date}</div>`;
+    }
+    html += `</div>`;
+    html += `</div>`;
+  });
+
+  const container = document.getElementById('popular-container');
+  if (container) container.innerHTML = html;
+}
+
 // Tab switching
 document.querySelectorAll('.domain-tab').forEach(tab => {
   tab.addEventListener('click', () => {
@@ -638,6 +889,8 @@ document.querySelectorAll('.domain-tab').forEach(tab => {
 // Initial render
 renderCTRSection();
 renderLLMSection();
+renderTimeline();
+renderPopularPapers();
 
 // Handle hash
 if (window.location.hash === '#llm4rec') {
