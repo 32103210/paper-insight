@@ -63,3 +63,14 @@ jobs:
           else
             echo "No new papers to commit"
           fi
+
+      - name: Trigger Benchmark Update
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'benchmark-update.yml',
+              ref: 'refs/heads/main'
+            })
