@@ -415,11 +415,7 @@ const DATA = {
               paper_title: "{{ source.paper_title }}",
               source: "{{ source.source }}",
               post_url: "{{ source.post_url }}",
-              results: {
-                {% for r in source.results %}
-                "{{ r }}": {{ source.results[r] }}{% if forloop.last != true %},{% endif %}
-                {% endfor %}
-              }
+              results: {{ source.results | jsonify }}
             }{% if forloop.last != true %},{% endif %}
             {% endfor %}
           ]
