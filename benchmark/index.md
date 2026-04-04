@@ -603,8 +603,8 @@ const POSTS = [
     title: "{{ post.title }}",
     url: "{{ post.url | relative_url }}",
     date: "{{ post.date | date: "%Y-%m-%d" }}",
-    arxiv_id: "{{ post.arxiv_id }}",
-    categories: [{% for cat in post.categories %}"{{ cat }}"{% if forloop.last != true %},{% endif %}{% endfor %}]
+    arxiv_id: "{{ post["arxiv_id"] }}",
+    categories: [{% for cat in post["categories"] %}"{{ cat }}"{% if forloop.last != true %},{% endif %}{% endfor %}]
   }{% if forloop.last != true %},{% endif %}
 {% endfor %}
 ];
