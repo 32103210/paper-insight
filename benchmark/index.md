@@ -396,7 +396,7 @@ title: Benchmark Leaderboard
 </div>
 
 <script>
-// Benchmark Data
+// Benchmark Data - New format with sources array
 const DATA = {
 {% for domain in site.data.benchmarks %}
   "{{ domain[0] }}": {
@@ -408,15 +408,21 @@ const DATA = {
         {% for entry in item[1].entries %}
         {
           algorithm: "{{ entry.algorithm }}",
-          paper_title: "{{ entry.paper_title }}",
-          arxiv_id: "{{ entry.arxiv_id }}",
-          source: "{{ entry.source }}",
-          post_url: "{{ entry.post_url }}",
-          results: {
-            {% for r in entry.results %}
-            "{{ r.metric }}": {{ r.value }}{% if forloop.last != true %},{% endif %}
+          sources: [
+            {% for source in entry.sources %}
+            {
+              arxiv_id: "{{ source.arxiv_id }}",
+              paper_title: "{{ source.paper_title }}",
+              source: "{{ source.source }}",
+              post_url: "{{ source.post_url }}",
+              results: {
+                {% for r in source.results %}
+                "{{ r.metric }}": {{ r.value }}{% if forloop.last != true %},{% endif %}
+                {% endfor %}
+              }
+            }{% if forloop.last != true %},{% endif %}
             {% endfor %}
-          }
+          ]
         },
         {% endfor %}
       ]
@@ -426,34 +432,55 @@ const DATA = {
 {% endfor %}
 };
 
-// Render row with rank
-function renderRow(entry, rank, metric, baseline) {
-  const value = entry.results[metric];
+// Flatten entries with sources for sorting and rendering
+// Each source becomes a separate row, but we track algorithm groups for rank display
+function flattenEntriesWithSources(entries) {
+  const result = [];
+  for (const entry of entries) {
+    for (let i = 0; i < entry.sources.length; i++) {
+      result.push({
+        algorithm: entry.algorithm,
+        source: entry.sources[i],
+        isFirstSource: i === 0
+      });
+    }
+  }
+  return result;
+}
+
+// Render CTR/CVR row (single metric AUC)
+function renderRow(flatEntry, rank, metric, baseline, showRank) {
+  const source = flatEntry.source;
+  const value = source.results[metric];
   if (value === undefined) return '';
 
   const improvement = baseline ? (((value - baseline) / baseline * 100)).toFixed(2) + '%' : '';
   const isBest = rank === 1;
 
   let rankHtml = '';
-  if (rank === 1) rankHtml = '<span class="rank-badge gold">1</span>';
-  else if (rank === 2) rankHtml = '<span class="rank-badge silver">2</span>';
-  else if (rank === 3) rankHtml = '<span class="rank-badge bronze">3</span>';
-  else rankHtml = `<span class="rank-num">${rank}</span>`;
+  if (showRank) {
+    if (rank === 1) rankHtml = '<span class="rank-badge gold">1</span>';
+    else if (rank === 2) rankHtml = '<span class="rank-badge silver">2</span>';
+    else if (rank === 3) rankHtml = '<span class="rank-badge bronze">3</span>';
+    else rankHtml = `<span class="rank-num">${rank}</span>`;
+  } else {
+    rankHtml = '';
+  }
 
   return `
     <tr>
       <td class="rank-cell">${rankHtml}</td>
       <td class="algo-cell">
-        <a href="${entry.post_url}" class="algo-name">${entry.algorithm}</a>
-        <div class="algo-meta">${entry.arxiv_id || ''}</div>
+        <a href="${source.post_url}" class="algo-name">${flatEntry.algorithm}</a>
+        <div class="algo-meta">${source.arxiv_id || ''}</div>
       </td>
       <td class="metric-cell${isBest ? ' best' : ''}">${value.toFixed(4)}</td>
       <td class="improvement-cell">${improvement}</td>
       <td class="paper-cell">
-        <span class="paper-title" title="${entry.paper_title}">${entry.paper_title}</span>
+        <span class="paper-title" title="${source.paper_title}">${source.paper_title}</span>
         <div class="paper-links">
-          <a href="${entry.source}" target="_blank" class="paper-link">Paper</a>
-          <a href="${entry.post_url}" class="paper-link">Analysis</a>
+          <a href="${source.source}" target="_blank" class="paper-link">Paper</a>
+          <a href="${source.post_url}" class="paper-link">Analysis</a>
         </div>
       </td>
     </tr>
@@ -461,33 +488,38 @@ function renderRow(entry, rank, metric, baseline) {
 }
 
 // Render dual metric row (for LLM4Rec with HR@10 and NDCG@10)
-function renderDualRow(entry, rank) {
-  const hr10 = entry.results['HR@10'];
-  const ndcg10 = entry.results['NDCG@10'];
+function renderDualRow(flatEntry, rank, showRank) {
+  const source = flatEntry.source;
+  const hr10 = source.results['HR@10'];
+  const ndcg10 = source.results['NDCG@10'];
   if (hr10 === undefined && ndcg10 === undefined) return '';
 
   const isBest = rank === 1;
 
   let rankHtml = '';
-  if (rank === 1) rankHtml = '<span class="rank-badge gold">1</span>';
-  else if (rank === 2) rankHtml = '<span class="rank-badge silver">2</span>';
-  else if (rank === 3) rankHtml = '<span class="rank-badge bronze">3</span>';
-  else rankHtml = `<span class="rank-num">${rank}</span>`;
+  if (showRank) {
+    if (rank === 1) rankHtml = '<span class="rank-badge gold">1</span>';
+    else if (rank === 2) rankHtml = '<span class="rank-badge silver">2</span>';
+    else if (rank === 3) rankHtml = '<span class="rank-badge bronze">3</span>';
+    else rankHtml = `<span class="rank-num">${rank}</span>`;
+  } else {
+    rankHtml = '';
+  }
 
   return `
     <tr>
       <td class="rank-cell">${rankHtml}</td>
       <td class="algo-cell">
-        <a href="${entry.post_url}" class="algo-name">${entry.algorithm}</a>
-        <div class="algo-meta">${entry.arxiv_id || ''}</div>
+        <a href="${source.post_url}" class="algo-name">${flatEntry.algorithm}</a>
+        <div class="algo-meta">${source.arxiv_id || ''}</div>
       </td>
       <td class="metric-cell${isBest ? ' best' : ''}">${hr10 !== undefined ? hr10.toFixed(4) : '-'}</td>
       <td class="metric-cell${isBest ? ' best' : ''}">${ndcg10 !== undefined ? ndcg10.toFixed(4) : '-'}</td>
       <td class="paper-cell">
-        <span class="paper-title" title="${entry.paper_title}">${entry.paper_title}</span>
+        <span class="paper-title" title="${source.paper_title}">${source.paper_title}</span>
         <div class="paper-links">
-          <a href="${entry.source}" target="_blank" class="paper-link">Paper</a>
-          <a href="${entry.post_url}" class="paper-link">Analysis</a>
+          <a href="${source.source}" target="_blank" class="paper-link">Paper</a>
+          <a href="${source.post_url}" class="paper-link">Analysis</a>
         </div>
       </td>
     </tr>
@@ -501,20 +533,46 @@ function renderCTRSection() {
 
   // Amazon table
   const amazonEntries = ctrData['amazon']?.entries || [];
-  const sortedAmazon = [...amazonEntries].sort((a, b) => (b.results['AUC'] || 0) - (a.results['AUC'] || 0));
-  const baselineAmazon = sortedAmazon[sortedAmazon.length - 1]?.results['AUC'] || 0;
+  const flattenedAmazon = flattenEntriesWithSources(amazonEntries);
+  const sortedAmazon = [...flattenedAmazon].sort((a, b) => {
+    const aVal = a.source.results['AUC'] || 0;
+    const bVal = b.source.results['AUC'] || 0;
+    return bVal - aVal;
+  });
+  const baselineAmazon = sortedAmazon[sortedAmazon.length - 1]?.source.results['AUC'] || 0;
 
+  let amazonRank = 0;
+  let lastAlgorithm = null;
   document.getElementById('ctr-tbody').innerHTML = sortedAmazon
-    .map((e, i) => renderRow(e, i + 1, 'AUC', baselineAmazon))
+    .map(e => {
+      if (e.algorithm !== lastAlgorithm) {
+        amazonRank++;
+        lastAlgorithm = e.algorithm;
+      }
+      return renderRow(e, amazonRank, 'AUC', baselineAmazon, e.isFirstSource);
+    })
     .join('');
 
   // Taobao table
   const taobaoEntries = ctrData['taobao']?.entries || [];
-  const sortedTaobao = [...taobaoEntries].sort((a, b) => (b.results['AUC'] || 0) - (a.results['AUC'] || 0));
-  const baselineTaobao = sortedTaobao[sortedTaobao.length - 1]?.results['AUC'] || 0;
+  const flattenedTaobao = flattenEntriesWithSources(taobaoEntries);
+  const sortedTaobao = [...flattenedTaobao].sort((a, b) => {
+    const aVal = a.source.results['AUC'] || 0;
+    const bVal = b.source.results['AUC'] || 0;
+    return bVal - aVal;
+  });
+  const baselineTaobao = sortedTaobao[sortedTaobao.length - 1]?.source.results['AUC'] || 0;
 
+  let taobaoRank = 0;
+  lastAlgorithm = null;
   document.getElementById('taobao-tbody').innerHTML = sortedTaobao
-    .map((e, i) => renderRow(e, i + 1, 'AUC', baselineTaobao))
+    .map(e => {
+      if (e.algorithm !== lastAlgorithm) {
+        taobaoRank++;
+        lastAlgorithm = e.algorithm;
+      }
+      return renderRow(e, taobaoRank, 'AUC', baselineTaobao, e.isFirstSource);
+    })
     .join('');
 }
 
@@ -525,18 +583,44 @@ function renderLLMSection() {
 
   // MovieLens table
   const mlEntries = llmData['movielens']?.entries || [];
-  const sortedML = [...mlEntries].sort((a, b) => (b.results['HR@10'] || 0) - (a.results['HR@10'] || 0));
+  const flattenedML = flattenEntriesWithSources(mlEntries);
+  const sortedML = [...flattenedML].sort((a, b) => {
+    const aVal = a.source.results['HR@10'] || 0;
+    const bVal = b.source.results['HR@10'] || 0;
+    return bVal - aVal;
+  });
 
+  let mlRank = 0;
+  let lastAlgorithm = null;
   document.getElementById('movielens-tbody').innerHTML = sortedML
-    .map((e, i) => renderDualRow(e, i + 1))
+    .map(e => {
+      if (e.algorithm !== lastAlgorithm) {
+        mlRank++;
+        lastAlgorithm = e.algorithm;
+      }
+      return renderDualRow(e, mlRank, e.isFirstSource);
+    })
     .join('');
 
   // Amazon table
   const amazonEntries = llmData['amazon']?.entries || [];
-  const sortedAmazon = [...amazonEntries].sort((a, b) => (b.results['HR@10'] || 0) - (a.results['HR@10'] || 0));
+  const flattenedAmazon = flattenEntriesWithSources(amazonEntries);
+  const sortedAmazon = [...flattenedAmazon].sort((a, b) => {
+    const aVal = a.source.results['HR@10'] || 0;
+    const bVal = b.source.results['HR@10'] || 0;
+    return bVal - aVal;
+  });
 
+  let amazonRank = 0;
+  lastAlgorithm = null;
   document.getElementById('amazon-llm-tbody').innerHTML = sortedAmazon
-    .map((e, i) => renderDualRow(e, i + 1))
+    .map(e => {
+      if (e.algorithm !== lastAlgorithm) {
+        amazonRank++;
+        lastAlgorithm = e.algorithm;
+      }
+      return renderDualRow(e, amazonRank, e.isFirstSource);
+    })
     .join('');
 }
 
