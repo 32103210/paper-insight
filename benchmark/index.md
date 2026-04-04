@@ -417,7 +417,7 @@ const DATA = {
               post_url: "{{ source.post_url }}",
               results: {
                 {% for r in source.results %}
-                "{{ r.metric }}": {{ r.value }}{% if forloop.last != true %},{% endif %}
+                "{{ r }}": {{ source.results[r] }}{% if forloop.last != true %},{% endif %}
                 {% endfor %}
               }
             }{% if forloop.last != true %},{% endif %}
