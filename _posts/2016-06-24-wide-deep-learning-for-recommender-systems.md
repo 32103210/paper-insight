@@ -1,6 +1,5 @@
 ---
 layout: post
----
 title: "Wide & Deep Learning for Recommender Systems"
 date: 2016-06-24
 arxiv_id: 1606.07792v1

@@ -1,6 +1,5 @@
 ---
 layout: post
----
 title: "Aligning Multimodal Sequential Recommendations via Robust Direct Preference Optimization with Sparse MoE"
 date: 2026-03-31
 arxiv_id: 2603.29259v1

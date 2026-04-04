@@ -1,6 +1,5 @@
 ---
 layout: post
----
 title: "TALLRec: An Effective and Efficient Tuning Framework to Align Large Language Model with Recommendation"
 date: 2023-04-30
 arxiv_id: 2305.00447v3

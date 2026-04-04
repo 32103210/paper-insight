@@ -1,6 +1,5 @@
 ---
 layout: post
----
 title: "Deep Interest Evolution Network for Click-Through Rate Prediction"
 date: 2018-09-11
 arxiv_id: 1809.03672v5

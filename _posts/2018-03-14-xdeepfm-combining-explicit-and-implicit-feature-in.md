@@ -1,6 +1,5 @@
 ---
 layout: post
----
 title: "xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems"
 date: 2018-03-14
 arxiv_id: 1803.05170v3

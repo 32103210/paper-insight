@@ -1,6 +1,5 @@
 ---
 layout: post
----
 title: "Deep Learning over Multi-field Categorical Data: A Case Study on User Response Prediction"
 date: 2016-01-11
 arxiv_id: 1601.02376v1

@@ -1,6 +1,5 @@
 ---
 layout: post
----
 title: "Deep Interest Network for Click-Through Rate Prediction"
 date: 2017-06-21
 arxiv_id: 1706.06978v4

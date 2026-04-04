@@ -1,6 +1,5 @@
 ---
 layout: post
----
 title: "FiBiNET: Combining Feature Importance and Bilinear feature Interaction for Click-Through Rate Prediction"
 date: 2019-05-23
 arxiv_id: 1905.09433v1

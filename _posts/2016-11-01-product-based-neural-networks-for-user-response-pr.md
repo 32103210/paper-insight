@@ -1,6 +1,5 @@
 ---
 layout: post
----
 title: "Product-based Neural Networks for User Response Prediction"
 date: 2016-11-01
 arxiv_id: 1611.00144v1

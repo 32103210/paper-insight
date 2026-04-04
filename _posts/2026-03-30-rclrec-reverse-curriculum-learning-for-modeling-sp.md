@@ -1,6 +1,5 @@
 ---
 layout: post
----
 title: "RCLRec: Reverse Curriculum Learning for Modeling Sparse Conversions in Generative Recommendation"
 date: 2026-03-30
 arxiv_id: 2603.28124v1

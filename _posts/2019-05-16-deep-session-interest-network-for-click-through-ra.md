@@ -1,6 +1,5 @@
 ---
 layout: post
----
 title: "Deep Session Interest Network for Click-Through Rate Prediction"
 date: 2019-05-16
 arxiv_id: 1905.06482v1

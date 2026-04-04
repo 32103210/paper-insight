@@ -1,6 +1,5 @@
 ---
 layout: post
----
 title: "DeepFM: A Factorization-Machine based Neural Network for CTR Prediction"
 date: 2017-03-13
 arxiv_id: 1703.04247v1

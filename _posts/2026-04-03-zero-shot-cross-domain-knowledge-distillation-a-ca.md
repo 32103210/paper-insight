@@ -1,6 +1,5 @@
 ---
 layout: post
----
 title: "Zero-shot Cross-domain Knowledge Distillation: A Case study on YouTube Music"
 date: 2026-04-03
 arxiv_id: 2603.28994

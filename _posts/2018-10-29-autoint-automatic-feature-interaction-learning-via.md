@@ -1,6 +1,5 @@
 ---
 layout: post
----
 title: "AutoInt: Automatic Feature Interaction Learning via Self-Attentive Neural Networks"
 date: 2018-10-29
 arxiv_id: 1810.11921v2

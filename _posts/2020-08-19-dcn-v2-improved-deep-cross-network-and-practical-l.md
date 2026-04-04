@@ -1,6 +1,5 @@
 ---
 layout: post
----
 title: "DCN V2: Improved Deep & Cross Network and Practical Lessons for Web-scale Learning to Rank Systems"
 date: 2020-08-19
 arxiv_id: 2008.13535v2

@@ -1,6 +1,5 @@
 ---
 layout: post
----
 title: "Chat-REC: Towards Interactive and Explainable LLMs-Augmented Recommender System"
 date: 2023-03-25
 arxiv_id: 2303.14524v2

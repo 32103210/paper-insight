@@ -1,6 +1,5 @@
 ---
 layout: post
----
 title: "UniMixer: A Unified Architecture for Scaling Laws in Recommendation Systems"
 date: 2026-04-03
 arxiv_id: 2604.00590
