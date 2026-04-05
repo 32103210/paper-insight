@@ -315,37 +315,112 @@ title: Benchmark Leaderboard
 }
 
 .panel-timeline-month {
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .panel-timeline-month:last-child {
   margin-bottom: 0;
 }
 
+.panel-timeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.panel-timeline-header:hover {
+  background: #e9ecef;
+}
+
+.panel-timeline-header.expanded {
+  background: #e8f4ff;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-bottom: 0;
+}
+
 .panel-timeline-title {
   font-weight: 600;
-  font-size: 12px;
+  font-size: 13px;
   color: #333;
-  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-timeline-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  background: #2563eb;
+  color: white;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.panel-timeline-arrow {
+  font-size: 10px;
+  color: #666;
+  transition: transform 0.2s;
+}
+
+.panel-timeline-header.expanded .panel-timeline-arrow {
+  transform: rotate(180deg);
+}
+
+.panel-timeline-content {
+  display: none;
+  background: #fff;
+  border: 1px solid #e8f4ff;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  padding: 8px 10px;
+}
+
+.panel-timeline-header.expanded + .panel-timeline-content {
+  display: block;
 }
 
 .panel-timeline-item {
-  padding: 4px 0;
+  padding: 6px 0;
   font-size: 12px;
   line-height: 1.3;
+  border-bottom: 1px dashed #f0f0f0;
+}
+
+.panel-timeline-item:last-child {
+  border-bottom: none;
 }
 
 .panel-timeline-item a {
-  color: #2563eb;
+  color: #444;
   text-decoration: none;
   display: block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color 0.15s;
 }
 
 .panel-timeline-item a:hover {
-  text-decoration: underline;
+  color: #2563eb;
+}
+
+.panel-timeline-item a::before {
+  content: '•';
+  color: #2563eb;
+  margin-right: 6px;
+  font-weight: bold;
 }
 
 .panel-popular-item {
@@ -601,13 +676,21 @@ function renderPanelTimeline() {
   const sortedMonths = Object.keys(timeline).sort((a, b) => b.localeCompare(a));
 
   let html = '';
-  sortedMonths.forEach(month => {
+  sortedMonths.forEach((month, idx) => {
     const [year, m] = month.split('-');
     const monthName = `${year}年${parseInt(m)}月`;
     const posts = timeline[month];
+    const isExpanded = idx === 0; // First month expanded by default
 
     html += `<div class="panel-timeline-month">`;
-    html += `<div class="panel-timeline-title">${monthName}</div>`;
+    html += `<div class="panel-timeline-header${isExpanded ? ' expanded' : ''}" data-month="${month}">`;
+    html += `<div class="panel-timeline-title">`;
+    html += `<span>${monthName}</span>`;
+    html += `<span class="panel-timeline-count">${posts.length}</span>`;
+    html += `</div>`;
+    html += `<span class="panel-timeline-arrow">▼</span>`;
+    html += `</div>`;
+    html += `<div class="panel-timeline-content">`;
 
     posts.forEach(post => {
       html += `<div class="panel-timeline-item">`;
@@ -616,10 +699,18 @@ function renderPanelTimeline() {
     });
 
     html += `</div>`;
+    html += `</div>`;
   });
 
   const container = document.getElementById('panel-timeline');
   if (container) container.innerHTML = html;
+
+  // Add click handlers for collapsible timeline
+  container.querySelectorAll('.panel-timeline-header').forEach(header => {
+    header.addEventListener('click', () => {
+      header.classList.toggle('expanded');
+    });
+  });
 }
 
 // Render Popular Papers in Right Panel
