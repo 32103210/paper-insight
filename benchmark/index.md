@@ -284,29 +284,40 @@ title: Benchmark Leaderboard
 /* Right Floating Panel */
 .right-panel {
   position: fixed;
-  right: 20px;
-  top: 100px;
-  width: 280px;
-  max-height: calc(100vh - 140px);
+  right: 8px;
+  top: 80px;
+  width: 260px;
+  max-height: calc(100vh - 120px);
   overflow-y: auto;
   z-index: 100;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+.right-panel::-webkit-scrollbar {
+  width: 4px;
+}
+
+.right-panel::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 2px;
 }
 
 .right-panel-section {
   background: white;
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid #e5e5e5;
-  padding: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
 .right-panel-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #1a1a2e;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
   border-bottom: 2px solid #e5e5e5;
 }
 
@@ -326,9 +337,9 @@ title: Benchmark Leaderboard
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 10px;
+  padding: 6px 8px;
   background: #f8f9fa;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
   user-select: none;
@@ -383,8 +394,8 @@ title: Benchmark Leaderboard
   background: #fff;
   border: 1px solid #e8f4ff;
   border-top: none;
-  border-radius: 0 0 8px 8px;
-  padding: 8px 10px;
+  border-radius: 0 0 6px 6px;
+  padding: 6px 8px;
 }
 
 .panel-timeline-header.expanded + .panel-timeline-content {
@@ -392,8 +403,8 @@ title: Benchmark Leaderboard
 }
 
 .panel-timeline-item {
-  padding: 6px 0;
-  font-size: 12px;
+  padding: 4px 0;
+  font-size: 11px;
   line-height: 1.3;
   border-bottom: 1px dashed #f0f0f0;
 }
@@ -426,7 +437,7 @@ title: Benchmark Leaderboard
 .panel-popular-item {
   display: flex;
   align-items: flex-start;
-  padding: 8px 0;
+  padding: 5px 0;
   border-bottom: 1px solid #f0f0f0;
 }
 
@@ -473,7 +484,7 @@ title: Benchmark Leaderboard
 /* Adjust main content width to accommodate right panel */
 .benchmark-page {
   max-width: 1200px;
-  margin-right: 320px;
+  margin-right: 290px;
 }
 
 @media (max-width: 1100px) {
