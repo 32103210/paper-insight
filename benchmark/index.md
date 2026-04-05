@@ -481,135 +481,169 @@ title: Benchmark Leaderboard
   color: #999;
 }
 
-/* Adjust main content width to accommodate right panel */
-.benchmark-page {
-  max-width: 1200px;
-  margin-right: 290px;
+/* Main content area with right sidebar */
+.benchmark-layout {
+  display: flex;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: flex-start;
+}
+
+.benchmark-main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Right Sidebar - sticky positioning */
+.right-panel {
+  width: 260px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 80px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+.right-panel::-webkit-scrollbar {
+  width: 4px;
+}
+
+.right-panel::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 2px;
 }
 
 @media (max-width: 1100px) {
-  .right-panel {
-    display: none;
+  .benchmark-layout {
+    flex-direction: column;
   }
 
-  .benchmark-page {
-    margin-right: auto;
+  .right-panel {
+    width: 100%;
+    position: static;
+    max-height: none;
   }
 }
 </style>
 
-<div class="benchmark-page">
+<div class="benchmark-layout">
+  <main class="benchmark-main">
 
-  <!-- Domain Tabs -->
-  <div class="domain-tabs">
-    <button class="domain-tab active" data-domain="ctr-cvr">
-      CTR/CVR Modeling
-    </button>
-    <button class="domain-tab" data-domain="llm4rec">
-      LLM4Rec
-    </button>
-  </div>
-
-  <!-- CTR/CVR Section -->
-  <div id="ctr-cvr-section" class="domain-section active">
-    <div class="section-header">
-      <h2 class="section-title">CTR/CVR Modeling Leaderboard</h2>
-      <span class="dataset-badge">Click-Through Rate Prediction</span>
+    <!-- Domain Tabs -->
+    <div class="domain-tabs">
+      <button class="domain-tab active" data-domain="ctr-cvr">
+        CTR/CVR Modeling
+      </button>
+      <button class="domain-tab" data-domain="llm4rec">
+        LLM4Rec
+      </button>
     </div>
 
-    <div class="table-container">
-      <table class="benchmark-table" id="ctr-table">
-        <thead>
-          <tr>
-            <th class="rank-header">Rank</th>
-            <th>Algorithm</th>
-            <th class="metric-header">AUC</th>
-            <th>Improvement</th>
-            <th>Paper</th>
-          </tr>
-        </thead>
-        <tbody id="ctr-tbody">
-          <!-- Populated by JS -->
-        </tbody>
-      </table>
+    <!-- CTR/CVR Section -->
+    <div id="ctr-cvr-section" class="domain-section active">
+      <div class="section-header">
+        <h2 class="section-title">CTR/CVR Modeling Leaderboard</h2>
+        <span class="dataset-badge">Click-Through Rate Prediction</span>
+      </div>
+
+      <div class="table-container">
+        <table class="benchmark-table" id="ctr-table">
+          <thead>
+            <tr>
+              <th class="rank-header">Rank</th>
+              <th>Algorithm</th>
+              <th class="metric-header">AUC</th>
+              <th>Improvement</th>
+              <th>Paper</th>
+            </tr>
+          </thead>
+          <tbody id="ctr-tbody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-header">
+        <h3 class="section-title">Taobao Dataset</h3>
+        <span class="dataset-badge">Taobao Ad CTR</span>
+      </div>
+
+      <div class="table-container">
+        <table class="benchmark-table" id="taobao-table">
+          <thead>
+            <tr>
+              <th class="rank-header">Rank</th>
+              <th>Algorithm</th>
+              <th class="metric-header">AUC</th>
+              <th>Improvement</th>
+              <th>Paper</th>
+            </tr>
+          </thead>
+          <tbody id="taobao-tbody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="section-header">
-      <h3 class="section-title">Taobao Dataset</h3>
-      <span class="dataset-badge">Taobao Ad CTR</span>
+    <!-- LLM4Rec Section -->
+    <div id="llm4rec-section" class="domain-section" style="display:none;">
+      <div class="section-header">
+        <h2 class="section-title">LLM4Rec Leaderboard</h2>
+        <span class="dataset-badge">Large Language Models for Recommendation</span>
+      </div>
+
+      <div class="section-header">
+        <h3 class="section-title">MovieLens Dataset</h3>
+        <span class="dataset-badge">Movie Recommendation</span>
+      </div>
+
+      <div class="table-container">
+        <table class="benchmark-table" id="movielens-table">
+          <thead>
+            <tr>
+              <th class="rank-header">Rank</th>
+              <th>Algorithm</th>
+              <th class="metric-header">HR@10</th>
+              <th class="metric-header">NDCG@10</th>
+              <th>Paper</th>
+            </tr>
+          </thead>
+          <tbody id="movielens-tbody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-header">
+        <h3 class="section-title">Amazon Dataset</h3>
+        <span class="dataset-badge">Product Recommendation</span>
+      </div>
+
+      <div class="table-container">
+        <table class="benchmark-table" id="amazon-llm-table">
+          <thead>
+            <tr>
+              <th class="rank-header">Rank</th>
+              <th>Algorithm</th>
+              <th class="metric-header">HR@10</th>
+              <th class="metric-header">NDCG@10</th>
+              <th>Paper</th>
+            </tr>
+          </thead>
+          <tbody id="amazon-llm-tbody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="table-container">
-      <table class="benchmark-table" id="taobao-table">
-        <thead>
-          <tr>
-            <th class="rank-header">Rank</th>
-            <th>Algorithm</th>
-            <th class="metric-header">AUC</th>
-            <th>Improvement</th>
-            <th>Paper</th>
-          </tr>
-        </thead>
-        <tbody id="taobao-tbody">
-          <!-- Populated by JS -->
-        </tbody>
-      </table>
-    </div>
-  </div>
+  </main>
 
-  <!-- LLM4Rec Section -->
-  <div id="llm4rec-section" class="domain-section" style="display:none;">
-    <div class="section-header">
-      <h2 class="section-title">LLM4Rec Leaderboard</h2>
-      <span class="dataset-badge">Large Language Models for Recommendation</span>
-    </div>
-
-    <div class="section-header">
-      <h3 class="section-title">MovieLens Dataset</h3>
-      <span class="dataset-badge">Movie Recommendation</span>
-    </div>
-
-    <div class="table-container">
-      <table class="benchmark-table" id="movielens-table">
-        <thead>
-          <tr>
-            <th class="rank-header">Rank</th>
-            <th>Algorithm</th>
-            <th class="metric-header">HR@10</th>
-            <th class="metric-header">NDCG@10</th>
-            <th>Paper</th>
-          </tr>
-        </thead>
-        <tbody id="movielens-tbody">
-          <!-- Populated by JS -->
-        </tbody>
-      </table>
-    </div>
-
-    <div class="section-header">
-      <h3 class="section-title">Amazon Dataset</h3>
-      <span class="dataset-badge">Product Recommendation</span>
-    </div>
-
-    <div class="table-container">
-      <table class="benchmark-table" id="amazon-llm-table">
-        <thead>
-          <tr>
-            <th class="rank-header">Rank</th>
-            <th>Algorithm</th>
-            <th class="metric-header">HR@10</th>
-            <th class="metric-header">NDCG@10</th>
-            <th>Paper</th>
-          </tr>
-        </thead>
-        <tbody id="amazon-llm-tbody">
-          <!-- Populated by JS -->
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Right Floating Panel -->
+  <!-- Right Sidebar -->
   <aside class="right-panel">
     <div class="right-panel-section">
       <h3 class="right-panel-title">时间线</h3>
