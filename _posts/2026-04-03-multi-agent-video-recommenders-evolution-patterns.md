@@ -9,7 +9,7 @@ description: "Video recommender systems are among the most popular and impactful
 categories:
   - 通用
   - 短视频
-  - 多模态**
+  - 多模态
 ---
 
 <think>
