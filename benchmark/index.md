@@ -402,6 +402,47 @@ title: Benchmark Leaderboard
   display: block;
 }
 
+.panel-timeline-content.collapsed {
+  max-height: 120px;
+  overflow: hidden;
+  position: relative;
+}
+
+.panel-timeline-content.collapsed::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: linear-gradient(transparent, #fff);
+  pointer-events: none;
+}
+
+.panel-timeline-show-more {
+  display: none;
+  width: 100%;
+  padding: 6px 8px;
+  margin-top: 4px;
+  background: #f0f7ff;
+  border: 1px solid #d0e4ff;
+  border-radius: 4px;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.panel-timeline-show-more:hover {
+  background: #e0f0ff;
+}
+
+.panel-timeline-content.collapsed + .panel-timeline-show-more {
+  display: block;
+}
+
 .panel-timeline-item {
   padding: 4px 0;
   font-size: 11px;
@@ -497,7 +538,7 @@ title: Benchmark Leaderboard
 
 /* Right Sidebar - sticky positioning */
 .right-panel {
-  width: 260px;
+  width: 300px;
   flex-shrink: 0;
   position: sticky;
   top: 80px;
@@ -735,7 +776,7 @@ function renderPanelTimeline() {
     html += `</div>`;
     html += `<span class="panel-timeline-arrow">▼</span>`;
     html += `</div>`;
-    html += `<div class="panel-timeline-content">`;
+    html += `<div class="panel-timeline-content${isExpanded ? '' : ' collapsed'}">`;
 
     posts.forEach(post => {
       html += `<div class="panel-timeline-item">`;
@@ -744,6 +785,9 @@ function renderPanelTimeline() {
     });
 
     html += `</div>`;
+    if (!isExpanded) {
+      html += `<button class="panel-timeline-show-more" data-month="${month}">展开全部 ${posts.length} 篇</button>`;
+    }
     html += `</div>`;
   });
 
@@ -753,7 +797,39 @@ function renderPanelTimeline() {
   // Add click handlers for collapsible timeline
   container.querySelectorAll('.panel-timeline-header').forEach(header => {
     header.addEventListener('click', () => {
-      header.classList.toggle('expanded');
+      const isExpanded = header.classList.toggle('expanded');
+      const month = header.dataset.month;
+      const content = container.querySelector(`.panel-timeline-content[data-month="${month}"]`) ||
+                      header.nextElementSibling;
+      const showMore = container.querySelector(`.panel-timeline-show-more[data-month="${month}"]`);
+
+      // Find and update content
+      let contentDiv = header.nextElementSibling;
+      while (contentDiv && !contentDiv.classList.contains('panel-timeline-content')) {
+        contentDiv = contentDiv.nextElementSibling;
+      }
+      if (contentDiv) {
+        contentDiv.classList.toggle('collapsed', !isExpanded);
+      }
+      if (showMore) {
+        showMore.style.display = isExpanded ? 'none' : 'block';
+      }
+    });
+  });
+
+  // Add click handlers for show more buttons
+  container.querySelectorAll('.panel-timeline-show-more').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const month = btn.dataset.month;
+      const header = container.querySelector(`.panel-timeline-header[data-month="${month}"]`);
+      if (header) {
+        header.classList.add('expanded');
+        const content = header.nextElementSibling;
+        if (content && content.classList.contains('panel-timeline-content')) {
+          content.classList.remove('collapsed');
+        }
+        btn.style.display = 'none';
+      }
     });
   });
 }
