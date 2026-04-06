@@ -4,6 +4,10 @@ description: movielens dataset for LLM4Rec
 metrics:
 - HR@10
 - NDCG@10
+- NDCG@5
+- AUC
+- Latency
+- LogLoss
 entries:
 - algorithm: LLMRerank
   sources:
@@ -102,10 +106,60 @@ entries:
 - algorithm: TALLRec
   sources:
   - arxiv_id: '2305.00447'
-    paper_title: 'TALLRec: An Effective and Efficient Tuning Framework for Recommendation'
-    source: https://arxiv.org/abs/2305.00447
-    post_url: /2026/04/03/tallrec/
+    paper_title: 'TALLRec: An Effective and Efficient Tuning Framework to Align Large
+      Language Model with Recommendation'
+    source: https://arxiv.org/abs/2305.00447v3
+    post_url: /2023/04/30/tallrec-an-effective-and-efficient-tuning-framewor/
     results:
-      HR@10: 0.6654
+      HR@10: 0.4821
       NDCG@10: 0.4389
-    paper_date: ''
+      NDCG@5: 0.3156
+    paper_date: 2023-04-30
+- algorithm: Aligning Multimodal Sequential Recommendations via Robust Direct Preference
+    Optimization with Sparse MoE
+  sources:
+  - arxiv_id: '2603.29259'
+    paper_title: Aligning Multimodal Sequential Recommendations via Robust Direct
+      Preference Optimization with Sparse MoE
+    source: https://arxiv.org/abs/2603.29259v1
+    post_url: /2026/03/31/aligning-multimodal-sequential-recommendations-via/
+    results: {}
+    paper_date: 2026-03-31
+- algorithm: Wide & Deep Learning for Recommender Systems
+  sources:
+  - arxiv_id: '1606.07792'
+    paper_title: Wide & Deep Learning for Recommender Systems
+    source: https://arxiv.org/abs/1606.07792v1
+    post_url: /2016/06/24/wide-deep-learning-for-recommender-systems/
+    results:
+      AUC: 0.74
+      Latency: 3.0
+    paper_date: 2016-06-24
+- algorithm: Deep Interest Evolution Network for Click
+  sources:
+  - arxiv_id: '1809.03672'
+    paper_title: Deep Interest Evolution Network for Click-Through Rate Prediction
+    source: https://arxiv.org/abs/1809.03672v5
+    post_url: /2018/09/11/deep-interest-evolution-network-for-click-through-/
+    results: {}
+    paper_date: 2018-09-11
+- algorithm: DCN V2
+  sources:
+  - arxiv_id: '2008.13535'
+    paper_title: 'DCN V2: Improved Deep & Cross Network and Practical Lessons for
+      Web-scale Learning to Rank Systems'
+    source: https://arxiv.org/abs/2008.13535v2
+    post_url: /2020/08/19/dcn-v2-improved-deep-cross-network-and-practical-l/
+    results: {}
+    paper_date: 2020-08-19
+- algorithm: AutoInt
+  sources:
+  - arxiv_id: '1810.11921'
+    paper_title: 'AutoInt: Automatic Feature Interaction Learning via Self-Attentive
+      Neural Networks'
+    source: https://arxiv.org/abs/1810.11921v2
+    post_url: /2018/10/29/autoint-automatic-feature-interaction-learning-via/
+    results:
+      AUC: 0.7965
+      LogLoss: 0.4354
+    paper_date: 2018-10-29

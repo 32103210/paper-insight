@@ -1,0 +1,15 @@
+dataset: Alibaba
+domain: CTR/CVR Modeling
+description: alibaba dataset for CTR/CVR Modeling
+metrics:
+- AUC
+entries:
+- algorithm: Deep Session Interest Network for Click
+  sources:
+  - arxiv_id: '1905.06482'
+    paper_title: Deep Session Interest Network for Click-Through Rate Prediction
+    source: https://arxiv.org/abs/1905.06482v1
+    post_url: /2019/05/16/deep-session-interest-network-for-click-through-ra/
+    results:
+      AUC: 0.7956
+    paper_date: 2019-05-16

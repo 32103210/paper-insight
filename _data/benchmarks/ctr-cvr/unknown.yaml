@@ -1,0 +1,68 @@
+dataset: Unknown
+domain: CTR/CVR Modeling
+description: unknown dataset for CTR/CVR Modeling
+metrics:
+- AUC
+entries:
+- algorithm: xDeepFM
+  sources:
+  - arxiv_id: '1803.05170'
+    paper_title: 'xDeepFM: Combining Explicit and Implicit Feature Interactions for
+      Recommender Systems'
+    source: https://arxiv.org/abs/1803.05170v3
+    post_url: /2018/03/14/xdeepfm-combining-explicit-and-implicit-feature-in/
+    results:
+      AUC: 0.7691
+    paper_date: 2018-03-14
+- algorithm: Chat
+  sources:
+  - arxiv_id: '2303.14524'
+    paper_title: 'Chat-REC: Towards Interactive and Explainable LLMs-Augmented Recommender
+      System'
+    source: https://arxiv.org/abs/2303.14524v2
+    post_url: /2023/03/25/chat-rec-towards-interactive-and-explainable-llms-/
+    results: {}
+    paper_date: 2023-03-25
+- algorithm: UniMixer
+  sources:
+  - arxiv_id: 2604.0059
+    paper_title: 'UniMixer: A Unified Architecture for Scaling Laws in Recommendation
+      Systems'
+    source: https://arxiv.org/pdf/2604.00590v2
+    post_url: /2026/04/03/unimixer-a-unified-architecture-for-scaling-laws-i/
+    results: {}
+    paper_date: 2026-04-03
+- algorithm: RCLRec
+  sources:
+  - arxiv_id: '2603.28124'
+    paper_title: 'RCLRec: Reverse Curriculum Learning for Modeling Sparse Conversions
+      in Generative Recommendation'
+    source: https://arxiv.org/abs/2603.28124v1
+    post_url: /2026/03/30/rclrec-reverse-curriculum-learning-for-modeling-sp/
+    results: {}
+    paper_date: 2026-03-30
+- algorithm: Zero
+  sources:
+  - arxiv_id: 2603.28994
+    paper_title: 'Zero-shot Cross-domain Knowledge Distillation: A Case study on YouTube
+      Music'
+    source: https://arxiv.org/pdf/2603.28994v1
+    post_url: /2026/04/03/zero-shot-cross-domain-knowledge-distillation-a-ca/
+    results: {}
+    paper_date: 2026-04-03
+- algorithm: Aligning Recommendations with User Popularity Preferences
+  sources:
+  - arxiv_id: 2604.01036
+    paper_title: Aligning Recommendations with User Popularity Preferences
+    source: https://arxiv.org/pdf/2604.01036v1
+    post_url: /2026/04/03/aligning-recommendations-with-user-popularity-pref/
+    results: {}
+    paper_date: 2026-04-03
+- algorithm: Multi
+  sources:
+  - arxiv_id: 2604.02211
+    paper_title: 'Multi-Agent Video Recommenders: Evolution, Patterns, and Open Challenges'
+    source: https://arxiv.org/pdf/2604.02211v1
+    post_url: /2026/04/03/multi-agent-video-recommenders-evolution-patterns/
+    results: {}
+    paper_date: 2026-04-03

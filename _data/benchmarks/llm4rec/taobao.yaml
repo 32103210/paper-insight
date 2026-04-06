@@ -1,0 +1,26 @@
+dataset: Taobao
+domain: LLM4Rec
+description: taobao dataset for LLM4Rec
+metrics:
+- NDCG@5
+- HR@10
+entries:
+- algorithm: TALLRec
+  sources:
+  - arxiv_id: '2305.00447'
+    paper_title: 'TALLRec: An Effective and Efficient Tuning Framework to Align Large
+      Language Model with Recommendation'
+    source: https://arxiv.org/abs/2305.00447v3
+    post_url: /2023/04/30/tallrec-an-effective-and-efficient-tuning-framewor/
+    results:
+      NDCG@5: 0.3156
+      HR@10: 0.4821
+    paper_date: 2023-04-30
+- algorithm: Deep Interest Evolution Network for Click
+  sources:
+  - arxiv_id: '1809.03672'
+    paper_title: Deep Interest Evolution Network for Click-Through Rate Prediction
+    source: https://arxiv.org/abs/1809.03672v5
+    post_url: /2018/09/11/deep-interest-evolution-network-for-click-through-/
+    results: {}
+    paper_date: 2018-09-11

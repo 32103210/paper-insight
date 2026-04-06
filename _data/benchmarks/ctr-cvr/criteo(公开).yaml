@@ -1,0 +1,17 @@
+dataset: Criteo (公开)
+domain: CTR/CVR Modeling
+description: criteo(公开) dataset for CTR/CVR Modeling
+metrics:
+- AUC
+- LogLoss
+entries:
+- algorithm: DeepFM
+  sources:
+  - arxiv_id: '1703.04247'
+    paper_title: 'DeepFM: A Factorization-Machine based Neural Network for CTR Prediction'
+    source: https://arxiv.org/abs/1703.04247v1
+    post_url: /2017/03/13/deepfm-a-factorization-machine-based-neural-networ/
+    results:
+      AUC: 0.8017
+      LogLoss: 0.4443
+    paper_date: 2017-03-13

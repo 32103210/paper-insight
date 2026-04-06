@@ -77,3 +77,22 @@ entries:
     results:
       AUC: 0.8945
     paper_date: ''
+- algorithm: UniMixer
+  sources:
+  - arxiv_id: '2604.00590'
+    paper_title: 'UniMixer: A Unified Architecture for Scaling Laws in Recommendation
+      Systems'
+    source: https://arxiv.org/abs/2604.00590v2
+    post_url: /2026/04/01/unimixer-a-unified-architecture-for-scaling-laws-i/
+    results:
+      AUC: 0.8
+    paper_date: 2026-04-01
+- algorithm: Deep Session Interest Network for Click
+  sources:
+  - arxiv_id: '1905.06482'
+    paper_title: Deep Session Interest Network for Click-Through Rate Prediction
+    source: https://arxiv.org/abs/1905.06482v1
+    post_url: /2019/05/16/deep-session-interest-network-for-click-through-ra/
+    results:
+      AUC: 0.7956
+    paper_date: 2019-05-16

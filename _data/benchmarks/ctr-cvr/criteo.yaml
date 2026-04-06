@@ -1,0 +1,27 @@
+dataset: Criteo
+domain: CTR/CVR Modeling
+description: criteo dataset for CTR/CVR Modeling
+metrics:
+- AUC
+- LogLoss
+entries:
+- algorithm: FiBiNET
+  sources:
+  - arxiv_id: '1905.09433'
+    paper_title: 'FiBiNET: Combining Feature Importance and Bilinear feature Interaction
+      for Click-Through Rate Prediction'
+    source: https://arxiv.org/abs/1905.09433v1
+    post_url: /2019/05/23/fibinet-combining-feature-importance-and-bilinear-/
+    results:
+      AUC: 0.803
+      LogLoss: 0.4367
+    paper_date: 2019-05-23
+- algorithm: Deep Learning over Multi
+  sources:
+  - arxiv_id: '1601.02376'
+    paper_title: 'Deep Learning over Multi-field Categorical Data: A Case Study on
+      User Response Prediction'
+    source: https://arxiv.org/abs/1601.02376v1
+    post_url: /2016/01/11/deep-learning-over-multi-field-categorical-data-a-/
+    results: {}
+    paper_date: 2016-01-11

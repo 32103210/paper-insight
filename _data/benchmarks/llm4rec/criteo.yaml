@@ -1,0 +1,18 @@
+dataset: Criteo
+domain: LLM4Rec
+description: criteo dataset for LLM4Rec
+metrics:
+- AUC
+- LogLoss
+entries:
+- algorithm: AutoInt
+  sources:
+  - arxiv_id: '1810.11921'
+    paper_title: 'AutoInt: Automatic Feature Interaction Learning via Self-Attentive
+      Neural Networks'
+    source: https://arxiv.org/abs/1810.11921v2
+    post_url: /2018/10/29/autoint-automatic-feature-interaction-learning-via/
+    results:
+      AUC: 0.7965
+      LogLoss: 0.4354
+    paper_date: 2018-10-29
