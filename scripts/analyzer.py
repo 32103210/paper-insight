@@ -12,9 +12,11 @@ import re
 import argparse
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 from dotenv import load_dotenv
 from openai import OpenAI
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import yaml
 
 # 确保可以导入同目录下的模块
 sys.path.insert(0, str(Path(__file__).parent))
@@ -29,6 +31,13 @@ MINIMAX_BASE_URL = os.getenv("MINIMAX_BASE_URL", "https://api.minimax.io/v1")
 # 并行分析的最大线程数
 MAX_WORKERS = 3
 
+ANALYSIS_MARKERS = (
+    "## 一句话增量",
+    "## 1. 一句话增量",
+    "# 论文分析报告",
+    "## 博导审稿",
+)
+
 # 导入 prompt 模板
 from prompts import SYSTEM_PROMPT, build_user_prompt
 
@@ -39,6 +48,130 @@ def create_client() -> OpenAI:
         api_key=MINIMAX_API_KEY,
         base_url=MINIMAX_BASE_URL,
     )
+
+
+def normalize_arxiv_id(value: str) -> str:
+    """标准化 arXiv ID，去掉版本号。"""
+    if not value:
+        return ""
+
+    match = re.search(r'(\d+\.\d+)(?:v\d+)?', value)
+    return match.group(1) if match else value.strip()
+
+
+def has_analysis_content(text: str) -> bool:
+    """判断正文里是否已经包含结构化分析。"""
+    return any(marker in (text or "") for marker in ANALYSIS_MARKERS)
+
+
+def normalize_categories(raw_categories) -> list:
+    """将 frontmatter categories 统一转换成字符串列表。"""
+    if not raw_categories:
+        return []
+
+    if not isinstance(raw_categories, list):
+        raw_categories = [raw_categories]
+
+    categories = []
+    for item in raw_categories:
+        if isinstance(item, str):
+            categories.append(item.strip())
+        elif isinstance(item, dict):
+            for _, value in item.items():
+                if isinstance(value, str):
+                    categories.append(value.strip())
+
+    return list(dict.fromkeys([c for c in categories if c]))
+
+
+def load_post(filepath: Path) -> tuple[dict, str]:
+    """读取 markdown post，返回 frontmatter 和正文。"""
+    content = filepath.read_text(encoding="utf-8")
+    if not content.startswith("---"):
+        return {}, content
+
+    parts = content.split("---", 2)
+    if len(parts) < 3:
+        return {}, content
+
+    frontmatter = yaml.safe_load(parts[1]) or {}
+    body = parts[2].lstrip()
+    return frontmatter, body
+
+
+def extract_abstract_from_post(body: str, frontmatter: dict) -> str:
+    """从旧文章里提取摘要，优先取 Abstract 段落。"""
+    match = re.search(r'##\s+Abstract\s*(.*?)(?:\n##\s+|\Z)', body, re.DOTALL)
+    if match:
+        abstract = match.group(1).strip()
+    else:
+        abstract = str(frontmatter.get("description", "")).strip()
+
+    abstract = re.sub(r'\n{2,}', '\n', abstract)
+    return abstract.strip()
+
+
+def build_paper_from_post(filepath: Path) -> Optional[dict]:
+    """从现有 post 反解析出 paper 信息，用于补分析。"""
+    frontmatter, body = load_post(filepath)
+    if not frontmatter:
+        return None
+
+    if frontmatter.get("analysis_generated") or has_analysis_content(body):
+        return None
+
+    title = str(frontmatter.get("title", "")).strip()
+    source = str(frontmatter.get("source", "")).strip()
+    authors_text = str(frontmatter.get("authors", "")).strip()
+    abstract = extract_abstract_from_post(body, frontmatter)
+    categories = normalize_categories(frontmatter.get("categories", []))
+
+    if not title or not abstract:
+        return None
+
+    authors = [a.strip() for a in authors_text.split(",") if a.strip()] or ["Unknown"]
+    post_date = str(frontmatter.get("date", "")).strip()[:10]
+    arxiv_id = normalize_arxiv_id(str(frontmatter.get("arxiv_id", "")) or source)
+
+    return {
+        "id": arxiv_id or filepath.stem,
+        "title": title,
+        "authors": authors,
+        "abstract": abstract,
+        "published": post_date,
+        "pdf_url": source,
+        "source_url": source,
+        "post_date": post_date,
+        "categories": categories,
+        "output_path": str(filepath),
+    }
+
+
+def cleanup_analysis_content(analysis: str) -> str:
+    """清理模型输出中的内部思考和控制信息。"""
+    analysis_content = re.sub(r'<think>.*?</think>', '', analysis, flags=re.DOTALL | re.IGNORECASE).strip()
+    analysis_content = re.sub(r'```\s*分类:.*?```', '', analysis_content, flags=re.DOTALL).strip()
+    analysis_content = re.sub(r'^分类:.*$', '', analysis_content, flags=re.MULTILINE).strip()
+    analysis_content = re.sub(r'<!--.*?-->', '', analysis_content, flags=re.DOTALL)
+    analysis_content = re.sub(r'<!--.*', '', analysis_content)
+    return analysis_content.strip()
+
+
+def save_processed_id(paper_id: str, filepath: str = "processed_ids.txt"):
+    """仅在分析成功后记录已处理论文。"""
+    if not paper_id:
+        return
+
+    existing_ids = set()
+    if os.path.exists(filepath):
+        with open(filepath, "r", encoding="utf-8") as f:
+            existing_ids = {line.strip() for line in f if line.strip()}
+
+    if paper_id in existing_ids:
+        return
+
+    with open(filepath, "a", encoding="utf-8") as f:
+        f.write(f"{paper_id}\n")
 
 
 def analyze_paper(client: OpenAI, paper: dict) -> str:
@@ -69,8 +202,8 @@ def analyze_paper(client: OpenAI, paper: dict) -> str:
 
 def extract_arxiv_id(url: str) -> str:
     """从 URL 提取 arXiv ID"""
-    match = re.search(r'(\d+\.\d+)', url)
-    return match.group(1) if match else "unknown"
+    normalized = normalize_arxiv_id(url)
+    return normalized or "unknown"
 
 
 def slugify(title: str, max_length: int = 50) -> str:
@@ -116,33 +249,38 @@ def extract_categories(analysis: str) -> list:
 
 def generate_frontmatter(paper: dict, categories: list = None) -> str:
     """生成 Jekyll frontmatter"""
-    arxiv_id = extract_arxiv_id(paper['pdf_url'])
-    date_str = datetime.now().strftime("%Y-%m-%d")
+    source_url = paper.get('source_url') or paper.get('pdf_url', '')
+    source_url = source_url.replace('/pdf/', '/abs/').replace('.pdf', '')
+    arxiv_id = extract_arxiv_id(source_url)
+    date_str = paper.get('post_date') or datetime.now().strftime("%Y-%m-%d")
 
     # 提取一句话摘要用于 description
-    abstract_first_line = paper['abstract'].split('.')[0] + '.'
+    abstract_text = (paper.get('abstract') or '').replace('\n', ' ').strip()
+    sentence_match = re.match(r'(.{1,200}?[。.!?])(?:\s|$)', abstract_text)
+    abstract_first_line = sentence_match.group(1) if sentence_match else abstract_text[:200]
+
+    final_categories = categories or normalize_categories(paper.get('categories', [])) or ['通用']
 
     frontmatter = f"""---
-title: "{paper['title']}"
+layout: post
+analysis_generated: true
+title: {json.dumps(paper['title'], ensure_ascii=False)}
 date: {date_str}
-arxiv_id: {arxiv_id}
-authors: "{', '.join(paper['authors'])}"
-source: {paper['pdf_url'].replace('.pdf', '')}
-description: "{abstract_first_line[:200]}"
+arxiv_id: {json.dumps(arxiv_id, ensure_ascii=False)}
+authors: {json.dumps(', '.join(paper['authors']), ensure_ascii=False)}
+source: {json.dumps(source_url, ensure_ascii=False)}
+description: {json.dumps(abstract_first_line[:200], ensure_ascii=False)}
 """
     # 添加分类
-    if categories:
-        frontmatter += "categories:\n"
-        for cat in categories:
-            frontmatter += f"  - {cat}\n"
-    else:
-        frontmatter += "categories:\n  - 任务类型: 通用\n  - 应用场景: 通用\n  - 技术方向: 通用\n"
+    frontmatter += "categories:\n"
+    for cat in final_categories:
+        frontmatter += f"  - {cat}\n"
 
     frontmatter += "---\n\n"
     return frontmatter
 
 
-def save_analysis(paper: dict, analysis: str, output_dir: str = "_posts"):
+def save_analysis(paper: dict, analysis: str, output_dir: str = "_posts", output_path: Optional[str] = None):
     """
     保存分析报告到 _posts 目录
 
@@ -156,20 +294,16 @@ def save_analysis(paper: dict, analysis: str, output_dir: str = "_posts"):
     # 提取分类
     categories = extract_categories(analysis)
 
-    # 移除分类行（如果存在）
-    analysis_content = re.sub(r'```\s*分类:.*?```', '', analysis, flags=re.DOTALL).strip()
-    analysis_content = re.sub(r'^分类:.*$', '', analysis_content, flags=re.MULTILINE).strip()
-
-    # 清理模型输出的内部标记（HTML 注释）
-    analysis_content = re.sub(r'<!--.*?-->', '', analysis_content, flags=re.DOTALL)  # HTML注释
-    analysis_content = re.sub(r'<!--.*', '', analysis_content)  # 未闭合注释
-    analysis_content = analysis_content.strip()
+    analysis_content = cleanup_analysis_content(analysis)
 
     # 生成文件名
-    date_str = datetime.now().strftime("%Y-%m-%d")
-    slug = slugify(paper['title'])
-    filename = f"{date_str}-{slug}.md"
-    filepath = Path(output_dir) / filename
+    if output_path:
+        filepath = Path(output_path)
+    else:
+        date_str = paper.get('post_date') or datetime.now().strftime("%Y-%m-%d")
+        slug = slugify(paper['title'])
+        filename = f"{date_str}-{slug}.md"
+        filepath = Path(output_dir) / filename
 
     # 生成 frontmatter + 分析内容
     frontmatter = generate_frontmatter(paper, categories)
@@ -193,11 +327,29 @@ def analyze_single_paper(paper: dict, client: OpenAI) -> tuple:
         return (paper, None, str(e))
 
 
+def collect_missing_posts(posts_dir: str, limit: Optional[int] = None) -> list:
+    """收集还没有 AI 分析的历史文章。"""
+    missing_posts = []
+
+    for filepath in sorted(Path(posts_dir).glob("*.md")):
+        paper = build_paper_from_post(filepath)
+        if paper:
+            missing_posts.append(paper)
+
+    if limit is not None:
+        missing_posts = missing_posts[:limit]
+
+    return missing_posts
+
+
 def main():
     """主函数"""
     parser = argparse.ArgumentParser(description='论文分析脚本')
     parser.add_argument('--parallel', action='store_true', help='启用并行分析')
     parser.add_argument('--workers', type=int, default=MAX_WORKERS, help=f'并行工作线程数 (默认 {MAX_WORKERS})')
+    parser.add_argument('--backfill-missing', action='store_true', help='为已有但缺少 AI 分析的文章补全分析')
+    parser.add_argument('--posts-dir', default='_posts', help='文章目录（默认 _posts）')
+    parser.add_argument('--limit', type=int, help='限制处理文章数')
     args = parser.parse_args()
 
     # 检查 API Key
@@ -205,22 +357,28 @@ def main():
         print("Error: MINIMAX_API_KEY not set")
         sys.exit(1)
 
-    # 从 stdin 读取论文列表（由 crawler.py 输出，grep 已提取 JSON 部分）
-    stdin_input = sys.stdin.read().strip()
+    if args.backfill_missing:
+        papers_json = collect_missing_posts(args.posts_dir, args.limit)
+        if not papers_json:
+            print("No legacy posts need analysis backfill")
+            sys.exit(0)
+    else:
+        # 从 stdin 读取论文列表（由 crawler.py 输出，grep 已提取 JSON 部分）
+        stdin_input = sys.stdin.read().strip()
 
-    # 解析 JSON
-    papers_json = None
-    if stdin_input:
-        try:
-            papers_json = json.loads(stdin_input)
-        except json.JSONDecodeError as e:
-            print(f"Error parsing JSON: {e}")
-            print(f"Received input: {stdin_input[:500]}...")
-            sys.exit(1)
+        # 解析 JSON
+        papers_json = None
+        if stdin_input:
+            try:
+                papers_json = json.loads(stdin_input)
+            except json.JSONDecodeError as e:
+                print(f"Error parsing JSON: {e}")
+                print(f"Received input: {stdin_input[:500]}...")
+                sys.exit(1)
 
-    if not papers_json:
-        print("No papers to analyze")
-        sys.exit(0)
+        if not papers_json:
+            print("No papers to analyze")
+            sys.exit(0)
 
     print(f"Analyzing {len(papers_json)} papers...")
 
@@ -237,7 +395,9 @@ def main():
                 if error:
                     print(f"[{i}/{len(papers_json)}] {paper['title'][:60]}... Error: {error}")
                 else:
-                    save_analysis(paper, analysis)
+                    save_analysis(paper, analysis, output_path=paper.get('output_path'))
+                    if not args.backfill_missing:
+                        save_processed_id(paper.get('id', ''))
                     print(f"[{i}/{len(papers_json)}] {paper['title'][:60]}... Done!")
     else:
         # 串行分析
@@ -247,7 +407,9 @@ def main():
 
             try:
                 analysis = analyze_paper(client, paper)
-                save_analysis(paper, analysis)
+                save_analysis(paper, analysis, output_path=paper.get('output_path'))
+                if not args.backfill_missing:
+                    save_processed_id(paper.get('id', ''))
                 print(f"  Done!")
             except Exception as e:
                 print(f"  Error: {e}")

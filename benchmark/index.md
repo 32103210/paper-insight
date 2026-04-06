@@ -743,10 +743,34 @@ const POSTS = [
     url: "{{ post.url | relative_url }}",
     date: "{{ post.date | date: "%Y-%m-%d" }}",
     arxiv_id: "{{ post["arxiv_id"] }}",
+    has_analysis: {% if post.analysis_generated or post.content contains '一句话增量' or post.content contains '论文分析报告' %}true{% else %}false{% endif %},
     categories: [{% for cat in post["categories"] %}"{{ cat }}"{% if forloop.last != true %},{% endif %}{% endfor %}]
   }{% if forloop.last != true %},{% endif %}
 {% endfor %}
 ];
+
+function normalizeArxivId(arxivId) {
+  return String(arxivId || '').replace(/v\d+$/i, '');
+}
+
+const POSTS_BY_ARXIV = POSTS.reduce((acc, post) => {
+  const arxivId = normalizeArxivId(post.arxiv_id);
+  if (!arxivId) return acc;
+
+  if (!acc[arxivId] || (!acc[arxivId].has_analysis && post.has_analysis)) {
+    acc[arxivId] = post;
+  }
+  return acc;
+}, {});
+
+function resolvePost(source) {
+  const arxivId = normalizeArxivId(source.arxiv_id);
+  return POSTS_BY_ARXIV[arxivId] || null;
+}
+
+function resolvePostUrl(source) {
+  return resolvePost(source)?.url || source.post_url || source.source || '#';
+}
 
 // Render Timeline in Right Panel
 function renderPanelTimeline() {
@@ -881,6 +905,7 @@ function flattenEntriesWithSources(entries) {
 // Render CTR/CVR row (single metric AUC)
 function renderRow(flatEntry, rank, metric, baseline, showRank) {
   const source = flatEntry.source;
+  const postUrl = resolvePostUrl(source);
   const value = source.results[metric];
   if (value === undefined) return '';
 
@@ -901,7 +926,7 @@ function renderRow(flatEntry, rank, metric, baseline, showRank) {
     <tr>
       <td class="rank-cell">${rankHtml}</td>
       <td class="algo-cell">
-        <a href="${source.post_url}" class="algo-name">${flatEntry.algorithm}</a>
+        <a href="${postUrl}" class="algo-name">${flatEntry.algorithm}</a>
         <div class="algo-meta">${source.arxiv_id || ''}</div>
       </td>
       <td class="metric-cell${isBest ? ' best' : ''}">${value.toFixed(4)}</td>
@@ -910,7 +935,7 @@ function renderRow(flatEntry, rank, metric, baseline, showRank) {
         <span class="paper-title" title="${source.paper_title}">${source.paper_title}</span>
         <div class="paper-links">
           <a href="${source.source}" target="_blank" class="paper-link">Paper</a>
-          <a href="${source.post_url}" class="paper-link">Analysis</a>
+          <a href="${postUrl}" class="paper-link">Analysis</a>
         </div>
       </td>
     </tr>
@@ -920,6 +945,7 @@ function renderRow(flatEntry, rank, metric, baseline, showRank) {
 // Render dual metric row (for LLM4Rec with HR@10 and NDCG@10)
 function renderDualRow(flatEntry, rank, showRank) {
   const source = flatEntry.source;
+  const postUrl = resolvePostUrl(source);
   const hr10 = source.results['HR@10'];
   const ndcg10 = source.results['NDCG@10'];
   if (hr10 === undefined && ndcg10 === undefined) return '';
@@ -940,7 +966,7 @@ function renderDualRow(flatEntry, rank, showRank) {
     <tr>
       <td class="rank-cell">${rankHtml}</td>
       <td class="algo-cell">
-        <a href="${source.post_url}" class="algo-name">${flatEntry.algorithm}</a>
+        <a href="${postUrl}" class="algo-name">${flatEntry.algorithm}</a>
         <div class="algo-meta">${source.arxiv_id || ''}</div>
       </td>
       <td class="metric-cell${isBest ? ' best' : ''}">${hr10 !== undefined ? hr10.toFixed(4) : '-'}</td>
@@ -949,7 +975,7 @@ function renderDualRow(flatEntry, rank, showRank) {
         <span class="paper-title" title="${source.paper_title}">${source.paper_title}</span>
         <div class="paper-links">
           <a href="${source.source}" target="_blank" class="paper-link">Paper</a>
-          <a href="${source.post_url}" class="paper-link">Analysis</a>
+          <a href="${postUrl}" class="paper-link">Analysis</a>
         </div>
       </td>
     </tr>

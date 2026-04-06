@@ -3,6 +3,21 @@ layout: page
 title: Paper Insight
 ---
 
+<script>
+window.POSTS_DATA = [
+{% for post in site.posts %}
+  {
+    title: {{ post.title | jsonify }},
+    url: {{ post.url | relative_url | jsonify }},
+    date: {{ post.date | date: "%Y-%m-%d" | jsonify }},
+    arxiv_id: {{ post.arxiv_id | jsonify }},
+    categories: {{ post.categories | jsonify }},
+    description: {{ post.description | default: post.excerpt | strip_html | strip_newlines | jsonify }}
+  }{% unless forloop.last %},{% endunless %}
+{% endfor %}
+];
+</script>
+
 <!-- Breadcrumb navigation -->
 <nav class="breadcrumb" id="breadcrumb">
   <li><a href="{{ "/" | relative_url }}">首页</a></li>
@@ -29,7 +44,7 @@ title: Paper Insight
       {% endif %}
       {% if post.categories %}
       <div class="post-card-tags">
-        {% for category in post.categories %}
+        {% for category in post.categories | uniq %}
         <span class="post-card-tag">{{ category }}</span>
         {% endfor %}
       </div>

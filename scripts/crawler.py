@@ -26,7 +26,10 @@ SEARCH_QUERIES = [
 ]
 
 # 每次最多获取论文数
-MAX_RESULTS = 5
+MAX_RESULTS = int(os.getenv("ARXIV_MAX_RESULTS", "20"))
+
+# 搜索时间窗口，默认回看 2 天，兼容偶发调度失败
+DAYS_BACK = int(os.getenv("ARXIV_DAYS_BACK", "2"))
 
 # arXiv API 速率限制: 每秒最多 1 次请求
 # 为安全起见，使用 3.5 秒间隔
@@ -109,7 +112,7 @@ def search_with_retry(client, search, max_retries=MAX_RETRIES):
     return all_results if all_results else []
 
 
-def search_papers(days_back: int = 7, max_results: int = MAX_RESULTS) -> List[dict]:
+def search_papers(days_back: int = DAYS_BACK, max_results: int = MAX_RESULTS) -> List[dict]:
     """
     搜索最近N天的推荐算法相关论文
 
@@ -197,7 +200,7 @@ def main():
     """主函数"""
     print(f"[{datetime.now().isoformat()}] Starting paper search...")
 
-    papers = search_papers(days_back=7, max_results=MAX_RESULTS)
+    papers = search_papers(days_back=DAYS_BACK, max_results=MAX_RESULTS)
     print(f"\nFound {len(papers)} papers")
 
     # 过滤已处理的论文
@@ -205,8 +208,6 @@ def main():
     new_papers = [p for p in papers if p["id"] not in processed]
 
     print(f"New papers to process: {len(new_papers)}")
-    for p in new_papers:
-        save_processed_id(p["id"])
 
     # 输出 JSON 格式供后续脚本使用
     print("\n---PAPERS_JSON---")

@@ -1,0 +1,52 @@
+name: Backfill Missing Analysis
+
+on:
+  workflow_dispatch:
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Backfill legacy posts
+        env:
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
+          MINIMAX_BASE_URL: ${{ secrets.MINIMAX_BASE_URL }}
+        run: |
+          set -e
+
+          if [ -z "$MINIMAX_BASE_URL" ]; then
+            export MINIMAX_BASE_URL="https://api.minimax.io/v1"
+          fi
+
+          python scripts/analyzer.py --backfill-missing --parallel
+
+      - name: Commit and push
+        run: |
+          CHANGED_FILES=$(git status --short -- _posts/ | grep -v ".gitkeep" || true)
+          if [ -n "$CHANGED_FILES" ]; then
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add _posts/
+            git commit -m "feat: backfill missing paper analysis"
+            git pull --rebase origin main
+            git push
+          else
+            echo "No legacy posts needed backfill"
+          fi

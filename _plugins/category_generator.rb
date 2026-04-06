@@ -1,4 +1,5 @@
 require 'jekyll'
+require 'cgi'
 
 module Jekyll
   # Generator for category pages
@@ -10,9 +11,10 @@ module Jekyll
       categories = {}
 
       site.posts.each do |post|
-        next unless post.data['categories']
+        categories_for_post = Array(post.data['categories']).map(&:to_s).map(&:strip).reject(&:empty?).uniq
+        next if categories_for_post.empty?
 
-        post.data['categories'].each do |category|
+        categories_for_post.each do |category|
           categories[category] ||= []
           categories[category] << post
         end
@@ -30,7 +32,7 @@ module Jekyll
     def initialize(site, base, category, posts)
       @site = site
       @base = base
-      @dir = "category/#{category}"
+      @dir = "category/#{CGI.escape(category)}"
       @name = 'index.html'
 
       self.process(@name)

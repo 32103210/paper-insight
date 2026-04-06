@@ -13,13 +13,68 @@ let currentState = {
   level3: null,
   searchQuery: ''
 };
+let allPosts = [];
+let categoriesTree = {};
+
+function normalizePosts(posts) {
+  return posts.map(post => {
+    const categories = Array.isArray(post.categories)
+      ? [...new Set(post.categories.filter(Boolean))]
+      : [];
+    const excerpt = post.excerpt || post.description || '';
+
+    return {
+      ...post,
+      categories,
+      description: post.description || excerpt,
+      excerpt
+    };
+  });
+}
+
+function buildCategoryTree(posts) {
+  const tree = {};
+
+  posts.forEach(post => {
+    const [level1, level2, level3] = post.categories || [];
+    if (!level1) return;
+
+    if (!tree[level1]) {
+      tree[level1] = { children: {}, posts: [] };
+    }
+    tree[level1].posts.push(post);
+
+    if (!level2) return;
+
+    if (!tree[level1].children[level2]) {
+      tree[level1].children[level2] = { children: {}, posts: [] };
+    }
+    tree[level1].children[level2].posts.push(post);
+
+    if (!level3) return;
+
+    if (!tree[level1].children[level2].children[level3]) {
+      tree[level1].children[level2].children[level3] = { posts: [] };
+    }
+    tree[level1].children[level2].children[level3].posts.push(post);
+  });
+
+  return tree;
+}
 
 /**
  * Initialize the application
  */
 function initApp() {
+  allPosts = normalizePosts(window.POSTS_DATA || []);
+  if (allPosts.length === 0) return;
+
+  categoriesTree = buildCategoryTree(allPosts);
+  window.POSTS_DATA = allPosts;
+  window.CATEGORIES = categoriesTree;
+
   renderCategoryTree();
-  renderPosts(window.POSTS_DATA || []);
+  renderPosts(allPosts);
   initSearch();
   initBreadcrumb();
 }
@@ -53,14 +108,13 @@ function renderCategoryTree() {
   container.innerHTML = '';
 
   // Add "All Posts" option
-  const allItem = createCategoryItem('全部文章', 'all', null, (window.POSTS_DATA || []).length);
+  const allItem = createCategoryItem('全部文章', 'all', null, allPosts.length);
   allItem.classList.add('active');
   container.appendChild(allItem);
 
   // Render each top-level category
-  const cats = window.CATEGORIES || {};
-  Object.keys(cats).forEach(level1Name => {
-    const level1 = cats[level1Name];
+  Object.keys(categoriesTree).forEach(level1Name => {
+    const level1 = categoriesTree[level1Name];
     const level1Count = countPostsAtLevel(level1);
 
     const level1Item = createCategoryItem(level1Name, 'level1', level1Name, level1Count);
@@ -209,7 +263,7 @@ function handleCategoryClick(e) {
  * Get filtered posts based on current state
  */
 function getFilteredPosts() {
-  return (window.POSTS_DATA || []).filter(post => {
+  return allPosts.filter(post => {
     // Category filter
     if (currentState.level1) {
       if (!post.categories || !post.categories.includes(currentState.level1)) {
@@ -226,8 +280,8 @@ function getFilteredPosts() {
     // Search filter
     if (currentState.searchQuery) {
       const query = currentState.searchQuery.toLowerCase();
-      const titleMatch = post.title.toLowerCase().includes(query);
-      const excerptMatch = post.excerpt && post.excerpt.toLowerCase().includes(query);
+      const titleMatch = (post.title || '').toLowerCase().includes(query);
+      const excerptMatch = (post.description || post.excerpt || '').toLowerCase().includes(query);
       if (!titleMatch && !excerptMatch) {
         return false;
       }
@@ -243,12 +297,13 @@ function getFilteredPosts() {
 function updateBreadcrumb() {
   const breadcrumb = document.getElementById('breadcrumb');
   if (!breadcrumb) return;
+  const homeUrl = document.querySelector('.sidebar-header a')?.getAttribute('href') || '/';
 
   breadcrumb.innerHTML = '';
 
   // Home link
   const homeLi = document.createElement('li');
-  homeLi.innerHTML = '<a href="/">首页</a>';
+  homeLi.innerHTML = `<a href="${homeUrl}">首页</a>`;
   breadcrumb.appendChild(homeLi);
 
   if (currentState.level1) {
@@ -327,10 +382,14 @@ function renderPosts(posts) {
         <span class="post-card-date">${post.date}</span>
       </div>
       <div class="post-card-meta">
-        <span class="arxiv-id">arXiv: ${post.arxiv_id}</span>
-        ${post.tags ? post.tags.map(tag => `<span class="post-card-tag">${tag}</span>`).join('') : ''}
+        ${post.arxiv_id ? `<span class="arxiv-id">arXiv: ${post.arxiv_id}</span>` : ''}
+        ${(post.tags || post.categories || []).length > 0 ? `
+          <div class="post-card-tags">
+            ${(post.tags || post.categories || []).map(tag => `<span class="post-card-tag">${tag}</span>`).join('')}
+          </div>
+        ` : ''}
       </div>
-      ${post.excerpt ? `<p class="post-card-excerpt">${post.excerpt}</p>` : ''}
+      ${(post.description || post.excerpt) ? `<p class="post-card-excerpt">${post.description || post.excerpt}</p>` : ''}
     </article>
   `).join('');
 }
@@ -355,6 +414,16 @@ function initSearch() {
 
 // Initialize when DOM is ready
 function doInit() {
+  const hasHomeScaffold =
+    Boolean(document.getElementById('search-input')) &&
+    Boolean(document.getElementById('breadcrumb')) &&
+    Boolean(document.getElementById('posts-container'));
+  const hasBootstrappedPosts = Array.isArray(window.POSTS_DATA) && window.POSTS_DATA.length > 0;
+
+  if (!hasHomeScaffold || !hasBootstrappedPosts) {
+    return;
+  }
+
   initApp();
 }
 

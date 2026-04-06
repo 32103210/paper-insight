@@ -91,13 +91,13 @@ def create_post_content(paper_info: dict, category: str) -> str:
     """Create post content with YAML frontmatter."""
     frontmatter = f"""---
 layout: post
----
 title: "{paper_info['title']}"
 date: {paper_info['date']}
 arxiv_id: {paper_info['arxiv_id']}
 authors: "{paper_info['authors']}"
 source: {paper_info['source']}
 description: "{paper_info['description']}"
+analysis_generated: false
 categories:
   - {category}
 ---

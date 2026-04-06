@@ -79,6 +79,15 @@ def _convert_entry_to_new_format(entry: dict) -> dict:
     }
 
 
+def normalize_arxiv_id(value: str) -> str:
+    """Normalize arXiv ID by dropping version suffix."""
+    if not value:
+        return ''
+
+    match = re.search(r'(\d+\.\d+)(?:v\d+)?', str(value))
+    return match.group(1) if match else str(value).strip()
+
+
 def load_existing_data() -> Dict[str, Dict[str, dict]]:
     """Load existing _data/benchmarks/*.yaml data"""
     benchmarks = defaultdict(lambda: defaultdict(lambda: {
@@ -134,7 +143,7 @@ def merge_entry(existing_entries: list, new_entry: dict) -> list:
     """Merge new entry into existing entries, deduplicate by arXiv ID.
 
     If the new entry's arXiv ID doesn't exist in any source, append it.
-    If it exists, keep BOTH (don't overwrite - each paper's results are independent).
+    If it exists, refresh the stored metadata/results in place.
     """
     # Find existing entry by algorithm name
     algorithm = new_entry.get('algorithm', '')
@@ -153,18 +162,37 @@ def merge_entry(existing_entries: list, new_entry: dict) -> list:
     existing_sources = existing_entry.get('sources', [])
     new_sources = new_entry.get('sources', [])
 
-    # Collect existing arXiv IDs
+    # Collect existing arXiv IDs and source index
     existing_arxiv_ids = set()
+    existing_source_map = {}
     for source in existing_sources:
-        if source.get('arxiv_id'):
-            existing_arxiv_ids.add(source['arxiv_id'])
+        normalized_arxiv = normalize_arxiv_id(source.get('arxiv_id', ''))
+        if normalized_arxiv:
+            existing_arxiv_ids.add(normalized_arxiv)
+            existing_source_map[normalized_arxiv] = source
 
-    # Add new sources that don't already exist (by arXiv ID)
+    # Add or refresh sources by arXiv ID
     for new_source in new_sources:
-        new_arxiv_id = new_source.get('arxiv_id', '')
-        if new_arxiv_id and new_arxiv_id not in existing_arxiv_ids:
+        new_arxiv_id = normalize_arxiv_id(new_source.get('arxiv_id', ''))
+        if new_arxiv_id and new_arxiv_id in existing_source_map:
+            existing_source = existing_source_map[new_arxiv_id]
+            if new_source.get('paper_title'):
+                existing_source['paper_title'] = new_source['paper_title']
+            if new_source.get('source'):
+                existing_source['source'] = new_source['source']
+            if new_source.get('post_url'):
+                existing_source['post_url'] = new_source['post_url']
+            if new_source.get('paper_date'):
+                existing_source['paper_date'] = new_source['paper_date']
+            if new_source.get('arxiv_id'):
+                existing_source['arxiv_id'] = new_source['arxiv_id']
+            if new_source.get('results'):
+                existing_source.setdefault('results', {})
+                existing_source['results'].update(new_source['results'])
+        elif new_arxiv_id and new_arxiv_id not in existing_arxiv_ids:
             existing_sources.append(new_source)
             existing_arxiv_ids.add(new_arxiv_id)
+            existing_source_map[new_arxiv_id] = new_source
         elif not new_arxiv_id:
             # If no arXiv ID, just append to avoid duplicates
             existing_sources.append(new_source)

@@ -6,9 +6,9 @@
   <title>{{ page.title | default: site.title }}</title>
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
   <script>
-    // CATEGORIES and POSTS_DATA populated by Jekyll Liquid tags in index.md
-    window.CATEGORIES = {};
-    window.POSTS_DATA = [];
+    // Page-specific templates may populate these later; keep a safe default.
+    window.CATEGORIES = window.CATEGORIES || {};
+    window.POSTS_DATA = window.POSTS_DATA || [];
   </script>
 </head>
 <body>

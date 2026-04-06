@@ -329,6 +329,60 @@ a:hover {
   margin-top: 12px;
 }
 
+.post-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.post-action-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.post-action-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.post-action-link.primary {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.post-action-link.primary:hover {
+  background-color: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: white;
+}
+
+.post-action-link.muted {
+  color: var(--text-muted);
+  background-color: var(--bg-sidebar);
+  cursor: default;
+}
+
+.analysis-notice {
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  border: 1px solid #f0d9a7;
+  border-radius: var(--radius);
+  background: #fff7e6;
+  color: #7a5a00;
+  font-size: 14px;
+}
+
 .post-detail .post-tag {
   font-size: 12px;
   padding: 4px 10px;
@@ -400,6 +454,10 @@ a:hover {
 .post-detail .post-content pre code {
   background: none;
   padding: 0;
+}
+
+.post-detail .post-content think {
+  display: none !important;
 }
 
 /* Responsive Design */

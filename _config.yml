@@ -8,3 +8,10 @@ show_excerpts: true
 # Custom includes and layouts paths
 includes_dir: _includes
 layouts_dir: _layouts
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post

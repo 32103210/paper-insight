@@ -31,6 +31,8 @@ jobs:
         env:
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
           MINIMAX_BASE_URL: ${{ secrets.MINIMAX_BASE_URL }}
+          ARXIV_DAYS_BACK: "2"
+          ARXIV_MAX_RESULTS: "20"
         run: |
           set -e
 
@@ -46,16 +48,19 @@ jobs:
           head -30 crawler_output.txt | grep -v "---PAPERS_JSON---\|---END_JSON---" || true
 
           # 从输出中提取 JSON 并运行分析器
-          grep -A 1000 -- "---PAPERS_JSON---" crawler_output.txt | grep -B 1000 -- "---END_JSON---" | sed '1d;$d' | python scripts/analyzer.py
+          grep -A 1000 -- "---PAPERS_JSON---" crawler_output.txt | grep -B 1000 -- "---END_JSON---" | sed '1d;$d' | python scripts/analyzer.py --parallel
 
       - name: Commit and push
         run: |
-          # 检查是否有新文件
-          NEW_FILES=$(git status --short _posts/ | grep -v ".gitkeep" || true)
-          if [ -n "$NEW_FILES" ]; then
+          # 检查是否有新分析或去重状态更新
+          CHANGED_FILES=$(git status --short -- _posts/ processed_ids.txt | grep -v ".gitkeep" || true)
+          if [ -n "$CHANGED_FILES" ]; then
             git config --local user.email "action@github.com"
             git config --local user.name "GitHub Action"
             git add _posts/
+            if [ -f processed_ids.txt ]; then
+              git add processed_ids.txt
+            fi
             git commit -m "feat: daily paper analysis $(date +'%Y-%m-%d')"
             # Pull and rebase to handle concurrent runs
             git pull --rebase origin main
