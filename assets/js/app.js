@@ -1,6 +1,7 @@
 /**
- * Paper Insight - Knowledge Base JavaScript
- * Handles category navigation and search functionality
+ * Paper Insight
+ * Handles editorial homepage composition, category navigation, search,
+ * and lightweight shell interactions.
  */
 
 // CATEGORIES and POSTS_DATA are populated by Jekyll Liquid tags in index.md
@@ -15,6 +16,15 @@ let currentState = {
 };
 let allPosts = [];
 let categoriesTree = {};
+
+function hasActiveFilters(state = currentState) {
+  return Boolean(
+    state.level1 ||
+    state.level2 ||
+    state.level3 ||
+    (state.searchQuery || '').trim()
+  );
+}
 
 function normalizePosts(posts) {
   return posts.map(post => {
@@ -60,6 +70,106 @@ function buildCategoryTree(posts) {
   });
 
   return tree;
+}
+
+function partitionPostsForEditorial(posts, state = currentState) {
+  if (!Array.isArray(posts) || posts.length === 0) {
+    return {
+      mode: 'empty',
+      lead: null,
+      support: [],
+      archive: []
+    };
+  }
+
+  if (hasActiveFilters(state)) {
+    return {
+      mode: 'archive',
+      lead: null,
+      support: [],
+      archive: posts
+    };
+  }
+
+  return {
+    mode: 'editorial',
+    lead: posts[0] || null,
+    support: posts.slice(1, 3),
+    archive: posts.slice(3)
+  };
+}
+
+function renderTags(tags, className) {
+  if (!tags || tags.length === 0) return '';
+
+  return `
+    <div class="${className}">
+      ${tags.map(tag => `<span class="${className}-item">${tag}</span>`).join('')}
+    </div>
+  `;
+}
+
+function renderPostCard(post, variant = 'archive') {
+  const meta = [];
+  if (post.date) {
+    meta.push(`<span class="post-card-date">${post.date}</span>`);
+  }
+  if (post.arxiv_id) {
+    meta.push(`<span class="post-card-arxiv">arXiv ${post.arxiv_id}</span>`);
+  }
+
+  return `
+    <article class="post-card post-card-${variant}">
+      <div class="post-card-frame">
+        <div class="post-card-meta">${meta.join('')}</div>
+        <h3 class="post-card-title">
+          <a href="${post.url}">${post.title}</a>
+        </h3>
+        ${(post.description || post.excerpt) ? `<p class="post-card-excerpt">${post.description || post.excerpt}</p>` : ''}
+        ${renderTags(post.tags || post.categories || [], 'post-card-tags')}
+      </div>
+    </article>
+  `;
+}
+
+function renderEditorialStream(posts) {
+  const sections = partitionPostsForEditorial(posts);
+
+  if (sections.mode === 'empty') {
+    return '<p class="no-results">没有找到匹配的文章</p>';
+  }
+
+  if (sections.mode === 'archive') {
+    return `
+      <div class="editorial-results">
+        <div class="editorial-results-header">
+          <span class="editorial-results-kicker">Filtered Archive</span>
+          <h2 class="editorial-results-title">当前检索结果</h2>
+        </div>
+        <div class="post-archive-list">
+          ${sections.archive.map(post => renderPostCard(post, 'archive')).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <section class="editorial-lead">
+      ${sections.lead ? renderPostCard(sections.lead, 'lead') : ''}
+    </section>
+    <section class="editorial-support">
+      ${sections.support.map(post => renderPostCard(post, 'support')).join('')}
+    </section>
+    <section class="editorial-archive">
+      <div class="section-intro">
+        <span class="section-kicker">Research Archive</span>
+        <h2 class="section-title">最新论文目录</h2>
+      </div>
+      <div class="post-archive-list">
+        ${sections.archive.map(post => renderPostCard(post, 'archive')).join('')}
+      </div>
+    </section>
+  `;
 }
 
 /**
@@ -133,7 +243,7 @@ function renderCategoryTree() {
         const level2Count = countPostsAtLevel(level2);
 
         const level2Item = createCategoryItem(level2Name, 'level2', `${level1Name}|${level2Name}`, level2Count);
-        level2Ul.appendChild(level2Item);
+          level2Ul.appendChild(level2Item);
 
         // Level 3 categories
         if (level2.children) {
@@ -152,7 +262,7 @@ function renderCategoryTree() {
         }
       });
 
-      container.appendChild(level2Ul);
+      level1Item.appendChild(level2Ul);
     }
   });
 
@@ -174,18 +284,18 @@ function createCategoryItem(name, level, path, count) {
 
   if (level !== 'all') {
     const icon = document.createElement('span');
-    icon.className = 'icon';
+    icon.className = 'category-toggle';
     icon.textContent = '\u25B6'; // right arrow
     itemDiv.appendChild(icon);
   }
 
   const nameSpan = document.createElement('span');
-  nameSpan.className = 'name';
+  nameSpan.className = 'category-name';
   nameSpan.textContent = name;
   itemDiv.appendChild(nameSpan);
 
   const countSpan = document.createElement('span');
-  countSpan.className = 'count';
+  countSpan.className = 'category-count';
   countSpan.textContent = count;
   itemDiv.appendChild(countSpan);
 
@@ -276,12 +386,27 @@ function setActiveCategoryItem(path) {
   const targetPath = path || 'all';
 
   document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.category-children').forEach(el => el.classList.remove('expanded'));
+  document.querySelectorAll('.category-item.expanded').forEach(el => el.classList.remove('expanded'));
 
   const target = Array.from(document.querySelectorAll('.category-item'))
     .find(el => el.dataset.path === targetPath);
 
   if (target) {
     target.classList.add('active');
+
+    let node = target.parentElement;
+    while (node) {
+      const childList = node.classList?.contains('category-children') ? node : null;
+      if (childList) {
+        childList.classList.add('expanded');
+        const parentItem = childList.parentElement?.querySelector(':scope > .category-item');
+        if (parentItem) {
+          parentItem.classList.add('expanded');
+        }
+      }
+      node = node.parentElement;
+    }
   }
 }
 
@@ -409,30 +534,7 @@ function renderPosts(posts) {
   const container = document.getElementById('posts-container');
   if (!container) return;
 
-  if (posts.length === 0) {
-    container.innerHTML = '<p class="no-results">没有找到匹配的文章</p>';
-    return;
-  }
-
-  container.innerHTML = posts.map(post => `
-    <article class="post-card">
-      <div class="post-card-header">
-        <h3 class="post-card-title">
-          <a href="${post.url}">${post.title}</a>
-        </h3>
-        <span class="post-card-date">${post.date}</span>
-      </div>
-      <div class="post-card-meta">
-        ${post.arxiv_id ? `<span class="arxiv-id">arXiv: ${post.arxiv_id}</span>` : ''}
-        ${(post.tags || post.categories || []).length > 0 ? `
-          <div class="post-card-tags">
-            ${(post.tags || post.categories || []).map(tag => `<span class="post-card-tag">${tag}</span>`).join('')}
-          </div>
-        ` : ''}
-      </div>
-      ${(post.description || post.excerpt) ? `<p class="post-card-excerpt">${post.description || post.excerpt}</p>` : ''}
-    </article>
-  `).join('');
+  container.innerHTML = renderEditorialStream(posts);
 }
 
 /**
@@ -453,8 +555,46 @@ function initSearch() {
   });
 }
 
+function initSidebarChrome() {
+  const body = document.body;
+  const toggle = document.querySelector('.sidebar-toggle');
+  const dismissors = document.querySelectorAll('[data-sidebar-dismiss]');
+
+  if (!body || !toggle) return;
+
+  const closeSidebar = () => {
+    body.classList.remove('sidebar-open');
+    toggle.setAttribute('aria-expanded', 'false');
+  };
+
+  const openSidebar = () => {
+    body.classList.add('sidebar-open');
+    toggle.setAttribute('aria-expanded', 'true');
+  };
+
+  toggle.addEventListener('click', () => {
+    if (body.classList.contains('sidebar-open')) {
+      closeSidebar();
+    } else {
+      openSidebar();
+    }
+  });
+
+  dismissors.forEach(node => {
+    node.addEventListener('click', closeSidebar);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeSidebar();
+    }
+  });
+}
+
 // Initialize when DOM is ready
 function doInit() {
+  initSidebarChrome();
+
   const hasHomeScaffold =
     Boolean(document.getElementById('search-input')) &&
     Boolean(document.getElementById('breadcrumb')) &&
@@ -468,9 +608,20 @@ function doInit() {
   initApp();
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', doInit);
-} else {
-  // DOM is already ready, but use setTimeout to ensure inline scripts have run
-  setTimeout(doInit, 0);
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', doInit);
+  } else {
+    // DOM is already ready, but use setTimeout to ensure inline scripts have run
+    setTimeout(doInit, 0);
+  }
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    buildCategoryTree,
+    hasActiveFilters,
+    normalizePosts,
+    partitionPostsForEditorial
+  };
 }

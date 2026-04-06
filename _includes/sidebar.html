@@ -1,92 +1,96 @@
-<aside class="sidebar">
-  <div class="sidebar-header">
-    <a href="{{ "/" | relative_url }}">Paper Insight</a>
-  </div>
+<aside class="sidebar" id="site-sidebar">
+  <div class="sidebar-inner">
+    <div class="sidebar-header">
+      <p class="sidebar-kicker">Recommendation Research Review</p>
+      <a href="{{ "/" | relative_url }}" class="sidebar-brand">Paper Insight</a>
+      <p class="sidebar-description">持续更新 arXiv 推荐算法论文解析、研究目录与 benchmark 索引。</p>
+    </div>
 
-  <ul id="category-tree" class="category-tree">
-    <li class="category-all">
-      <a href="{{ "/" | relative_url }}" class="category-link active">
-        <span class="category-name">全部文章</span>
-        <span class="category-count">{{ site.posts.size }}</span>
-      </a>
-    </li>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Archive</div>
+      <ul id="category-tree" class="category-tree">
+        <li class="category-node category-node-all">
+          <a href="{{ "/" | relative_url }}" class="category-item category-link active">
+            <span class="category-name">全部文章</span>
+            <span class="category-count">{{ site.posts.size }}</span>
+          </a>
+        </li>
 
-    {% comment %}Build category hierarchy{% endcomment %}
-    {% assign categories = "" | split: "" %}
-    {% for post in site.posts %}
-      {% if post.categories %}
-        {% assign cat1 = post.categories[0] %}
-        {% unless categories contains cat1 %}
-          {% assign categories = categories | push: cat1 %}
-        {% endunless %}
-      {% endif %}
-    {% endfor %}
+        {% comment %}Build category hierarchy{% endcomment %}
+        {% assign categories = "" | split: "" %}
+        {% for post in site.posts %}
+          {% if post.categories %}
+            {% assign cat1 = post.categories[0] %}
+            {% unless categories contains cat1 %}
+              {% assign categories = categories | push: cat1 %}
+            {% endunless %}
+          {% endif %}
+        {% endfor %}
 
-    {% for cat1 in categories %}
-    <li class="category-item">
-      {% comment %}Count posts for this level1{% endcomment %}
-      {% assign count1 = 0 %}
-      {% for post in site.posts %}
-        {% if post.categories and post.categories[0] == cat1 %}
-          {% assign count1 = count1 | plus: 1 %}
-        {% endif %}
-      {% endfor %}
-      {% assign cat1_path = cat1 | url_encode %}
-
-      <div class="category-item" data-level="1">
-        <span class="category-toggle">▶</span>
-        <a href="{{ '/' | relative_url }}?path={{ cat1_path }}" class="category-link">
-          <span class="category-name">{{ cat1 }}</span>
-          <span class="category-count">{{ count1 }}</span>
-        </a>
-      </div>
-
-      {% comment %}Level 2 categories{% endcomment %}
-      {% assign level2_cats = "" | split: "" %}
-      {% for post in site.posts %}
-        {% if post.categories and post.categories[0] == cat1 and post.categories[1] %}
-          {% assign cat2 = post.categories[1] %}
-          {% unless level2_cats contains cat2 %}
-            {% assign level2_cats = level2_cats | push: cat2 %}
-          {% endunless %}
-        {% endif %}
-      {% endfor %}
-
-      {% if level2_cats.size > 0 %}
-      <ul class="category-children">
-        {% for cat2 in level2_cats %}
-        <li class="category-item">
-          {% assign count2 = 0 %}
+        {% for cat1 in categories %}
+        <li class="category-node">
+          {% assign count1 = 0 %}
           {% for post in site.posts %}
-            {% if post.categories and post.categories[0] == cat1 and post.categories[1] == cat2 %}
-              {% assign count2 = count2 | plus: 1 %}
+            {% if post.categories and post.categories[0] == cat1 %}
+              {% assign count1 = count1 | plus: 1 %}
             {% endif %}
           {% endfor %}
-          {% assign cat2_path = cat1 | append: '|' | append: cat2 | url_encode %}
+          {% assign cat1_path = cat1 | url_encode %}
 
-          <div class="category-item" data-level="2">
-            <span class="category-toggle">▶</span>
-            <a href="{{ '/' | relative_url }}?path={{ cat2_path }}" class="category-link">
-              <span class="category-name">{{ cat2 }}</span>
-              <span class="category-count">{{ count2 }}</span>
+          <div class="category-item" data-level="1">
+            <span class="category-toggle">▸</span>
+            <a href="{{ '/' | relative_url }}?path={{ cat1_path }}" class="category-link">
+              <span class="category-name">{{ cat1 }}</span>
+              <span class="category-count">{{ count1 }}</span>
             </a>
           </div>
+
+          {% assign level2_cats = "" | split: "" %}
+          {% for post in site.posts %}
+            {% if post.categories and post.categories[0] == cat1 and post.categories[1] %}
+              {% assign cat2 = post.categories[1] %}
+              {% unless level2_cats contains cat2 %}
+                {% assign level2_cats = level2_cats | push: cat2 %}
+              {% endunless %}
+            {% endif %}
+          {% endfor %}
+
+          {% if level2_cats.size > 0 %}
+          <ul class="category-children">
+            {% for cat2 in level2_cats %}
+            <li class="category-node">
+              {% assign count2 = 0 %}
+              {% for post in site.posts %}
+                {% if post.categories and post.categories[0] == cat1 and post.categories[1] == cat2 %}
+                  {% assign count2 = count2 | plus: 1 %}
+                {% endif %}
+              {% endfor %}
+              {% assign cat2_path = cat1 | append: '|' | append: cat2 | url_encode %}
+
+              <div class="category-item" data-level="2">
+                <span class="category-toggle">▸</span>
+                <a href="{{ '/' | relative_url }}?path={{ cat2_path }}" class="category-link">
+                  <span class="category-name">{{ cat2 }}</span>
+                  <span class="category-count">{{ count2 }}</span>
+                </a>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
         </li>
         {% endfor %}
       </ul>
-      {% endif %}
-    </li>
-    {% endfor %}
-  </ul>
+    </div>
 
-  <div class="sidebar-divider"></div>
+    <div class="sidebar-divider"></div>
 
-  <ul class="benchmark-nav">
-    <li class="benchmark-item">
+    <div class="sidebar-section sidebar-section-utility">
       <a href="{{ "/benchmark/" | relative_url }}" class="benchmark-link">
-        <span class="benchmark-icon">🏆</span>
-        <span class="benchmark-name">Benchmark</span>
+        <span class="benchmark-label">Benchmark Ledger</span>
+        <span class="benchmark-subnote">实验排行榜与时间线索引</span>
       </a>
-    </li>
-  </ul>
+      <p class="sidebar-footnote">Daily ingestion and publishing powered by GitHub Actions.</p>
+    </div>
+  </div>
 </aside>
