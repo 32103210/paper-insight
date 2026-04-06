@@ -1,0 +1,17 @@
+dataset: Google App Store (Google Play) 真实数据
+domain: CTR/CVR Modeling
+description: googleappstore(googleplay)真实数据 dataset for CTR/CVR Modeling
+metrics:
+- AUC
+- Latency
+entries:
+- algorithm: Wide & Deep Learning for Recommender Systems
+  sources:
+  - arxiv_id: '1606.07792'
+    paper_title: Wide & Deep Learning for Recommender Systems
+    source: https://arxiv.org/abs/1606.07792v1
+    post_url: /2016/06/24/wide-deep-learning-for-recommender-systems/
+    results:
+      AUC: 0.74
+      Latency: 3.0
+    paper_date: 2016-06-24
