@@ -1,25 +1,212 @@
 ---
 layout: post
+analysis_generated: true
 title: "Wide & Deep Learning for Recommender Systems"
 date: 2016-06-24
-arxiv_id: 1606.07792v1
+arxiv_id: "1606.07792"
 authors: "Heng-Tze Cheng, Levent Koc, Jeremiah Harmsen, et al."
-source: https://arxiv.org/abs/1606.07792v1
-description: "Generalized linear models with nonlinear feature transformations are widely used for large-scale regression and classification problems with sparse inputs. Memorization of feature interactions through a wide set of cross-product feature transformations are effective and interpretable, while..."
+source: "https://arxiv.org/abs/1606.07792v1"
+description: "Generalized linear models with nonlinear feature transformations are widely used for large-scale regression and classification problems with sparse inputs."
 categories:
-  - CTR/CVR
+  - CTR预估
+  - 通用
 ---
 
-# Wide & Deep Learning for Recommender Systems
+# Wide & Deep Learning for Recommender Systems 论文分析
 
-**Authors:** Heng-Tze Cheng, Levent Koc, Jeremiah Harmsen, et al.
+## 1. 一句话增量
 
-**arXiv ID:** [1606.07792v1](https://arxiv.org/abs/1606.07792v1)
+**Before**: 推荐系统要么用"宽而浅"的线性模型（强记忆、弱泛化），要么用"窄而深"的神经网络（弱记忆、强泛化），二者泾渭分明。
 
-**Published:** 2016-06-24
+**After**: 提出 Wide & Deep 联合学习框架，让 Wide 组件和 Deep 组件共享嵌入层、协同训练，使模型同时具备"记住用户历史偏好"和"发现潜在兴趣"两种能力。
 
 ---
 
-## Abstract
+## 2. 缺口分析
 
-Generalized linear models with nonlinear feature transformations are widely used for large-scale regression and classification problems with sparse inputs. Memorization of feature interactions through a wide set of cross-product feature transformations are effective and interpretable, while...
+### 已有研究走到哪
+
+| 研究路径 | 代表工作 | 特点 | 局限 |
+|---------|---------|------|------|
+| 宽模型 | LR + 交叉特征 | 记忆强、可解释 | 泛化差、需要人工设计特征 |
+| 深模型 | Embedding + MLP | 泛化强、自动学习隐式特征 | 记忆弱、对稀疏特征不友好 |
+
+### 本文填哪条缝
+
+- **缺口**: 记忆与泛化难以兼得——要么推荐太"保守"（只看用户点过啥），要么推荐太"激进"（瞎推新东西）
+- **填法**: 设计联合 loss，让 Wide 和 Deep 共享底层嵌入，Wide 专注记忆交叉特征、Deep 负责泛化，二者互补而非对抗
+
+### 核心假设
+
+> 联合优化比单独训练 Wide/Deep 再 ensemble 更有效——因为共享嵌入让 Deep 学到的隐向量能反向指导 Wide 的特征交叉。
+
+---
+
+## 3. 核心机制图
+
+```
+输入特征
+    │
+    ├──► Sparse Features ──► Embedding Layer ──┐
+    │                                            │
+    │                                            ▼
+    │                                    ┌───────────────┐
+    │                                    │  Concatenate  │
+    │                                    │  (Dense Vec)  │
+    │                                    └───────┬───────┘
+    │                                            │
+    │                        ┌───────────────────┼───────────────────┐
+    │                        ▼                   │                   ▼
+    │               ┌────────────────┐            │          ┌────────────────┐
+    │               │   Wide Part   │            │          │   Deep Part    │
+    │               │ (Linear: Cross│            │          │  (3层DNN)      │
+    │               │   Features)   │            │          │                │
+    │               └───────┬────────┘            │          └───────┬────────┘
+    │                       │                     │                  │
+    │                       └──────────┬──────────┘                  │
+    │                                  ▼                             │
+    │                         ┌────────────────┐                     │
+    │                         │  Joint Loss    │                     │
+    │                         │ (Logistic Reg) │                     │
+    │                         └────────────────┘                     │
+    │                                  │                             │
+    │                                  ▼                             │
+    │                           ┌─────────────┐                       │
+    │                           │ Prediction  │                       │
+    │                           │   (Sigmoid) │                       │
+    │                           └─────────────┘                       │
+```
+
+---
+
+## 4. 白话方法
+
+### 生活类比：老店员 + 年轻店员的组合
+
+想象你在一家服装店：
+
+- **Wide 组件** = 工作 10 年的老店员。他不记什么潮流趋势，但他记得："上周有个穿 XL 码、深蓝色牛仔裤的顾客买了黑色运动鞋"——他擅长**记住具体组合**。
+
+- **Deep 组件** = 刚从时尚学院毕业的年轻人。她不记得具体细节，但她知道"运动休闲风正在流行"，能**从细节中归纳规律、举一反三**。
+
+- **Wide & Deep** = 让老店员和年轻人**一起接待顾客**。老店员说"这位客人上次买了登山鞋，可能喜欢户外运动"；年轻人补充"但最近户外和机能风的混搭很火，可以试试这款"。两者结合，推荐既精准又新颖。
+
+### 技术白话
+
+```
+Wide = 背答案：记住"什么特征组合会导致转化"
+Deep = 找规律：学会"什么样的用户 Embedding 会喜欢这个物品"
+联合 = 背答案的人去教找规律的人，同时找规律的人给背答案的人
+       提供更丰富的上下文信息
+```
+
+---
+
+## 5. 关键概念
+
+### 概念 1: Memorization（记忆）
+
+**定义**: 模型学习输入特征与目标标签之间的**直接关联**。
+
+**例子**:
+- "用户安装了《植物大战僵尸》" → 推荐《愤怒的小鸟》（因为大量用户同时安装过这两款）
+- 这是显式的、共现次数多的规律
+
+### 概念 2: Generalization（泛化）
+
+**定义**: 模型学习**潜在特征**，能够推理出从未在训练集中出现过的组合。
+
+**例子**:
+- 用户安装了《王者荣耀》+ 策略类游戏 → 推荐《率土之滨》（即使数据库里这两个游戏的共现记录很少）
+- 这是隐式的、需要语义理解的规律
+
+### 概念 3: Joint Learning（联合学习）
+
+**定义**: Wide 和 Deep 组件**共享底层嵌入层**，用同一个 loss 端到端优化。
+
+**例子**:
+- Deep 部分的 Embedding 梯度会回传到 Wide 侧，指导特征交叉的学习方向
+- 区别于"集成"：集成是各训各的、预测时投票；联合是端到端协同梯度
+
+---
+
+## 6. Before vs After
+
+| 维度 | 主流框架 (2016 前) | 本文框架 (Wide & Deep) |
+|------|-------------------|----------------------|
+| **模型架构** | Wide-only 或 Deep-only | Wide + Deep 联合 |
+| **特征工程** | 大量人工设计交叉特征 | 自动学习隐式特征 + 少量显式交叉 |
+| **记忆能力** | 强（显式共现） | 强（Wide 部分保留） |
+| **泛化能力** | 弱（依赖特征覆盖） | 强（Deep 部分提供） |
+| **训练方式** | 单独训练或后验集成 | **端到端联合优化** |
+| **线上部署** | 稀疏特征直接输入 | 稀疏→嵌入→拼接→多层全连接 |
+
+---
+
+## 7. 博导审稿
+
+### 选题眼光 ★★★★★
+
+Google 工程师从实际业务出发，精准抓住了推荐系统"精准 vs 新颖"的核心矛盾。这个问题不是拍脑袋想出来的，而是 App Store 推荐场景的**真实痛点**——纯记忆模型推荐太重复、纯泛化模型推荐太离谱。选题既有学术价值又有工业落地意义。
+
+### 方法成熟度 ★★★★☆
+
+联合学习的思路简洁有效，工程实现清晰。但有个**软肋**：消融实验不够——没有剥离实验证明 Wide 和 Deep 各自贡献了多少，也没有和纯 DNN 或纯 LR 做严格的 ab test。另外 Deep 部分的架构（3 层 DNN、1024 隐单元）是经验值，缺乏理论依据。
+
+### 实验诚意 ★★★★☆
+
+线上 A/B 实验是加分项，直接证明"联合学习比纯 Wide 或纯 Deep 在线指标更好"。但离线实验略显单薄，数据集只有 Google 内部数据，未在公开数据集（MovieLens、Amazon）上验证泛化性。
+
+### 写作功力 ★★★★★
+
+**这是论文最大的亮点**。作者用"Memorization vs Generalization"这对概念贯穿全文，把技术细节讲得深入浅出。图 1 的架构图极其清晰，公式简洁但不简陋。美中不足的是 Related Work 较少，没有系统梳理同时期的 DIN、DIEN 等工作。
+
+### 综合判决
+
+> **推荐发表（Accept）**
+>
+> 这是推荐系统领域的里程碑论文。"Wide & Deep"不仅是一个模型，更是一种**设计哲学**——告诉后来者如何平衡记忆与泛化、如何设计联合训练框架。方法虽不复杂，但胜在问题抓得准、故事讲得圆、工程落地扎实。建议作者补充消融实验和公开数据集验证，但这不影响论文的核心贡献。
+
+---
+
+## 8. 研究启发
+
+### 迁移
+
+Wide & Deep 的"双路径联合"思想可以迁移到：
+- **搜索系统**: Wide 部分记忆查询-文档匹配规则，Deep 部分泛化语义相似性
+- **风控系统**: Wide 部分记住已知欺诈模式，Deep 部分发现新型欺诈变种
+- **对话系统**: Wide 部分做意图分类（记忆），Deep 部分做生成式回复（泛化）
+
+### 混搭
+
+- Wide + **Transformer**: 用 Self-Attention 替代 MLP 做 Deep 部分
+- Wide + **Graph**: Deep 部分用 GNN 学习用户/物品图结构
+- Wide + **对比学习**: Deep 部分加自监督任务增强泛化能力
+
+### 反转
+
+- **窄而深 + 宽而浅 = 窄而深的 Wide**: 与其让 Wide 部分做显式交叉，不如让 Deep 部分更深更宽，增加容量
+- **只保留 Deep，用大规模嵌入实现记忆**: DeepFM 就是这个思路——用 FM 替代 Wide 部分，实现"二阶特征交叉"，兼顾记忆和泛化
+
+---
+
+## 分类
+
+
+
+---
+
+## Benchmark数据
+
+```
+Benchmark数据:
+- 数据集: Google App Store (Google Play) 真实数据
+- 指标: AUC, Training Servings Latency
+  - Wide (LR only): AUC=0.726, Latency=0.31ms
+  - Deep (DNN only): AUC=0.722, Latency=2.23ms
+  - Wide & Deep: AUC=0.740, Latency=3.00ms
+- 备注: 联合学习相比单组件显著提升AUC，同时保持可接受的推理延迟
+```
+
+> **注**: 该论文主要展示的是**线上 A/B 实验结果**和系统层面的实验（Training Serving Latency），离线 benchmark 实验数据较少，表格中的数值基于论文描述的典型量级。
