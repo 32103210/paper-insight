@@ -7,6 +7,7 @@ arXiv 论文爬虫
 import arxiv
 import json
 import os
+import sys
 import time
 import logging
 from datetime import datetime, timedelta
@@ -150,34 +151,29 @@ def search_papers(days_back: int = DAYS_BACK, max_results: int = MAX_RESULTS) ->
     )
 
     papers = []
-    try:
-        # 使用带重试的搜索（返回列表）
-        results = search_with_retry(client, search)
+    results = search_with_retry(client, search)
 
-        # 在处理结果前等待一段时间，避免触发速率限制
-        if results:
-            print(f"Got {len(results)} papers from arXiv, processing...")
+    # 在处理结果前等待一段时间，避免触发速率限制
+    if results:
+        print(f"Got {len(results)} papers from arXiv, processing...")
 
-        for result in results:
-            # 过滤日期
-            if result.published.replace(tzinfo=None) < start_date.replace(tzinfo=None):
-                continue
+    for result in results:
+        # 过滤日期
+        if result.published.replace(tzinfo=None) < start_date.replace(tzinfo=None):
+            continue
 
-            paper_info = {
-                "id": result.entry_id.split("/")[-1],
-                "title": result.title,
-                "authors": [a.name for a in result.authors],
-                "abstract": result.summary,
-                "published": result.published.isoformat(),
-                "pdf_url": result.pdf_url,
-                "comment": result.comment if hasattr(result, 'comment') else None,
-                "journal_ref": result.journal_ref if hasattr(result, 'journal_ref') else None,
-            }
-            papers.append(paper_info)
-            print(f"  Found: {paper_info['title'][:60]}...")
-
-    except Exception as e:
-        print(f"Error searching arXiv: {e}")
+        paper_info = {
+            "id": result.entry_id.split("/")[-1],
+            "title": result.title,
+            "authors": [a.name for a in result.authors],
+            "abstract": result.summary,
+            "published": result.published.isoformat(),
+            "pdf_url": result.pdf_url,
+            "comment": result.comment if hasattr(result, 'comment') else None,
+            "journal_ref": result.journal_ref if hasattr(result, 'journal_ref') else None,
+        }
+        papers.append(paper_info)
+        print(f"  Found: {paper_info['title'][:60]}...")
 
     return papers
 
@@ -196,11 +192,16 @@ def save_processed_id(paper_id: str, filepath: str = "processed_ids.txt"):
         f.write(f"{paper_id}\n")
 
 
-def main():
+def main() -> int:
     """主函数"""
     print(f"[{datetime.now().isoformat()}] Starting paper search...")
 
-    papers = search_papers(days_back=DAYS_BACK, max_results=MAX_RESULTS)
+    try:
+        papers = search_papers(days_back=DAYS_BACK, max_results=MAX_RESULTS)
+    except Exception as e:
+        print(f"Fatal error searching arXiv: {e}")
+        return 1
+
     print(f"\nFound {len(papers)} papers")
 
     # 过滤已处理的论文
@@ -214,8 +215,8 @@ def main():
     print(json.dumps(new_papers, ensure_ascii=False, indent=2))
     print("---END_JSON---")
 
-    return new_papers
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -1,5 +1,8 @@
 name: Backfill Missing Analysis
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 on:
   workflow_dispatch:
 
@@ -13,10 +16,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
 
@@ -25,11 +28,13 @@ jobs:
           pip install -r requirements.txt
 
       - name: Backfill legacy posts
+        id: backfill
+        continue-on-error: true
         env:
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
           MINIMAX_BASE_URL: ${{ secrets.MINIMAX_BASE_URL }}
         run: |
-          set -e
+          set -euo pipefail
 
           if [ -z "$MINIMAX_BASE_URL" ]; then
             export MINIMAX_BASE_URL="https://api.minimax.io/v1"
@@ -38,6 +43,7 @@ jobs:
           python scripts/analyzer.py --backfill-missing --parallel
 
       - name: Commit and push
+        if: ${{ always() && steps.backfill.outcome != 'cancelled' }}
         run: |
           CHANGED_FILES=$(git status --short -- _posts/ | grep -v ".gitkeep" || true)
           if [ -n "$CHANGED_FILES" ]; then
@@ -50,3 +56,7 @@ jobs:
           else
             echo "No legacy posts needed backfill"
           fi
+
+      - name: Fail if backfill failed completely
+        if: ${{ steps.backfill.outcome == 'failure' }}
+        run: exit 1

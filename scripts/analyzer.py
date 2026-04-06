@@ -10,6 +10,7 @@ import json
 import sys
 import re
 import argparse
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -40,6 +41,17 @@ ANALYSIS_MARKERS = (
 
 # 导入 prompt 模板
 from prompts import SYSTEM_PROMPT, build_user_prompt
+
+
+@dataclass
+class AnalysisSummary:
+    total: int
+    succeeded: int = 0
+    failed: int = 0
+
+    @property
+    def total_failure(self) -> bool:
+        return self.total > 0 and self.succeeded == 0 and self.failed > 0
 
 
 def create_client() -> OpenAI:
@@ -342,7 +354,55 @@ def collect_missing_posts(posts_dir: str, limit: Optional[int] = None) -> list:
     return missing_posts
 
 
-def main():
+def run_analysis_batch(
+    papers_json: list,
+    *,
+    parallel: bool,
+    workers: int,
+    backfill_missing: bool,
+) -> AnalysisSummary:
+    """执行一批论文分析，并返回成功/失败统计。"""
+    summary = AnalysisSummary(total=len(papers_json))
+    client = create_client()
+
+    if parallel and len(papers_json) > 1:
+        print(f"Using parallel mode with {workers} workers")
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            futures = {executor.submit(analyze_single_paper, paper, client): paper for paper in papers_json}
+
+            for i, future in enumerate(as_completed(futures), 1):
+                paper, analysis, error = future.result()
+                if error:
+                    summary.failed += 1
+                    print(f"[{i}/{len(papers_json)}] {paper['title'][:60]}... Error: {error}")
+                    continue
+
+                save_analysis(paper, analysis, output_path=paper.get('output_path'))
+                if not backfill_missing:
+                    save_processed_id(paper.get('id', ''))
+                summary.succeeded += 1
+                print(f"[{i}/{len(papers_json)}] {paper['title'][:60]}... Done!")
+
+        return summary
+
+    for i, paper in enumerate(papers_json, 1):
+        print(f"\n[{i}/{len(papers_json)}] Analyzing: {paper['title'][:60]}...")
+
+        try:
+            analysis = analyze_paper(client, paper)
+            save_analysis(paper, analysis, output_path=paper.get('output_path'))
+            if not backfill_missing:
+                save_processed_id(paper.get('id', ''))
+            summary.succeeded += 1
+            print("  Done!")
+        except Exception as e:
+            summary.failed += 1
+            print(f"  Error: {e}")
+
+    return summary
+
+
+def main(argv: Optional[list[str]] = None, stdin_input: Optional[str] = None) -> int:
     """主函数"""
     parser = argparse.ArgumentParser(description='论文分析脚本')
     parser.add_argument('--parallel', action='store_true', help='启用并行分析')
@@ -350,73 +410,57 @@ def main():
     parser.add_argument('--backfill-missing', action='store_true', help='为已有但缺少 AI 分析的文章补全分析')
     parser.add_argument('--posts-dir', default='_posts', help='文章目录（默认 _posts）')
     parser.add_argument('--limit', type=int, help='限制处理文章数')
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     # 检查 API Key
     if not MINIMAX_API_KEY:
         print("Error: MINIMAX_API_KEY not set")
-        sys.exit(1)
+        return 1
 
     if args.backfill_missing:
         papers_json = collect_missing_posts(args.posts_dir, args.limit)
         if not papers_json:
             print("No legacy posts need analysis backfill")
-            sys.exit(0)
+            return 0
     else:
         # 从 stdin 读取论文列表（由 crawler.py 输出，grep 已提取 JSON 部分）
-        stdin_input = sys.stdin.read().strip()
+        payload = stdin_input if stdin_input is not None else sys.stdin.read()
+        stdin_payload = payload.strip()
 
         # 解析 JSON
         papers_json = None
-        if stdin_input:
+        if stdin_payload:
             try:
-                papers_json = json.loads(stdin_input)
+                papers_json = json.loads(stdin_payload)
             except json.JSONDecodeError as e:
                 print(f"Error parsing JSON: {e}")
-                print(f"Received input: {stdin_input[:500]}...")
-                sys.exit(1)
+                print(f"Received input: {stdin_payload[:500]}...")
+                return 1
 
         if not papers_json:
             print("No papers to analyze")
-            sys.exit(0)
+            return 0
 
     print(f"Analyzing {len(papers_json)} papers...")
 
-    if args.parallel and len(papers_json) > 1:
-        # 并行分析
-        print(f"Using parallel mode with {args.workers} workers")
-        client = create_client()
+    summary = run_analysis_batch(
+        papers_json,
+        parallel=args.parallel,
+        workers=args.workers,
+        backfill_missing=args.backfill_missing,
+    )
 
-        with ThreadPoolExecutor(max_workers=args.workers) as executor:
-            futures = {executor.submit(analyze_single_paper, paper, client): paper for paper in papers_json}
-
-            for i, future in enumerate(as_completed(futures), 1):
-                paper, analysis, error = future.result()
-                if error:
-                    print(f"[{i}/{len(papers_json)}] {paper['title'][:60]}... Error: {error}")
-                else:
-                    save_analysis(paper, analysis, output_path=paper.get('output_path'))
-                    if not args.backfill_missing:
-                        save_processed_id(paper.get('id', ''))
-                    print(f"[{i}/{len(papers_json)}] {paper['title'][:60]}... Done!")
-    else:
-        # 串行分析
-        client = create_client()
-        for i, paper in enumerate(papers_json, 1):
-            print(f"\n[{i}/{len(papers_json)}] Analyzing: {paper['title'][:60]}...")
-
-            try:
-                analysis = analyze_paper(client, paper)
-                save_analysis(paper, analysis, output_path=paper.get('output_path'))
-                if not args.backfill_missing:
-                    save_processed_id(paper.get('id', ''))
-                print(f"  Done!")
-            except Exception as e:
-                print(f"  Error: {e}")
-                continue
-
-    print("\nAll papers analyzed!")
+    print(
+        f"\nAnalysis complete: {summary.succeeded}/{summary.total} succeeded, "
+        f"{summary.failed} failed."
+    )
+    if summary.total_failure:
+        print("Analysis failed: no paper was analyzed successfully.")
+        return 1
+    if summary.failed:
+        print("Analysis completed with partial failures.")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
