@@ -31,10 +31,11 @@
           {% assign count1 = count1 | plus: 1 %}
         {% endif %}
       {% endfor %}
+      {% assign cat1_path = cat1 | url_encode %}
 
       <div class="category-item" data-level="1">
         <span class="category-toggle">▶</span>
-        <a href="{{ cat1 | url_encode | prepend: "/category/" | relative_url }}" class="category-link">
+        <a href="{{ '/' | relative_url }}?path={{ cat1_path }}" class="category-link">
           <span class="category-name">{{ cat1 }}</span>
           <span class="category-count">{{ count1 }}</span>
         </a>
@@ -61,10 +62,11 @@
               {% assign count2 = count2 | plus: 1 %}
             {% endif %}
           {% endfor %}
+          {% assign cat2_path = cat1 | append: '|' | append: cat2 | url_encode %}
 
           <div class="category-item" data-level="2">
             <span class="category-toggle">▶</span>
-            <a href="{{ cat2 | url_encode | prepend: "/category/" | relative_url }}" class="category-link">
+            <a href="{{ '/' | relative_url }}?path={{ cat2_path }}" class="category-link">
               <span class="category-name">{{ cat2 }}</span>
               <span class="category-count">{{ count2 }}</span>
             </a>

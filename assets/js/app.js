@@ -74,9 +74,12 @@ function initApp() {
   window.CATEGORIES = categoriesTree;
 
   renderCategoryTree();
-  renderPosts(allPosts);
   initSearch();
   initBreadcrumb();
+
+  if (!applyPathFilterFromUrl()) {
+    renderPosts(allPosts);
+  }
 }
 
 /**
@@ -239,8 +242,7 @@ function handleCategoryClick(e) {
   }
 
   // Update active state
-  document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
-  item.classList.add('active');
+  setActiveCategoryItem(path);
 
   // Handle expand/collapse
   const parentLi = item.parentElement;
@@ -257,6 +259,45 @@ function handleCategoryClick(e) {
 
   // Filter and render posts
   renderPosts(getFilteredPosts());
+}
+
+function setStateFromPath(path) {
+  const parts = String(path || '').split('|').filter(Boolean);
+
+  currentState = {
+    level1: parts[0] || null,
+    level2: parts[1] || null,
+    level3: parts[2] || null,
+    searchQuery: currentState.searchQuery
+  };
+}
+
+function setActiveCategoryItem(path) {
+  const targetPath = path || 'all';
+
+  document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
+
+  const target = Array.from(document.querySelectorAll('.category-item'))
+    .find(el => el.dataset.path === targetPath);
+
+  if (target) {
+    target.classList.add('active');
+  }
+}
+
+function applyPathFilterFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const path = params.get('path');
+
+  if (!path) {
+    return false;
+  }
+
+  setStateFromPath(path);
+  setActiveCategoryItem(path);
+  updateBreadcrumb();
+  renderPosts(getFilteredPosts());
+  return true;
 }
 
 /**
