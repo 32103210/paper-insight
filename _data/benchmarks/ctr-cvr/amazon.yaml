@@ -12,26 +12,27 @@ entries:
   - arxiv_id: '2005.00675'
     paper_title: Search-based User Interest Modeling with Sequential Behavior Sequences
     source: https://arxiv.org/abs/2005.00675
-    post_url: /2026/04/03/sim/
+    post_url: ''
     results:
       AUC: 0.915
     paper_date: ''
 - algorithm: xDeepFM
   sources:
-  - arxiv_id: '1801.06854'
+  - arxiv_id: '1803.05170'
     paper_title: 'xDeepFM: Combining Explicit and Implicit Feature Interactions for
       Recommender Systems'
-    source: https://arxiv.org/abs/1801.06854
-    post_url: /2026/04/03/xdeepfm/
+    source: https://arxiv.org/abs/1803.05170v3
+    post_url: /2018/03/14/xdeepfm-combining-explicit-and-implicit-feature-in/
     results:
       AUC: 0.8031
     paper_date: ''
 - algorithm: DCN V2
   sources:
-  - arxiv_id: '2008.01335'
-    paper_title: 'DCN V2: Improved Deep & Cross Network for CTR Prediction'
-    source: https://arxiv.org/abs/2008.01335
-    post_url: /2026/04/03/dcn-v2/
+  - arxiv_id: '2008.13535'
+    paper_title: 'DCN V2: Improved Deep & Cross Network and Practical Lessons for
+      Web-scale Learning to Rank Systems'
+    source: https://arxiv.org/abs/2008.13535v2
+    post_url: /2020/08/19/dcn-v2-improved-deep-cross-network-and-practical-l/
     results:
       AUC: 0.8021
     paper_date: ''
@@ -40,7 +41,7 @@ entries:
   - arxiv_id: '2006.05665'
     paper_title: 'GateNet: Gating-Enhanced Deep Neural Network for CTR Prediction'
     source: https://arxiv.org/abs/2006.05665
-    post_url: /2026/04/03/gatenet/
+    post_url: ''
     results:
       AUC: 0.7992
     paper_date: ''
@@ -49,17 +50,17 @@ entries:
   - arxiv_id: '1810.11921'
     paper_title: 'AutoInt: Automatic Feature Interaction Learning via Self-Attentive
       Neural Networks'
-    source: https://arxiv.org/abs/1810.11921
-    post_url: /2026/04/03/autoint/
+    source: https://arxiv.org/abs/1810.11921v2
+    post_url: /2018/10/29/autoint-automatic-feature-interaction-learning-via/
     results:
       AUC: 0.7985
     paper_date: ''
 - algorithm: DIEN
   sources:
-  - arxiv_id: '1808.02813'
+  - arxiv_id: '1809.03672'
     paper_title: Deep Interest Evolution Network for Click-Through Rate Prediction
-    source: https://arxiv.org/abs/1808.02813
-    post_url: /2026/04/03/dien/
+    source: https://arxiv.org/abs/1809.03672v5
+    post_url: /2018/09/11/deep-interest-evolution-network-for-click-through-/
     results:
       AUC: 0.7978
     paper_date: ''
@@ -67,28 +68,28 @@ entries:
   sources:
   - arxiv_id: '1703.04247'
     paper_title: 'DeepFM: A Factorization-Machine based Neural Network for CTR Prediction'
-    source: https://arxiv.org/abs/1703.04247
-    post_url: /2026/04/03/deepfm/
+    source: https://arxiv.org/abs/1703.04247v1
+    post_url: /2017/03/13/deepfm-a-factorization-machine-based-neural-networ/
     results:
       AUC: 0.7965
     paper_date: ''
 - algorithm: FiBiNET
   sources:
-  - arxiv_id: '1905.03325'
-    paper_title: 'FiBiNET: Combining Feature Importance and Bilinear Feature Interaction
+  - arxiv_id: '1905.09433'
+    paper_title: 'FiBiNET: Combining Feature Importance and Bilinear feature Interaction
       for Click-Through Rate Prediction'
-    source: https://arxiv.org/abs/1905.03325
-    post_url: /2026/04/03/fibinet/
+    source: https://arxiv.org/abs/1905.09433v1
+    post_url: /2019/05/23/fibinet-combining-feature-importance-and-bilinear-/
     results:
       AUC: 0.7948
     paper_date: ''
 - algorithm: RoDPO
   sources:
-  - arxiv_id: '2603.29259'
+  - arxiv_id: 2603.29259
     paper_title: Aligning Multimodal Sequential Recommendations via Robust Direct
       Preference Optimization with Sparse MoE
-    source: https://arxiv.org/abs/2603.29259
-    post_url: /2026/04/03/rodpo/
+    source: https://arxiv.org/pdf/2603.29259v1
+    post_url: /2026/04/03/aligning-multimodal-sequential-recommendations-via/
     results:
       AUC: 0.7925
     paper_date: ''
@@ -97,16 +98,16 @@ entries:
   - arxiv_id: '1706.07478'
     paper_title: Deep Interest Network for Click-Through Rate Prediction
     source: https://arxiv.org/abs/1706.07478
-    post_url: /2026/04/03/din/
+    post_url: ''
     results:
       AUC: 0.7912
     paper_date: ''
 - algorithm: DSIN
   sources:
-  - arxiv_id: '1905.06452'
+  - arxiv_id: '1905.06482'
     paper_title: Deep Session Interest Network for Click-Through Rate Prediction
-    source: https://arxiv.org/abs/1905.06452
-    post_url: /2026/04/03/dsin/
+    source: https://arxiv.org/abs/1905.06482v1
+    post_url: /2019/05/16/deep-session-interest-network-for-click-through-ra/
     results:
       AUC: 0.7889
     paper_date: ''
@@ -114,8 +115,8 @@ entries:
   sources:
   - arxiv_id: '1606.07792'
     paper_title: Wide & Deep Learning for Recommender Systems
-    source: https://arxiv.org/abs/1606.07792
-    post_url: /2026/04/03/wide-deep/
+    source: https://arxiv.org/abs/1606.07792v1
+    post_url: /2016/06/24/wide-deep-learning-for-recommender-systems/
     results:
       AUC: 0.788
     paper_date: ''
@@ -123,17 +124,18 @@ entries:
   sources:
   - arxiv_id: '1611.00144'
     paper_title: Product-based Neural Networks for User Response Prediction
-    source: https://arxiv.org/abs/1611.00144
-    post_url: /2026/04/03/pnn/
+    source: https://arxiv.org/abs/1611.00144v1
+    post_url: /2016/11/01/product-based-neural-networks-for-user-response-pr/
     results:
       AUC: 0.7856
     paper_date: ''
 - algorithm: FNN
   sources:
   - arxiv_id: '1601.02376'
-    paper_title: Deep Learning over Multi-field Categorical Data
-    source: https://arxiv.org/abs/1601.02376
-    post_url: /2026/04/03/fnn/
+    paper_title: 'Deep Learning over Multi-field Categorical Data: A Case Study on
+      User Response Prediction'
+    source: https://arxiv.org/abs/1601.02376v1
+    post_url: /2016/01/11/deep-learning-over-multi-field-categorical-data-a-/
     results:
       AUC: 0.7826
     paper_date: ''
@@ -169,6 +171,14 @@ entries:
       HR@10: 0.4821
     paper_date: 2023-04-30
 - algorithm: Deep Interest Evolution Network for Click
+  sources:
+  - arxiv_id: '1809.03672'
+    paper_title: Deep Interest Evolution Network for Click-Through Rate Prediction
+    source: https://arxiv.org/abs/1809.03672v5
+    post_url: /2018/09/11/deep-interest-evolution-network-for-click-through-/
+    results: {}
+    paper_date: 2018-09-11
+- algorithm: Deep Interest Evolution Network for Click-Through Rate Prediction
   sources:
   - arxiv_id: '1809.03672'
     paper_title: Deep Interest Evolution Network for Click-Through Rate Prediction

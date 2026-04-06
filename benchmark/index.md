@@ -192,6 +192,12 @@ title: Benchmark Leaderboard
   color: #2563eb;
 }
 
+.algo-name.disabled {
+  color: #1a1a2e;
+  cursor: default;
+  text-decoration: none;
+}
+
 .algo-meta {
   font-size: 12px;
   color: #999;
@@ -247,6 +253,12 @@ title: Benchmark Leaderboard
 
 .paper-link:hover {
   text-decoration: underline;
+}
+
+.paper-link.disabled {
+  color: #94a3b8;
+  cursor: default;
+  text-decoration: none;
 }
 
 /* Empty State */
@@ -763,13 +775,66 @@ const POSTS_BY_ARXIV = POSTS.reduce((acc, post) => {
   return acc;
 }, {});
 
-function resolvePost(source) {
-  const arxivId = normalizeArxivId(source.arxiv_id);
-  return POSTS_BY_ARXIV[arxivId] || null;
+function normalizeTitle(title) {
+  return String(title || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
 }
 
-function resolvePostUrl(source) {
-  return resolvePost(source)?.url || source.post_url || source.source || '#';
+function normalizeAlgorithmName(name) {
+  return normalizeTitle(name).replace(/\s+/g, '');
+}
+
+const POSTS_BY_TITLE = POSTS.reduce((acc, post) => {
+  const titleKey = normalizeTitle(post.title);
+  if (!titleKey) return acc;
+
+  if (!acc[titleKey] || (!acc[titleKey].has_analysis && post.has_analysis)) {
+    acc[titleKey] = post;
+  }
+  return acc;
+}, {});
+
+const POSTS_BY_ALGORITHM = POSTS.reduce((acc, post) => {
+  const prefix = String(post.title || '').split(':')[0] || post.title;
+  const algorithmKey = normalizeAlgorithmName(prefix);
+  if (!algorithmKey) return acc;
+
+  if (!acc[algorithmKey] || (!acc[algorithmKey].has_analysis && post.has_analysis)) {
+    acc[algorithmKey] = post;
+  }
+  return acc;
+}, {});
+
+function resolvePost(source, algorithm) {
+  const arxivId = normalizeArxivId(source.arxiv_id);
+  if (arxivId && POSTS_BY_ARXIV[arxivId]) {
+    return POSTS_BY_ARXIV[arxivId];
+  }
+
+  const titleKey = normalizeTitle(source.paper_title);
+  if (titleKey && POSTS_BY_TITLE[titleKey]) {
+    return POSTS_BY_TITLE[titleKey];
+  }
+
+  const algorithmKey = normalizeAlgorithmName(algorithm);
+  if (algorithmKey && POSTS_BY_ALGORITHM[algorithmKey]) {
+    return POSTS_BY_ALGORITHM[algorithmKey];
+  }
+
+  return null;
+}
+
+function resolveAnalysisUrl(source, algorithm) {
+  return resolvePost(source, algorithm)?.url || null;
+}
+
+function renderAlgorithmName(name, analysisUrl) {
+  if (!analysisUrl) {
+    return `<span class="algo-name disabled">${name}</span>`;
+  }
+  return `<a href="${analysisUrl}" class="algo-name">${name}</a>`;
 }
 
 // Render Timeline in Right Panel
@@ -905,7 +970,7 @@ function flattenEntriesWithSources(entries) {
 // Render CTR/CVR row (single metric AUC)
 function renderRow(flatEntry, rank, metric, baseline, showRank) {
   const source = flatEntry.source;
-  const postUrl = resolvePostUrl(source);
+  const analysisUrl = resolveAnalysisUrl(source, flatEntry.algorithm);
   const value = source.results[metric];
   if (value === undefined) return '';
 
@@ -926,7 +991,7 @@ function renderRow(flatEntry, rank, metric, baseline, showRank) {
     <tr>
       <td class="rank-cell">${rankHtml}</td>
       <td class="algo-cell">
-        <a href="${postUrl}" class="algo-name">${flatEntry.algorithm}</a>
+        ${renderAlgorithmName(flatEntry.algorithm, analysisUrl)}
         <div class="algo-meta">${source.arxiv_id || ''}</div>
       </td>
       <td class="metric-cell${isBest ? ' best' : ''}">${value.toFixed(4)}</td>
@@ -935,7 +1000,7 @@ function renderRow(flatEntry, rank, metric, baseline, showRank) {
         <span class="paper-title" title="${source.paper_title}">${source.paper_title}</span>
         <div class="paper-links">
           <a href="${source.source}" target="_blank" class="paper-link">Paper</a>
-          <a href="${postUrl}" class="paper-link">Analysis</a>
+          ${analysisUrl ? `<a href="${analysisUrl}" class="paper-link">Analysis</a>` : `<span class="paper-link disabled">Analysis</span>`}
         </div>
       </td>
     </tr>
@@ -945,7 +1010,7 @@ function renderRow(flatEntry, rank, metric, baseline, showRank) {
 // Render dual metric row (for LLM4Rec with HR@10 and NDCG@10)
 function renderDualRow(flatEntry, rank, showRank) {
   const source = flatEntry.source;
-  const postUrl = resolvePostUrl(source);
+  const analysisUrl = resolveAnalysisUrl(source, flatEntry.algorithm);
   const hr10 = source.results['HR@10'];
   const ndcg10 = source.results['NDCG@10'];
   if (hr10 === undefined && ndcg10 === undefined) return '';
@@ -966,7 +1031,7 @@ function renderDualRow(flatEntry, rank, showRank) {
     <tr>
       <td class="rank-cell">${rankHtml}</td>
       <td class="algo-cell">
-        <a href="${postUrl}" class="algo-name">${flatEntry.algorithm}</a>
+        ${renderAlgorithmName(flatEntry.algorithm, analysisUrl)}
         <div class="algo-meta">${source.arxiv_id || ''}</div>
       </td>
       <td class="metric-cell${isBest ? ' best' : ''}">${hr10 !== undefined ? hr10.toFixed(4) : '-'}</td>
@@ -975,7 +1040,7 @@ function renderDualRow(flatEntry, rank, showRank) {
         <span class="paper-title" title="${source.paper_title}">${source.paper_title}</span>
         <div class="paper-links">
           <a href="${source.source}" target="_blank" class="paper-link">Paper</a>
-          <a href="${postUrl}" class="paper-link">Analysis</a>
+          ${analysisUrl ? `<a href="${analysisUrl}" class="paper-link">Analysis</a>` : `<span class="paper-link disabled">Analysis</span>`}
         </div>
       </td>
     </tr>

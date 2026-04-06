@@ -66,3 +66,29 @@ entries:
     post_url: /2026/04/03/multi-agent-video-recommenders-evolution-patterns/
     results: {}
     paper_date: 2026-04-03
+- algorithm: Multi-Agent Video Recommenders
+  sources:
+  - arxiv_id: 2604.02211
+    paper_title: 'Multi-Agent Video Recommenders: Evolution, Patterns, and Open Challenges'
+    source: https://arxiv.org/pdf/2604.02211v1
+    post_url: /2026/04/03/multi-agent-video-recommenders-evolution-patterns/
+    results: {}
+    paper_date: 2026-04-03
+- algorithm: Chat-REC
+  sources:
+  - arxiv_id: '2303.14524'
+    paper_title: 'Chat-REC: Towards Interactive and Explainable LLMs-Augmented Recommender
+      System'
+    source: https://arxiv.org/abs/2303.14524v2
+    post_url: /2023/03/25/chat-rec-towards-interactive-and-explainable-llms-/
+    results: {}
+    paper_date: 2023-03-25
+- algorithm: Zero-shot Cross-domain Knowledge Distillation
+  sources:
+  - arxiv_id: 2603.28994
+    paper_title: 'Zero-shot Cross-domain Knowledge Distillation: A Case study on YouTube
+      Music'
+    source: https://arxiv.org/pdf/2603.28994v1
+    post_url: /2026/04/03/zero-shot-cross-domain-knowledge-distillation-a-ca/
+    results: {}
+    paper_date: 2026-04-03

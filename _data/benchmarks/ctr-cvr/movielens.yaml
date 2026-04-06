@@ -31,14 +31,22 @@ entries:
 - algorithm: Aligning Multimodal Sequential Recommendations via Robust Direct Preference
     Optimization with Sparse MoE
   sources:
-  - arxiv_id: '2603.29259'
+  - arxiv_id: 2603.29259
     paper_title: Aligning Multimodal Sequential Recommendations via Robust Direct
       Preference Optimization with Sparse MoE
-    source: https://arxiv.org/abs/2603.29259v1
-    post_url: /2026/03/31/aligning-multimodal-sequential-recommendations-via/
+    source: https://arxiv.org/pdf/2603.29259v1
+    post_url: /2026/04/03/aligning-multimodal-sequential-recommendations-via/
     results: {}
     paper_date: 2026-03-31
 - algorithm: Deep Interest Evolution Network for Click
+  sources:
+  - arxiv_id: '1809.03672'
+    paper_title: Deep Interest Evolution Network for Click-Through Rate Prediction
+    source: https://arxiv.org/abs/1809.03672v5
+    post_url: /2018/09/11/deep-interest-evolution-network-for-click-through-/
+    results: {}
+    paper_date: 2018-09-11
+- algorithm: Deep Interest Evolution Network for Click-Through Rate Prediction
   sources:
   - arxiv_id: '1809.03672'
     paper_title: Deep Interest Evolution Network for Click-Through Rate Prediction

@@ -25,3 +25,12 @@ entries:
     post_url: /2016/01/11/deep-learning-over-multi-field-categorical-data-a-/
     results: {}
     paper_date: 2016-01-11
+- algorithm: Deep Learning over Multi-field Categorical Data
+  sources:
+  - arxiv_id: '1601.02376'
+    paper_title: 'Deep Learning over Multi-field Categorical Data: A Case Study on
+      User Response Prediction'
+    source: https://arxiv.org/abs/1601.02376v1
+    post_url: /2016/01/11/deep-learning-over-multi-field-categorical-data-a-/
+    results: {}
+    paper_date: 2016-01-11

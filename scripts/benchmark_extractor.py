@@ -88,6 +88,81 @@ def normalize_arxiv_id(value: str) -> str:
     return match.group(1) if match else str(value).strip()
 
 
+def normalize_paper_title(value: str) -> str:
+    """Normalize title for fuzzy identity matching."""
+    if not value:
+        return ''
+
+    normalized = re.sub(r'[^a-z0-9]+', ' ', str(value).lower())
+    return ' '.join(normalized.split())
+
+
+def normalize_algorithm_name(value: str) -> str:
+    """Normalize algorithm names for looser post matching."""
+    return normalize_paper_title(value).replace(' ', '')
+
+
+def extract_algorithm_name(title: str) -> str:
+    """Extract a stable algorithm/model name from a paper title."""
+    if not title:
+        return ''
+
+    if ':' in title:
+        return title.split(':', 1)[0].strip()
+
+    if ' - ' in title:
+        return title.split(' - ', 1)[0].strip()
+
+    return title.strip()
+
+
+def build_known_posts_index(posts_data: List[dict]) -> dict:
+    """Build lookup tables for benchmark posts by arXiv ID and title."""
+    index = {
+        'by_arxiv': {},
+        'by_title': {},
+        'by_algorithm': {},
+    }
+
+    for post in posts_data:
+        algorithm_key = normalize_algorithm_name(post.get('algorithm', ''))
+        for source in post.get('sources', []):
+            arxiv_id = normalize_arxiv_id(source.get('arxiv_id', ''))
+            title_key = normalize_paper_title(source.get('paper_title', ''))
+            source_copy = {
+                'arxiv_id': source.get('arxiv_id', ''),
+                'paper_title': source.get('paper_title', ''),
+                'source': source.get('source', ''),
+                'post_url': source.get('post_url', ''),
+                'paper_date': source.get('paper_date', ''),
+            }
+            if arxiv_id:
+                index['by_arxiv'][arxiv_id] = source_copy
+            if title_key:
+                index['by_title'][title_key] = source_copy
+            if algorithm_key and algorithm_key not in index['by_algorithm']:
+                index['by_algorithm'][algorithm_key] = source_copy
+
+    return index
+
+
+def resolve_known_post(source: dict, known_posts: dict, algorithm: str = '') -> dict | None:
+    """Resolve a benchmark source to a real post using arXiv ID or title."""
+    arxiv_id = normalize_arxiv_id(source.get('arxiv_id', ''))
+    if arxiv_id and arxiv_id in known_posts['by_arxiv']:
+        return known_posts['by_arxiv'][arxiv_id]
+
+    title_key = normalize_paper_title(source.get('paper_title', ''))
+    if title_key and title_key in known_posts['by_title']:
+        return known_posts['by_title'][title_key]
+
+    algorithm_key = normalize_algorithm_name(algorithm)
+    if algorithm_key and algorithm_key in known_posts['by_algorithm']:
+        return known_posts['by_algorithm'][algorithm_key]
+
+    return None
+
+
 def load_existing_data() -> Dict[str, Dict[str, dict]]:
     """Load existing _data/benchmarks/*.yaml data"""
     benchmarks = defaultdict(lambda: defaultdict(lambda: {
@@ -165,17 +240,27 @@ def merge_entry(existing_entries: list, new_entry: dict) -> list:
     # Collect existing arXiv IDs and source index
     existing_arxiv_ids = set()
     existing_source_map = {}
+    existing_title_map = {}
     for source in existing_sources:
         normalized_arxiv = normalize_arxiv_id(source.get('arxiv_id', ''))
+        normalized_title = normalize_paper_title(source.get('paper_title', ''))
         if normalized_arxiv:
             existing_arxiv_ids.add(normalized_arxiv)
             existing_source_map[normalized_arxiv] = source
+        if normalized_title:
+            existing_title_map[normalized_title] = source
 
     # Add or refresh sources by arXiv ID
     for new_source in new_sources:
         new_arxiv_id = normalize_arxiv_id(new_source.get('arxiv_id', ''))
+        new_title_key = normalize_paper_title(new_source.get('paper_title', ''))
+        existing_source = None
         if new_arxiv_id and new_arxiv_id in existing_source_map:
             existing_source = existing_source_map[new_arxiv_id]
+        elif new_title_key and new_title_key in existing_title_map:
+            existing_source = existing_title_map[new_title_key]
+
+        if existing_source is not None:
             if new_source.get('paper_title'):
                 existing_source['paper_title'] = new_source['paper_title']
             if new_source.get('source'):
@@ -189,16 +274,47 @@ def merge_entry(existing_entries: list, new_entry: dict) -> list:
             if new_source.get('results'):
                 existing_source.setdefault('results', {})
                 existing_source['results'].update(new_source['results'])
+            refreshed_arxiv_id = normalize_arxiv_id(existing_source.get('arxiv_id', ''))
+            refreshed_title_key = normalize_paper_title(existing_source.get('paper_title', ''))
+            if refreshed_arxiv_id:
+                existing_arxiv_ids.add(refreshed_arxiv_id)
+                existing_source_map[refreshed_arxiv_id] = existing_source
+            if refreshed_title_key:
+                existing_title_map[refreshed_title_key] = existing_source
         elif new_arxiv_id and new_arxiv_id not in existing_arxiv_ids:
             existing_sources.append(new_source)
             existing_arxiv_ids.add(new_arxiv_id)
             existing_source_map[new_arxiv_id] = new_source
+            if new_title_key:
+                existing_title_map[new_title_key] = new_source
         elif not new_arxiv_id:
             # If no arXiv ID, just append to avoid duplicates
             existing_sources.append(new_source)
+            if new_title_key:
+                existing_title_map[new_title_key] = new_source
 
     existing_entry['sources'] = existing_sources
     return existing_entries
+
+
+def sanitize_benchmark_links(benchmarks: Dict[str, Dict[str, dict]], known_posts: dict):
+    """Repair stale benchmark post links and clear unverifiable analysis URLs."""
+    for datasets in benchmarks.values():
+        for bench in datasets.values():
+            for entry in bench.get('entries', []):
+                for source in entry.get('sources', []):
+                    known_post = resolve_known_post(source, known_posts, entry.get('algorithm', ''))
+                    if not known_post:
+                        source['post_url'] = ''
+                        continue
+
+                    source['post_url'] = known_post.get('post_url', '') or ''
+                    if known_post.get('arxiv_id'):
+                        source['arxiv_id'] = known_post['arxiv_id']
+                    if known_post.get('paper_title'):
+                        source['paper_title'] = known_post['paper_title']
+                    if known_post.get('source'):
+                        source['source'] = known_post['source']
 
 
 def extract_frontmatter(content: str) -> tuple[dict, str]:
@@ -499,7 +615,7 @@ def extract_benchmark_from_post(filepath: Path) -> dict:
     post_url = f"/{filename.split('-')[0]}/{filename.split('-')[1]}/{filename.split('-')[2]}/{slug}/"
 
     # 提取算法名（从标题或分类）
-    algorithm = title.split(':')[0].split('-')[0].strip() if title else ''
+    algorithm = extract_algorithm_name(title)
     if not algorithm or len(algorithm) < 2:
         # 尝试从分类中提取
         for cat in categories:
@@ -567,6 +683,8 @@ def main():
 
     print(f"\nExtracted data from {len(posts_data)} posts")
 
+    known_posts = build_known_posts_index(posts_data)
+
     # 3. 调用 merge_entry() for each new data
     for post in posts_data:
         domain = post['domain']
@@ -599,6 +717,8 @@ def main():
                 'sources': post['sources']
             }
             bench['entries'] = merge_entry(bench['entries'], entry_to_merge)
+
+    sanitize_benchmark_links(benchmarks, known_posts)
 
     # 4. 将合并结果写入 _data/benchmarks/*.yaml
     output_dir = Path('_data/benchmarks')

@@ -13,7 +13,7 @@ entries:
   - arxiv_id: '2403.13382'
     paper_title: 'RAGRec: Retrieval-Augmented Generation for Recommendation'
     source: https://arxiv.org/abs/2403.13382
-    post_url: /2026/04/03/ragrec/
+    post_url: ''
     results:
       HR@10: 0.6892
       NDCG@10: 0.4534
@@ -23,7 +23,7 @@ entries:
   - arxiv_id: '2401.12245'
     paper_title: 'LLaMA for Recommendation: Towards Open-source Foundation Models'
     source: https://arxiv.org/abs/2401.12245
-    post_url: /2026/04/03/llama-rec/
+    post_url: ''
     results:
       HR@10: 0.6789
       NDCG@10: 0.4456
@@ -33,7 +33,7 @@ entries:
   - arxiv_id: '2310.10456'
     paper_title: Recommending Products with Large Language Models
     source: https://arxiv.org/abs/2310.10456
-    post_url: /2026/04/03/gpt4-rec/
+    post_url: ''
     results:
       HR@10: 0.6543
       NDCG@10: 0.4231
@@ -43,7 +43,7 @@ entries:
   - arxiv_id: '2404.12345'
     paper_title: MiniCPM for On-Device Recommendation
     source: https://arxiv.org/abs/2404.12345
-    post_url: /2026/04/03/minicpm-rec/
+    post_url: ''
     results:
       HR@10: 0.6612
       NDCG@10: 0.4315
@@ -53,7 +53,7 @@ entries:
   - arxiv_id: '2312.11631'
     paper_title: 'TEMOS: Generating Movies from Text Descriptions'
     source: https://arxiv.org/abs/2312.11631
-    post_url: /2026/04/03/temos/
+    post_url: ''
     results:
       HR@10: 0.6234
       NDCG@10: 0.4056
@@ -63,19 +63,19 @@ entries:
   - arxiv_id: '2604.00590'
     paper_title: 'UniMixer: A Unified Architecture for Scaling Laws in Recommendation
       Systems'
-    source: https://arxiv.org/abs/2604.00590
-    post_url: /2026/04/03/unimixer/
+    source: https://arxiv.org/abs/2604.00590v2
+    post_url: /2026/04/01/unimixer-a-unified-architecture-for-scaling-laws-i/
     results:
       HR@10: 0.6456
       NDCG@10: 0.4189
     paper_date: ''
 - algorithm: RoDPO
   sources:
-  - arxiv_id: '2603.29259'
+  - arxiv_id: 2603.29259
     paper_title: Aligning Multimodal Sequential Recommendations via Robust Direct
       Preference Optimization with Sparse MoE
-    source: https://arxiv.org/abs/2603.29259
-    post_url: /2026/04/03/rodpo/
+    source: https://arxiv.org/pdf/2603.29259v1
+    post_url: /2026/04/03/aligning-multimodal-sequential-recommendations-via/
     results:
       HR@10: 0.6324
       NDCG@10: 0.4125
@@ -85,7 +85,7 @@ entries:
   - arxiv_id: '2204.07240'
     paper_title: 'P5: Pretraining and Prompting for Personalized Content Recommendation'
     source: https://arxiv.org/abs/2204.07240
-    post_url: /2026/04/03/p5/
+    post_url: ''
     results:
       HR@10: 0.6234
       NDCG@10: 0.3956
@@ -104,11 +104,11 @@ entries:
 - algorithm: Aligning Multimodal Sequential Recommendations via Robust Direct Preference
     Optimization with Sparse MoE
   sources:
-  - arxiv_id: '2603.29259'
+  - arxiv_id: 2603.29259
     paper_title: Aligning Multimodal Sequential Recommendations via Robust Direct
       Preference Optimization with Sparse MoE
-    source: https://arxiv.org/abs/2603.29259v1
-    post_url: /2026/03/31/aligning-multimodal-sequential-recommendations-via/
+    source: https://arxiv.org/pdf/2603.29259v1
+    post_url: /2026/04/03/aligning-multimodal-sequential-recommendations-via/
     results: {}
     paper_date: 2026-03-31
 - algorithm: Wide & Deep Learning for Recommender Systems

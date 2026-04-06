@@ -14,7 +14,7 @@ entries:
   - arxiv_id: '2309.07978'
     paper_title: LLM-based Reranking for Personalized Recommendation
     source: https://arxiv.org/abs/2309.07978
-    post_url: /2026/04/03/llm-rerank/
+    post_url: ''
     results:
       HR@10: 0.7234
       NDCG@10: 0.4956
@@ -24,7 +24,7 @@ entries:
   - arxiv_id: '2204.07240'
     paper_title: 'P5: Pretraining and Prompting for Personalized Content Recommendation'
     source: https://arxiv.org/abs/2204.07240
-    post_url: /2026/04/03/p5/
+    post_url: ''
     results:
       HR@10: 0.7125
       NDCG@10: 0.4831
@@ -34,18 +34,18 @@ entries:
   - arxiv_id: '2308.12497'
     paper_title: 'InstructRec: Large Language Models for Personalized Search and Recommendation'
     source: https://arxiv.org/abs/2308.12497
-    post_url: /2026/04/03/instructrec/
+    post_url: ''
     results:
       HR@10: 0.6958
       NDCG@10: 0.4672
     paper_date: ''
 - algorithm: Chat-REC
   sources:
-  - arxiv_id: '2307.07355'
-    paper_title: 'Chat-REC: Towards Enabling Large Language Models to Generate Conversational
-      Recommendations'
-    source: https://arxiv.org/abs/2307.07355
-    post_url: /2026/04/03/chat-rec/
+  - arxiv_id: '2303.14524'
+    paper_title: 'Chat-REC: Towards Interactive and Explainable LLMs-Augmented Recommender
+      System'
+    source: https://arxiv.org/abs/2303.14524v2
+    post_url: /2023/03/25/chat-rec-towards-interactive-and-explainable-llms-/
     results:
       HR@10: 0.6823
       NDCG@10: 0.4512
@@ -55,7 +55,7 @@ entries:
   - arxiv_id: '2401.12245'
     paper_title: 'LLaMA for Recommendation: Towards Open-source Foundation Models'
     source: https://arxiv.org/abs/2401.12245
-    post_url: /2026/04/03/llama-rec/
+    post_url: ''
     results:
       HR@10: 0.6789
       NDCG@10: 0.4456
@@ -65,7 +65,7 @@ entries:
   - arxiv_id: '2310.10133'
     paper_title: 'RecAgent: A Preliminary Study on Large Language Model for Recommendation'
     source: https://arxiv.org/abs/2310.10133
-    post_url: /2026/04/03/recagent/
+    post_url: ''
     results:
       HR@10: 0.6589
       NDCG@10: 0.4387
@@ -75,19 +75,19 @@ entries:
   - arxiv_id: '2604.00590'
     paper_title: 'UniMixer: A Unified Architecture for Scaling Laws in Recommendation
       Systems'
-    source: https://arxiv.org/abs/2604.00590
-    post_url: /2026/04/03/unimixer/
+    source: https://arxiv.org/abs/2604.00590v2
+    post_url: /2026/04/01/unimixer-a-unified-architecture-for-scaling-laws-i/
     results:
       HR@10: 0.7056
       NDCG@10: 0.4712
     paper_date: ''
 - algorithm: RoDPO
   sources:
-  - arxiv_id: '2603.29259'
+  - arxiv_id: 2603.29259
     paper_title: Aligning Multimodal Sequential Recommendations via Robust Direct
       Preference Optimization with Sparse MoE
-    source: https://arxiv.org/abs/2603.29259
-    post_url: /2026/04/03/rodpo/
+    source: https://arxiv.org/pdf/2603.29259v1
+    post_url: /2026/04/03/aligning-multimodal-sequential-recommendations-via/
     results:
       HR@10: 0.6892
       NDCG@10: 0.4625
@@ -97,8 +97,8 @@ entries:
   - arxiv_id: '2603.28124'
     paper_title: 'RCLRec: Reverse Curriculum Learning for Modeling Sparse Conversions
       in Generative Recommendation'
-    source: https://arxiv.org/abs/2603.28124
-    post_url: /2026/04/03/rclrec/
+    source: https://arxiv.org/abs/2603.28124v1
+    post_url: /2026/03/30/rclrec-reverse-curriculum-learning-for-modeling-sp/
     results:
       HR@10: 0.6734
       NDCG@10: 0.4538
@@ -118,11 +118,11 @@ entries:
 - algorithm: Aligning Multimodal Sequential Recommendations via Robust Direct Preference
     Optimization with Sparse MoE
   sources:
-  - arxiv_id: '2603.29259'
+  - arxiv_id: 2603.29259
     paper_title: Aligning Multimodal Sequential Recommendations via Robust Direct
       Preference Optimization with Sparse MoE
-    source: https://arxiv.org/abs/2603.29259v1
-    post_url: /2026/03/31/aligning-multimodal-sequential-recommendations-via/
+    source: https://arxiv.org/pdf/2603.29259v1
+    post_url: /2026/04/03/aligning-multimodal-sequential-recommendations-via/
     results: {}
     paper_date: 2026-03-31
 - algorithm: Wide & Deep Learning for Recommender Systems
