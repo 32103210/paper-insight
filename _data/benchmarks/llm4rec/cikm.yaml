@@ -1,0 +1,17 @@
+dataset: CIKM
+domain: LLM4Rec
+description: cikm dataset for LLM4Rec
+metrics:
+- Recall@20
+- NDCG@20
+entries:
+- algorithm: A Logical-Rule Autoencoder for Interpretable Recommendations
+  sources:
+  - arxiv_id: '2604.04270'
+    paper_title: A Logical-Rule Autoencoder for Interpretable Recommendations
+    source: https://arxiv.org/abs/2604.04270v1
+    post_url: /2026/04/07/a-logical-rule-autoencoder-for-interpretable-recom/
+    results:
+      Recall@20: 0.1545
+      NDCG@20: 0.068
+    paper_date: 2026-04-07

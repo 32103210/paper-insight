@@ -92,3 +92,11 @@ entries:
     post_url: /2026/04/03/zero-shot-cross-domain-knowledge-distillation-a-ca/
     results: {}
     paper_date: 2026-04-03
+- algorithm: Learning from Equivalence Queries, Revisited
+  sources:
+  - arxiv_id: '2604.04535'
+    paper_title: Learning from Equivalence Queries, Revisited
+    source: https://arxiv.org/abs/2604.04535v1
+    post_url: /2026/04/07/learning-from-equivalence-queries-revisited/
+    results: {}
+    paper_date: 2026-04-07

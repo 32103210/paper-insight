@@ -6,6 +6,7 @@ metrics:
 - NDCG@5
 - HR@10
 - Latency
+- NDCG@10
 entries:
 - algorithm: SIM
   sources:
@@ -16,6 +17,17 @@ entries:
     results:
       AUC: 0.915
     paper_date: ''
+- algorithm: FAVE
+  sources:
+  - arxiv_id: '2604.04427'
+    paper_title: 'FAVE: Flow-based Average Velocity Establishment for Sequential Recommendation'
+    source: https://arxiv.org/abs/2604.04427v1
+    post_url: /2026/04/07/fave-flow-based-average-velocity-establishment-for/
+    results:
+      NDCG@5: 0.4534
+      NDCG@10: 0.5389
+      AUC: 0.8512
+    paper_date: 2026-04-07
 - algorithm: xDeepFM
   sources:
   - arxiv_id: '1803.05170'
