@@ -13,6 +13,8 @@ import re
 from datetime import datetime
 from typing import List, Optional
 
+from crawler import fetch_industry_affiliations
+
 # Paper categories based on benchmark data
 # Format: (Name, arxiv_id)
 # Some IDs have been corrected based on verification
@@ -100,9 +102,14 @@ description: "{paper_info['description']}"
 analysis_generated: false
 categories:
   - {category}
----
-
 """
+    if paper_info.get("industry_affiliations"):
+        frontmatter += "industry_affiliations:\n"
+        for affiliation in paper_info["industry_affiliations"]:
+            frontmatter += f"  - {affiliation}\n"
+
+    frontmatter += "---\n\n"
+
     return frontmatter + f"# {paper_info['title']}\n\n**Authors:** {paper_info['authors']}\n\n**arXiv ID:** [{paper_info['arxiv_id']}]({paper_info['source']})\n\n**Published:** {paper_info['date']}\n\n---\n\n## Abstract\n\n{paper_info['description']}"
 
 
@@ -126,6 +133,7 @@ def fetch_paper_by_id(client: arxiv.Client, arxiv_id: str) -> Optional[dict]:
             "source": result.pdf_url.replace('/pdf/', '/abs/') if '/pdf/' in result.pdf_url else result.entry_id,
             "description": truncate_description(result.summary),
             "published": result.published,
+            "industry_affiliations": fetch_industry_affiliations(result.entry_id.split('/')[-1]),
         }
     except Exception as e:
         print(f"Error fetching {arxiv_id}: {e}")

@@ -10,8 +10,11 @@ import os
 import sys
 import time
 import logging
+import re
 from datetime import datetime, timedelta
 from typing import List
+from html import unescape
+from urllib import error, request
 
 # 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -41,6 +44,30 @@ MAX_RETRIES = 5
 
 # 初始重试等待时间（秒）
 INITIAL_RETRY_DELAY = 15
+
+HTML_REQUEST_TIMEOUT = 20
+HTML_USER_AGENT = "paper-insight/1.0 (+https://github.com/32103210/paper-insight)"
+
+INDUSTRY_KEYWORDS = (
+    "google", "alphabet", "meta", "facebook", "amazon", "apple", "microsoft",
+    "netflix", "bytedance", "bytedance", "alibaba", "ant group", "tencent",
+    "meituan", "kuaishou", "baidu", "huawei", "xiaomi", "jd.com", "jingdong",
+    "didi", "uber", "airbnb", "spotify", "linkedin", "openai", "anthropic",
+    "salesforce", "yahoo", "shopify", "shopee", "grab", "paypal", "ebay",
+    "rakuten", "instacart", "pinterest", "snap", "booking.com", "trip.com",
+    "doordash", "intel", "samsung", "nvidia", "qualcomm", "adobe", "oracle",
+    "ibm", "microsoft research", "google research", "noah's ark", "sea ai lab",
+)
+
+ACADEMIC_KEYWORDS = (
+    "university", "college", "institute", "school", "academy", "hospital",
+    "faculty", "department", "laboratory", "lab", "research center",
+)
+
+AFFILIATION_PATTERN = re.compile(
+    r'ltx_affiliation_institution">([^<]+)</span>',
+    flags=re.IGNORECASE,
+)
 
 
 def search_with_retry(client, search, max_retries=MAX_RETRIES):
@@ -113,6 +140,73 @@ def search_with_retry(client, search, max_retries=MAX_RETRIES):
     return all_results if all_results else []
 
 
+def normalize_affiliation_name(name: str) -> str:
+    """规范化单位名称。"""
+    if not name:
+        return ""
+
+    normalized = unescape(str(name))
+    normalized = re.sub(r"\s+", " ", normalized).strip(" ,;")
+    return normalized
+
+
+def normalize_affiliation_lookup(name: str) -> str:
+    """将单位名归一化为适合关键词匹配的 token 串。"""
+    normalized = normalize_affiliation_name(name).lower()
+    normalized = re.sub(r"[^a-z0-9]+", " ", normalized)
+    normalized = re.sub(r"\s+", " ", normalized).strip()
+    return normalized
+
+
+def is_industry_affiliation(name: str) -> bool:
+    """判断单位是否属于工业界。"""
+    normalized = normalize_affiliation_name(name).lower()
+    lookup = normalize_affiliation_lookup(name)
+    if not normalized or not lookup:
+        return False
+
+    if any(re.search(rf"\b{re.escape(normalize_affiliation_lookup(keyword))}\b", lookup) for keyword in INDUSTRY_KEYWORDS):
+        return True
+
+    has_corporate_suffix = any(
+        re.search(rf"\b{suffix}\b", lookup)
+        for suffix in ("inc", "ltd", "llc", "corp", "corporation", "company", "gmbh", "plc", "ag")
+    )
+    if has_corporate_suffix and not any(keyword in lookup for keyword in ACADEMIC_KEYWORDS):
+        return True
+
+    return False
+
+
+def extract_industry_affiliations_from_html(html: str) -> List[str]:
+    """从 arXiv HTML 页面中提取工业界单位。"""
+    affiliations = []
+    for match in AFFILIATION_PATTERN.findall(html or ""):
+        affiliation = normalize_affiliation_name(match)
+        if affiliation and is_industry_affiliation(affiliation) and affiliation not in affiliations:
+            affiliations.append(affiliation)
+
+    return affiliations
+
+
+def fetch_industry_affiliations(arxiv_id: str) -> List[str]:
+    """抓取 arXiv HTML 页面中的工业界单位。"""
+    if not arxiv_id:
+        return []
+
+    html_url = f"https://arxiv.org/html/{arxiv_id}"
+    req = request.Request(html_url, headers={"User-Agent": HTML_USER_AGENT})
+
+    try:
+        with request.urlopen(req, timeout=HTML_REQUEST_TIMEOUT) as resp:
+            html = resp.read().decode("utf-8", errors="ignore")
+    except (error.HTTPError, error.URLError, TimeoutError) as exc:
+        logger.warning("Failed to fetch affiliation HTML for %s: %s", arxiv_id, exc)
+        return []
+
+    return extract_industry_affiliations_from_html(html)
+
+
 def search_papers(days_back: int = DAYS_BACK, max_results: int = MAX_RESULTS) -> List[dict]:
     """
     搜索最近N天的推荐算法相关论文
@@ -171,6 +265,7 @@ def search_papers(days_back: int = DAYS_BACK, max_results: int = MAX_RESULTS) ->
             "pdf_url": result.pdf_url,
             "comment": result.comment if hasattr(result, 'comment') else None,
             "journal_ref": result.journal_ref if hasattr(result, 'journal_ref') else None,
+            "industry_affiliations": fetch_industry_affiliations(result.entry_id.split("/")[-1]),
         }
         papers.append(paper_info)
         print(f"  Found: {paper_info['title'][:60]}...")

@@ -10,6 +10,8 @@ description: "In modern multi-stage recommendation systems, reranking plays a cr
 categories:
   - CTR预估
   - 电商
+industry_affiliations:
+  - Meituan
 ---
 
 # 论文分析报告：NSGR — 美团基于树结构的生成式重排方法

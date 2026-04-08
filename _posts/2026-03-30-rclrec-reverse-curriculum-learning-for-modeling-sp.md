@@ -9,6 +9,9 @@ source: "https://arxiv.org/abs/2603.28124v1"
 description: "Conversion objectives in large-scale recommender systems are sparse, making them difficult to optimize."
 categories:
   - 电商
+industry_affiliations:
+  - Alibaba International Digital Commerce Group
+  - Alibaba Group
 ---
 
 # 论文分析报告：RCLRec

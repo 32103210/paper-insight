@@ -31,11 +31,18 @@
             </a>
             {% endif %}
           </div>
-          {% if page.categories %}
+          {% if page.categories or page.industry_affiliations %}
           <div class="post-tags">
+            {% if page.categories %}
             {% for category in page.categories | uniq %}
             <span class="post-tag">{{ category }}</span>
             {% endfor %}
+            {% endif %}
+            {% if page.industry_affiliations %}
+            {% for affiliation in page.industry_affiliations %}
+            <span class="post-tag post-tag-industry">业界 · {{ affiliation }}</span>
+            {% endfor %}
+            {% endif %}
           </div>
           {% endif %}
 

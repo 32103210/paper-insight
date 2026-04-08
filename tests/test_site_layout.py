@@ -28,10 +28,19 @@ class SiteLayoutTests(unittest.TestCase):
         self.assertNotIn("cover-hero", index_md)
         self.assertIn("post-card", index_md)
         self.assertIn("{% include header.html %}", index_md)
+        self.assertIn('id="home-rail"', index_md)
+        self.assertIn('id="archive-timeline"', index_md)
+        self.assertIn('id="latest-posts"', index_md)
 
     def test_custom_page_and_post_shells_exist(self):
         self.assertTrue((REPO_ROOT / "_layouts/page.html").exists())
         self.assertTrue((REPO_ROOT / "_layouts/post.html").exists())
+
+    def test_homepage_script_refreshes_right_rail_with_filtered_posts(self):
+        app_js = self.read_text("assets/js/app.js")
+
+        self.assertIn("function renderHomeRail(posts)", app_js)
+        self.assertIn("renderHomeRail(posts);", app_js)
 
 
 if __name__ == "__main__":

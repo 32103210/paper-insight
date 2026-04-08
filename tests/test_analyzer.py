@@ -78,6 +78,18 @@ class AnalyzerTests(unittest.TestCase):
         mock_save_analysis.assert_not_called()
         mock_save_processed_id.assert_not_called()
 
+    def test_generate_frontmatter_writes_industry_affiliations(self):
+        paper = {
+            **self.paper_ok,
+            "industry_affiliations": ["Meituan", "Google Research"],
+        }
+
+        frontmatter = analyzer.generate_frontmatter(paper, ["通用"])
+
+        self.assertIn("industry_affiliations:\n", frontmatter)
+        self.assertIn("  - Meituan\n", frontmatter)
+        self.assertIn("  - Google Research\n", frontmatter)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -26,6 +26,9 @@ function normalizePosts(posts) {
     return {
       ...post,
       categories,
+      industry_affiliations: Array.isArray(post.industry_affiliations)
+        ? [...new Set(post.industry_affiliations.filter(Boolean))]
+        : [],
       description: post.description || excerpt,
       excerpt
     };
@@ -402,6 +405,73 @@ function updateBreadcrumb() {
   }
 }
 
+function parsePostDate(value) {
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? new Date(0) : parsed;
+}
+
+function formatMonthLabel(monthKey) {
+  const [year, month] = String(monthKey || '').split('-');
+  if (!year || !month) return monthKey;
+  return `${year}年${month}月`;
+}
+
+function renderHomeRail(posts) {
+  const archiveTimeline = document.getElementById('archive-timeline');
+  const latestPosts = document.getElementById('latest-posts');
+
+  if (!archiveTimeline || !latestPosts) {
+    return;
+  }
+
+  const sortedPosts = [...posts].sort((left, right) => parsePostDate(right.date) - parsePostDate(left.date));
+
+  if (sortedPosts.length === 0) {
+    const emptyState = '<p class="rail-empty">当前筛选下暂无文章</p>';
+    archiveTimeline.innerHTML = emptyState;
+    latestPosts.innerHTML = emptyState;
+    return;
+  }
+
+  const months = new Map();
+  sortedPosts.forEach(post => {
+    const monthKey = String(post.date || '').slice(0, 7);
+    if (!monthKey) return;
+    if (!months.has(monthKey)) {
+      months.set(monthKey, []);
+    }
+    months.get(monthKey).push(post);
+  });
+
+  archiveTimeline.innerHTML = Array.from(months.entries())
+    .slice(0, 6)
+    .map(([monthKey, monthPosts]) => `
+      <section class="archive-group">
+        <div class="archive-group-header">
+          <span class="archive-group-title">${formatMonthLabel(monthKey)}</span>
+          <span class="archive-group-count">${monthPosts.length} 篇</span>
+        </div>
+        <div class="archive-group-links">
+          ${monthPosts.slice(0, 3).map(post => `
+            <a class="archive-post-link" href="${post.url}">
+              <span class="archive-post-date">${post.date}</span>
+              <span class="archive-post-title">${post.title}</span>
+            </a>
+          `).join('')}
+        </div>
+      </section>
+    `).join('');
+
+  latestPosts.innerHTML = sortedPosts
+    .slice(0, 6)
+    .map(post => `
+      <a class="latest-post-link" href="${post.url}">
+        <span class="latest-post-date">${post.date}</span>
+        <span class="latest-post-title">${post.title}</span>
+      </a>
+    `).join('');
+}
+
 /**
  * Render posts to the container
  */
@@ -411,6 +481,7 @@ function renderPosts(posts) {
 
   if (posts.length === 0) {
     container.innerHTML = '<p class="no-results">没有找到匹配的文章</p>';
+    renderHomeRail(posts);
     return;
   }
 
@@ -429,10 +500,19 @@ function renderPosts(posts) {
             ${(post.tags || post.categories || []).map(tag => `<span class="post-card-tag">${tag}</span>`).join('')}
           </div>
         ` : ''}
+        ${(post.industry_affiliations || []).length > 0 ? `
+          <div class="post-card-tags">
+            ${(post.industry_affiliations || []).map(
+              affiliation => `<span class="post-card-tag post-card-tag-industry">业界 · ${affiliation}</span>`
+            ).join('')}
+          </div>
+        ` : ''}
       </div>
       ${(post.description || post.excerpt) ? `<p class="post-card-excerpt">${post.description || post.excerpt}</p>` : ''}
     </article>
   `).join('');
+
+  renderHomeRail(posts);
 }
 
 /**

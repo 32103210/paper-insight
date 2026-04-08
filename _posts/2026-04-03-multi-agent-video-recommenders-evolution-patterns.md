@@ -10,6 +10,8 @@ categories:
   - 通用
   - 短视频
   - 多模态
+industry_affiliations:
+  - Google LLC
 ---
 
 <think>

@@ -96,6 +96,24 @@ def normalize_categories(raw_categories) -> list:
     return list(dict.fromkeys([c for c in categories if c]))
 
 
+def normalize_string_list(raw_values) -> list:
+    """将 frontmatter 中的字符串或列表统一转换成去重字符串列表。"""
+    if not raw_values:
+        return []
+
+    if not isinstance(raw_values, list):
+        raw_values = [raw_values]
+
+    normalized = []
+    for item in raw_values:
+        if isinstance(item, str):
+            value = item.strip()
+            if value and value not in normalized:
+                normalized.append(value)
+
+    return normalized
+
+
 def load_post(filepath: Path) -> tuple[dict, str]:
     """读取 markdown post，返回 frontmatter 和正文。"""
     content = filepath.read_text(encoding="utf-8")
@@ -137,6 +155,7 @@ def build_paper_from_post(filepath: Path) -> Optional[dict]:
     authors_text = str(frontmatter.get("authors", "")).strip()
     abstract = extract_abstract_from_post(body, frontmatter)
     categories = normalize_categories(frontmatter.get("categories", []))
+    industry_affiliations = normalize_string_list(frontmatter.get("industry_affiliations", []))
 
     if not title or not abstract:
         return None
@@ -155,6 +174,7 @@ def build_paper_from_post(filepath: Path) -> Optional[dict]:
         "source_url": source,
         "post_date": post_date,
         "categories": categories,
+        "industry_affiliations": industry_affiliations,
         "output_path": str(filepath),
     }
 
@@ -287,6 +307,12 @@ description: {json.dumps(abstract_first_line[:200], ensure_ascii=False)}
     frontmatter += "categories:\n"
     for cat in final_categories:
         frontmatter += f"  - {cat}\n"
+
+    industry_affiliations = normalize_string_list(paper.get("industry_affiliations", []))
+    if industry_affiliations:
+        frontmatter += "industry_affiliations:\n"
+        for affiliation in industry_affiliations:
+            frontmatter += f"  - {affiliation}\n"
 
     frontmatter += "---\n\n"
     return frontmatter
