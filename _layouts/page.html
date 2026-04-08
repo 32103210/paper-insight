@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ page.title | default: site.title }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
   <script>
     // Page-specific templates may populate these later; keep a safe default.
@@ -11,8 +14,13 @@
     window.POSTS_DATA = window.POSTS_DATA || [];
   </script>
 </head>
-<body>
+<body class="site-shell page-layout-{{ page.layout }}{% if page.url == '/' %} page-home{% endif %}{% if page.url contains '/benchmark/' %} page-benchmark{% endif %}">
+  <div class="mobile-chrome">
+    <button class="sidebar-toggle" type="button" aria-controls="site-sidebar" aria-expanded="false">目录</button>
+    <a href="{{ '/' | relative_url }}" class="mobile-brand">Paper Insight</a>
+  </div>
   <div class="layout-container">
+    <div class="layout-overlay" data-sidebar-dismiss></div>
     {% include sidebar.html %}
     <main class="main-content">
       {{ content }}

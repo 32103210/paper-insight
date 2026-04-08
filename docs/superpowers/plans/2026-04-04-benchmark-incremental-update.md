@@ -117,7 +117,7 @@ on:
 jobs:
   update-benchmark:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: {% raw %}${{ github.event.workflow_run.conclusion == 'success' }}{% endraw %}
 
     steps:
       - uses: actions/checkout@v4
