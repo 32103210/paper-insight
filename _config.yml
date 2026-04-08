@@ -1,6 +1,7 @@
 title: Paper Insight
 subtitle: 论文情报搜集系统
 description: 每天自动抓取推荐算法相关论文，AI 分析报告
+repository: 32103210/paper-insight
 url: https://32103210.github.io
 baseurl: /paper-insight
 timezone: Asia/Shanghai
