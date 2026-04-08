@@ -6,11 +6,6 @@ baseurl: /paper-insight
 timezone: Asia/Shanghai
 future: false
 show_excerpts: true
-
-# Custom includes and layouts paths
-includes_dir: _includes
-layouts_dir: _layouts
-
 defaults:
   - scope:
       path: ""
