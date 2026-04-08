@@ -21,16 +21,25 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 # 搜索关键词配置
-SEARCH_QUERIES = [
+GENERAL_SEARCH_QUERIES = [
     "recommendation system",
     "collaborative filtering",
     "recommender system ranking",
     "graph neural network recommendation",
     "sequential recommendation",
 ]
+LLM4REC_SEARCH_QUERIES = [
+    "llm for recommendation",
+    "large language model recommendation",
+    "generative recommendation",
+    "llm recommender system",
+    "conversational recommendation",
+    "retrieval augmented recommendation",
+]
 
 # 每次最多获取论文数
 MAX_RESULTS = int(os.getenv("ARXIV_MAX_RESULTS", "20"))
+SEARCH_CANDIDATE_MULTIPLIER = int(os.getenv("ARXIV_CANDIDATE_MULTIPLIER", "3"))
 
 # 搜索时间窗口，默认回看 2 天，兼容偶发调度失败
 DAYS_BACK = int(os.getenv("ARXIV_DAYS_BACK", "2"))
@@ -142,6 +151,17 @@ EMAIL_DOMAIN_COMPANY_MAP = {
     "snap.com": "Snap",
     "rakuten.com": "Rakuten",
 }
+LLM4REC_TOPIC_KEYWORDS = (
+    "llm",
+    "large language model",
+    "language model",
+    "generative recommendation",
+    "conversational recommendation",
+    "retrieval augmented recommendation",
+    "prompt",
+    "agent",
+)
+CORPORATE_SUFFIXES = ("inc", "ltd", "llc", "corp", "corporation", "company", "gmbh", "plc", "ag")
 
 
 def search_with_retry(client, search, max_retries=MAX_RETRIES):
@@ -232,6 +252,18 @@ def normalize_affiliation_lookup(name: str) -> str:
     return normalized
 
 
+def matches_industry_keyword(value: str) -> bool:
+    """判断文本中是否包含已知工业界关键词。"""
+    lookup = normalize_affiliation_lookup(value)
+    if not lookup:
+        return False
+
+    return any(
+        re.search(rf"\b{re.escape(normalize_affiliation_lookup(keyword))}\b", lookup)
+        for keyword in INDUSTRY_KEYWORDS
+    )
+
+
 def is_industry_affiliation(name: str) -> bool:
     """判断单位是否属于工业界。"""
     normalized = normalize_affiliation_name(name).lower()
@@ -239,12 +271,12 @@ def is_industry_affiliation(name: str) -> bool:
     if not normalized or not lookup:
         return False
 
-    if any(re.search(rf"\b{re.escape(normalize_affiliation_lookup(keyword))}\b", lookup) for keyword in INDUSTRY_KEYWORDS):
+    if matches_industry_keyword(lookup):
         return True
 
     has_corporate_suffix = any(
         re.search(rf"\b{suffix}\b", lookup)
-        for suffix in ("inc", "ltd", "llc", "corp", "corporation", "company", "gmbh", "plc", "ag")
+        for suffix in CORPORATE_SUFFIXES
     )
     if has_corporate_suffix and not any(keyword in lookup for keyword in ACADEMIC_KEYWORDS):
         return True
@@ -252,14 +284,11 @@ def is_industry_affiliation(name: str) -> bool:
     return False
 
 
-def infer_company_from_email_domain(domain: str) -> str:
-    """从邮箱域名推断公司名，排除公共邮箱。"""
-    normalized = normalize_affiliation_lookup(domain)
-    if not normalized:
-        return ""
-
-    labels = normalized.split()
-    if not labels:
+def normalize_industry_email_domain(domain: str) -> str:
+    """将邮箱域名归一化为可识别的公司域名。"""
+    normalized = normalize_affiliation_name(domain).lower().strip(".")
+    labels = [label for label in normalized.split(".") if label]
+    if len(labels) < 2:
         return ""
 
     candidates = [".".join(labels[index:]) for index in range(len(labels) - 1)]
@@ -267,16 +296,29 @@ def infer_company_from_email_domain(domain: str) -> str:
         if candidate in PUBLIC_EMAIL_DOMAINS:
             return ""
         if candidate in EMAIL_DOMAIN_COMPANY_MAP:
-            return EMAIL_DOMAIN_COMPANY_MAP[candidate]
+            return candidate
 
-    if any(
-        re.search(rf"\b{re.escape(normalize_affiliation_lookup(keyword))}\b", normalized)
-        for keyword in INDUSTRY_KEYWORDS
-    ):
-        company_token = labels[-2] if len(labels) >= 2 else labels[0]
-        return company_token.upper() if len(company_token) <= 4 else company_token.title()
+    root_domain = ".".join(labels[-2:])
+    if root_domain in PUBLIC_EMAIL_DOMAINS:
+        return ""
+
+    if matches_industry_keyword(normalized):
+        return root_domain
 
     return ""
+
+
+def infer_company_from_email_domain(domain: str) -> str:
+    """从邮箱域名推断公司名，排除公共邮箱。"""
+    normalized_domain = normalize_industry_email_domain(domain)
+    if not normalized_domain:
+        return ""
+
+    if normalized_domain in EMAIL_DOMAIN_COMPANY_MAP:
+        return EMAIL_DOMAIN_COMPANY_MAP[normalized_domain]
+
+    company_token = normalized_domain.split(".")[0]
+    return company_token.upper() if len(company_token) <= 4 else company_token.title()
 
 
 def extract_industry_affiliations_from_emails(html: str) -> List[str]:
@@ -288,6 +330,17 @@ def extract_industry_affiliations_from_emails(html: str) -> List[str]:
             affiliations.append(affiliation)
 
     return affiliations
+
+
+def extract_industry_email_domains_from_html(html: str) -> List[str]:
+    """从 HTML 中提取工业界邮箱域名。"""
+    domains = []
+    for _local_part, domain in EMAIL_PATTERN.findall(html or ""):
+        normalized_domain = normalize_industry_email_domain(domain)
+        if normalized_domain and normalized_domain not in domains:
+            domains.append(normalized_domain)
+
+    return domains
 
 
 def extract_industry_affiliations_from_html(html: str) -> List[str]:
@@ -305,22 +358,56 @@ def extract_industry_affiliations_from_html(html: str) -> List[str]:
     return affiliations
 
 
-def fetch_industry_affiliations(arxiv_id: str) -> List[str]:
-    """抓取 arXiv HTML 页面中的工业界单位。"""
+def fetch_arxiv_html(arxiv_id: str) -> str:
+    """抓取 arXiv HTML 页面内容。"""
     if not arxiv_id:
-        return []
+        return ""
 
     html_url = f"https://arxiv.org/html/{arxiv_id}"
     req = request.Request(html_url, headers={"User-Agent": HTML_USER_AGENT})
 
     try:
         with request.urlopen(req, timeout=HTML_REQUEST_TIMEOUT) as resp:
-            html = resp.read().decode("utf-8", errors="ignore")
+            return resp.read().decode("utf-8", errors="ignore")
     except (error.HTTPError, error.URLError, TimeoutError) as exc:
         logger.warning("Failed to fetch affiliation HTML for %s: %s", arxiv_id, exc)
+        return ""
+
+
+def fetch_industry_affiliations(arxiv_id: str) -> List[str]:
+    """抓取 arXiv HTML 页面中的工业界单位。"""
+    html = fetch_arxiv_html(arxiv_id)
+    if not html:
         return []
 
     return extract_industry_affiliations_from_html(html)
+
+
+def fetch_industry_signals(arxiv_id: str) -> dict:
+    """抓取论文的工业界单位和邮箱域名信号。"""
+    html = fetch_arxiv_html(arxiv_id)
+    if not html:
+        return {"industry_affiliations": [], "industry_email_domains": []}
+
+    return {
+        "industry_affiliations": extract_industry_affiliations_from_html(html),
+        "industry_email_domains": extract_industry_email_domains_from_html(html),
+    }
+
+
+def build_search_query() -> str:
+    """构建推荐论文检索 query，强化 LLM4Rec 召回。"""
+    query_terms = GENERAL_SEARCH_QUERIES + LLM4REC_SEARCH_QUERIES
+    query_parts = " OR ".join(f'all:"{term}"' for term in query_terms)
+    return f"({query_parts}) AND (cat:cs.IR OR cat:cs.LG)"
+
+
+def classify_paper_topics(title: str, abstract: str) -> List[str]:
+    """根据标题和摘要标记论文主题。"""
+    combined_text = f"{title} {abstract}".lower()
+    if any(keyword in combined_text for keyword in LLM4REC_TOPIC_KEYWORDS):
+        return ["llm4rec"]
+    return ["general_rec"]
 
 
 def search_papers(days_back: int = DAYS_BACK, max_results: int = MAX_RESULTS) -> List[dict]:
@@ -338,8 +425,7 @@ def search_papers(days_back: int = DAYS_BACK, max_results: int = MAX_RESULTS) ->
     start_date = datetime.now() - timedelta(days=days_back)
 
     # 构建搜索查询
-    query_parts = [" OR ".join([f'all:"{q}"' for q in SEARCH_QUERIES])]
-    query = f"({query_parts[0]}) AND (cat:cs.IR OR cat:cs.LG)"
+    query = build_search_query()
 
     print(f"Searching arXiv with query: {query}")
 
@@ -355,7 +441,7 @@ def search_papers(days_back: int = DAYS_BACK, max_results: int = MAX_RESULTS) ->
 
     search = arxiv.Search(
         query=query,
-        max_results=max_results,
+        max_results=max(max_results, max_results * SEARCH_CANDIDATE_MULTIPLIER),
         sort_by=arxiv.SortCriterion.SubmittedDate,
         sort_order=arxiv.SortOrder.Descending,
     )
@@ -372,6 +458,10 @@ def search_papers(days_back: int = DAYS_BACK, max_results: int = MAX_RESULTS) ->
         if result.published.replace(tzinfo=None) < start_date.replace(tzinfo=None):
             continue
 
+        signals = fetch_industry_signals(result.entry_id.split("/")[-1])
+        if not signals["industry_affiliations"] and not signals["industry_email_domains"]:
+            continue
+
         paper_info = {
             "id": result.entry_id.split("/")[-1],
             "title": result.title,
@@ -381,10 +471,14 @@ def search_papers(days_back: int = DAYS_BACK, max_results: int = MAX_RESULTS) ->
             "pdf_url": result.pdf_url,
             "comment": result.comment if hasattr(result, 'comment') else None,
             "journal_ref": result.journal_ref if hasattr(result, 'journal_ref') else None,
-            "industry_affiliations": fetch_industry_affiliations(result.entry_id.split("/")[-1]),
+            "industry_affiliations": signals["industry_affiliations"],
+            "industry_email_domains": signals["industry_email_domains"],
+            "paper_topics": classify_paper_topics(result.title, result.summary),
         }
         papers.append(paper_info)
         print(f"  Found: {paper_info['title'][:60]}...")
+        if len(papers) >= max_results:
+            break
 
     return papers
 
