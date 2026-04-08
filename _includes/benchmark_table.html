@@ -1,0 +1,58 @@
+<div class="benchmark-table-container">
+  {% assign metrics = include.data.metrics %}
+  {% assign entries = include.data.entries %}
+
+  <table class="leaderboard-table">
+    <thead>
+      <tr>
+        <th class="rank-col">#</th>
+        <th class="algo-col">Algorithm</th>
+        {% for metric in metrics %}
+        <th class="metric-col">{{ metric }}</th>
+        {% endfor %}
+        <th class="source-col">Source</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in entries %}
+      <tr>
+        <td class="rank-cell">
+          {% if forloop.index == 1 %}
+          <span class="rank-badge gold">1</span>
+          {% elsif forloop.index == 2 %}
+          <span class="rank-badge silver">2</span>
+          {% elsif forloop.index == 3 %}
+          <span class="rank-badge bronze">3</span>
+          {% else %}
+          <span class="rank-number">{{ forloop.index }}</span>
+          {% endif %}
+        </td>
+        <td class="algo-cell">
+          <a href="{{ entry.post_url }}" class="algorithm-name">{{ entry.algorithm }}</a>
+          <div class="paper-title" title="{{ entry.paper_title }}">{{ entry.paper_title }}</div>
+        </td>
+        {% for metric in metrics %}
+        <td class="metric-cell">
+          {% assign metric_data = entry.results | where: "metric", metric | first %}
+          {% if metric_data %}
+          <span class="metric-value">{{ metric_data.value }}</span>
+          {% else %}
+          <span class="metric-na">-</span>
+          {% endif %}
+        </td>
+        {% endfor %}
+        <td class="source-cell">
+          <div class="source-links">
+            {% if entry.source %}
+            <a href="{{ entry.source }}" target="_blank" rel="noopener">Paper</a>
+            {% endif %}
+            {% if entry.post_url %}
+            <a href="{{ entry.post_url }}">Post</a>
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
