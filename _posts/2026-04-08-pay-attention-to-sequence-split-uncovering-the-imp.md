@@ -10,9 +10,23 @@ description: "Sub-sequence splitting (SSS) has been demonstrated as an effective
 categories:
   - 序列推荐
   - 通用
+author_affiliations:
+  - Software College, Northeastern
+  - University
+  - Tianjin University
+  - School of Computer Science and
+  - Engineering, Northeastern University
+  - Design, Singapore University of
 ---
 
-# 论文分析报告
+## 作者单位
+
+- Software College, Northeastern
+- University
+- Tianjin University
+- School of Computer Science and
+- Engineering, Northeastern University
+- Design, Singapore University of
 
 ## 论文概览
 

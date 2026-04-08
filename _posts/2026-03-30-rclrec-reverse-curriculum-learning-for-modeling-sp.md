@@ -10,11 +10,24 @@ description: "Conversion objectives in large-scale recommender systems are spars
 categories:
   - 电商
 industry_affiliations:
-  - Alibaba International Digital Commerce Group
+  - Alibaba International Digital
   - Alibaba Group
+  - Alibaba
+author_affiliations:
+  - Alibaba International Digital
+  - Commerce Group
+  - AI, Guangdong Laboratory of
+  - Alibaba Group
+  - Alibaba
 ---
 
-# 论文分析报告：RCLRec
+## 作者单位
+
+- Alibaba International Digital
+- Commerce Group
+- AI, Guangdong Laboratory of
+- Alibaba Group
+- Alibaba
 
 ## 一句话增量
 

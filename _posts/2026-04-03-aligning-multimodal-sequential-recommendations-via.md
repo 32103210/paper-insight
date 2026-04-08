@@ -1,54 +1,23 @@
 ---
 layout: post
+analysis_generated: true
 title: "Aligning Multimodal Sequential Recommendations via Robust Direct Preference Optimization with Sparse MoE"
 date: 2026-04-03
-arxiv_id: 2603.29259
+arxiv_id: "2603.29259"
 authors: "Hejin Huang, Jusheng Zhang, Kaitong Cai, Jian Wang, Rong Pan"
-source: https://arxiv.org/pdf/2603.29259v1
+source: "https://arxiv.org/abs/2603.29259v1"
 description: "Preference-based alignment objectives have been widely adopted, from RLHF-style pairwise learning in large language models to emerging applications in recommender systems."
 categories:
   - 序列推荐
   - 电商
   - 多模态
+author_affiliations:
+  - Sun Yat-sen University 2Snap Inc
 ---
 
-<think>
-这是一篇关于多模态序列推荐的论文，使用了Direct Preference Optimization (DPO)方法。让我仔细分析这篇论文的内容。
+## 作者单位
 
-**论文核心贡献：**
-1. 将DPO应用于多模态序列推荐
-2. 发现了一个关键问题：未观测物品不能作为可靠负样本
-3. 提出用随机采样替代确定性硬负样本的改进方案
-4. 可选地使用稀疏MoE编码器来提升效率
-
-**关键发现：**
-- 确定性硬负样本会带来假负例问题，导致错误的抑制梯度
-- 随机采样从动态top-K候选池中选择可以缓解这个问题
-- 这种方法在三个Amazon基准数据集上提升了5.25%的NDCG@5
-
-让我按照分析维度来组织这份报告：
-
-1. **一句话增量** - Before: 使用确定性硬负样本的DPO训练；After: 使用随机采样软硬负样本的DPO训练，减少假负例问题
-
-2. **缺口分析** - 已有研究在LLM领域用DPO处理显式偏好数据，但在推荐系统隐式反馈场景下研究不足
-
-3. **核心机制图** - 需要画出RoDPO的架构
-
-4. **白话方法** - 用日常类比讲解
-
-5. **关键概念** - DPO、假负例、稀疏MoE
-
-6. **Before vs After** - 对比主流框架和本文框架
-
-
-7. **博导审稿** - 评估论文的创新性和实验设计的严谨性
-
-8. **研究启发** - 思考DPO在推荐系统中的潜在应用方向
-
-分类：多模态序列推荐、电商领域、技术创新。
-</think>
-
-# 论文分析报告
+- Sun Yat-sen University 2Snap Inc
 
 ## 论文信息
 - **标题**: Aligning Multimodal Sequential Recommendations via Robust Direct Preference Optimization with Sparse MoE

@@ -9,9 +9,15 @@ source: "https://arxiv.org/abs/2305.00447v3"
 description: "Large Language Models (LLMs) have demonstrated remarkable performance across diverse domains, thereby prompting researchers to explore their potential for use in recommendation systems."
 categories:
   - LLM4Rec
+author_affiliations:
+  - University of Science and Technology
+  - National University of Singapore
 ---
 
-# 论文分析报告：TALLRec
+## 作者单位
+
+- University of Science and Technology
+- National University of Singapore
 
 ## 一句话增量
 

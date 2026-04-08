@@ -9,11 +9,22 @@ source: "https://arxiv.org/abs/1803.05170v3"
 description: "Combinatorial features are essential for the success of many commercial models."
 categories:
   - CTR/CVR
+industry_affiliations:
+  - Microsoft Research
+  - Microsoft
+author_affiliations:
+  - University of Science and Technology
+  - Beijing University of Posts and
+  - Microsoft Research
+  - Microsoft
 ---
 
-# xDeepFM: 显式与隐式特征交互的融合
+## 作者单位
 
----
+- University of Science and Technology
+- Beijing University of Posts and
+- Microsoft Research
+- Microsoft
 
 ## 一句话增量
 

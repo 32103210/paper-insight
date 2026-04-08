@@ -10,9 +10,15 @@ description: "Predicting user responses, such as clicks and conversions, is of g
 categories:
   - CTR预估
   - 通用
+author_affiliations:
+  - Shanghai Jiao Tong University
+  - University College London
 ---
 
-# 论文分析报告
+## 作者单位
+
+- Shanghai Jiao Tong University
+- University College London
 
 ## 论文信息
 

@@ -10,9 +10,15 @@ description: "Learning effective feature crosses is the key behind building reco
 categories:
   - CTR预估
   - 电商
+industry_affiliations:
+  - Google Inc
+author_affiliations:
+  - Google Inc
 ---
 
-# DCN V2 论文分析报告
+## 作者单位
+
+- Google Inc
 
 ## 一句话增量
 

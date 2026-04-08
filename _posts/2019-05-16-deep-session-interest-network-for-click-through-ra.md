@@ -9,9 +9,17 @@ source: "https://arxiv.org/abs/1905.06482v1"
 description: "Click-Through Rate (CTR) prediction plays an important role in many industrial applications, such as online advertising and recommender systems."
 categories:
   - CTR/CVR
+industry_affiliations:
+  - Alibaba Group, Hangzhou, China
+author_affiliations:
+  - Alibaba Group, Hangzhou, China
+  - Zhejiang University, China
 ---
 
-# 论文分析报告
+## 作者单位
+
+- Alibaba Group, Hangzhou, China
+- Zhejiang University, China
 
 ## Deep Session Interest Network for Click-Through Rate Prediction
 

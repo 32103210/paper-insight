@@ -10,9 +10,18 @@ description: "Generalized linear models with nonlinear feature transformations a
 categories:
   - CTR预估
   - 通用
+industry_affiliations:
+  - Google Inc
+  - Google
+author_affiliations:
+  - Google Inc
+  - Google
 ---
 
-# Wide & Deep Learning for Recommender Systems 论文分析
+## 作者单位
+
+- Google Inc
+- Google
 
 ## 1. 一句话增量
 

@@ -91,6 +91,18 @@ class AnalyzerTests(unittest.TestCase):
         self.assertIn("  - Meituan\n", frontmatter)
         self.assertIn("  - Google Research\n", frontmatter)
 
+    def test_generate_frontmatter_writes_author_affiliations(self):
+        paper = {
+            **self.paper_ok,
+            "author_affiliations": ["Meituan", "Tsinghua University"],
+        }
+
+        frontmatter = analyzer.generate_frontmatter(paper, ["通用"])
+
+        self.assertIn("author_affiliations:\n", frontmatter)
+        self.assertIn("  - Meituan\n", frontmatter)
+        self.assertIn("  - Tsinghua University\n", frontmatter)
+
     def test_extract_author_affiliations_from_pdf_text_reads_first_page_units(self):
         extractor = getattr(analyzer, "extract_author_affiliations_from_pdf_text", lambda _text: [])
         text = """Next-Scale Generative Reranking
@@ -160,6 +172,89 @@ Abstract
         self.assertIn("## 作者单位\n", content)
         self.assertIn("- Meituan\n", content)
         self.assertIn("- School of Computer Science, Tsinghua University\n", content)
+
+    @patch.object(
+        analyzer,
+        "fetch_pdf_first_page_text",
+        return_value="1 Meituan\n2 School of Computer Science, Tsinghua University\nAbstract",
+    )
+    def test_refresh_author_affiliations_in_post_updates_existing_analysis(self, _mock_fetch_pdf_first_page_text):
+        post_content = """---
+layout: post
+analysis_generated: true
+title: "Working Paper"
+date: 2026-04-06
+arxiv_id: "1234.5678"
+authors: "Alice"
+source: "https://arxiv.org/abs/1234.5678"
+description: "Abstract"
+categories:
+  - 通用
+---
+
+## 1. 一句话增量
+
+这里是分析正文。
+"""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            filepath = Path(temp_dir) / "2026-04-06-working-paper.md"
+            filepath.write_text(post_content, encoding="utf-8")
+
+            updated = analyzer.refresh_author_affiliations_in_post(filepath)
+            content = filepath.read_text(encoding="utf-8")
+
+        self.assertTrue(updated)
+        self.assertIn("author_affiliations:\n", content)
+        self.assertIn("  - Meituan\n", content)
+        self.assertIn("## 作者单位\n", content)
+        self.assertIn("- School of Computer Science, Tsinghua University\n", content)
+        self.assertIn("## 1. 一句话增量\n", content)
+
+    @patch.object(
+        analyzer,
+        "fetch_pdf_first_page_text",
+        return_value="Google Inc.\n{ruoxi, rakeshshivanna}@google.com\nABSTRACT",
+    )
+    def test_refresh_author_affiliations_in_post_recomputes_existing_bad_values(self, _mock_fetch_pdf_first_page_text):
+        post_content = """---
+layout: post
+analysis_generated: true
+title: "Working Paper"
+date: 2026-04-06
+arxiv_id: "1234.5678"
+authors: "Alice"
+source: "https://arxiv.org/abs/1234.5678"
+description: "Abstract"
+categories:
+  - 通用
+author_affiliations:
+  - Alice, Bob, Carol
+  - Old Company
+---
+
+## 作者单位
+
+- Alice, Bob, Carol
+- Old Company
+
+## 1. 一句话增量
+
+这里是分析正文。
+"""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            filepath = Path(temp_dir) / "2026-04-06-working-paper.md"
+            filepath.write_text(post_content, encoding="utf-8")
+
+            analyzer.refresh_author_affiliations_in_post(filepath)
+            content = filepath.read_text(encoding="utf-8")
+
+        self.assertNotIn("Alice, Bob, Carol", content)
+        self.assertNotIn("Old Company", content)
+        self.assertIn("author_affiliations:\n", content)
+        self.assertIn("  - Google Inc\n", content)
+        self.assertIn("- Google Inc\n", content)
 
 
 if __name__ == "__main__":

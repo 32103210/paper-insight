@@ -9,9 +9,15 @@ source: "https://arxiv.org/abs/1905.09433v1"
 description: "Advertising and feed ranking are essential to many Internet companies such as Facebook and Sina Weibo."
 categories:
   - CTR预估
+industry_affiliations:
+  - Sina Weibo Inc
+author_affiliations:
+  - Sina Weibo Inc
 ---
 
-# FiBiNET 论文分析报告
+## 作者单位
+
+- Sina Weibo Inc
 
 ## 一句话增量
 

@@ -10,9 +10,15 @@ description: "Click-through rate~(CTR) prediction, whose goal is to estimate the
 categories:
   - 序列推荐
   - 电商
+industry_affiliations:
+  - Alibaba Inc, Beijing, China
+author_affiliations:
+  - Alibaba Inc, Beijing, China
 ---
 
-# DIEN 论文分析报告
+## 作者单位
+
+- Alibaba Inc, Beijing, China
 
 ## 1. 一句话增量
 

@@ -1,53 +1,29 @@
 ---
 layout: post
+analysis_generated: true
 title: "Aligning Recommendations with User Popularity Preferences"
 date: 2026-04-03
-arxiv_id: 2604.01036
+arxiv_id: "2604.01036"
 authors: "Mona Schirmer, Anton Thielmann, Pola Schwöbel, Thomas Martynec, Giuseppe Di Benedetto, Ben London, Yannik Stein"
-source: https://arxiv.org/pdf/2604.01036v1
+source: "https://arxiv.org/abs/2604.01036v1"
 description: "Popularity bias is a pervasive problem in recommender systems, where recommendations disproportionately favor popular items."
 categories:
   - 推荐
   - 流行度偏差
 industry_affiliations:
   - Amazon Music
+  - Amazon
+author_affiliations:
+  - University of Amsterdam
+  - Amazon Music
+  - Amazon
 ---
 
-<think>
-用户要求我分析一篇关于推荐系统中流行度偏差的论文。让我按照给定的维度来系统性地分析这篇论文。
+## 作者单位
 
-首先，让我理解这篇论文的核心内容：
-1. 标题：Aligning Recommendations with User Popularity Preferences（将推荐与用户流行度偏好对齐）
-2. 作者提出的主要贡献：
-   - Popularity Quantile Calibration（流行度分位数校准）：一个测量框架
-   - SPREE：基于激活导向的推理时缓解方法
-
-让我按照分析维度来组织报告：
-
-1. **一句话增量** - 之前的方法是什么，这篇论文多了什么
-2. **缺口分析** - 已有研究走到哪，这篇填什么缝
-3. **核心机制图** - ASCII图
-4. **白话方法** - 类比讲解
-5. **关键概念** - 费曼式讲解
-6. **Before vs After** - 对比
-7. **博导审稿** - 评价
-8. **研究启发** - 三问
-
-这篇论文的核心贡献是：
-- 提出了一种新的度量方法（Popularity Quantile Calibration）来衡量推荐系统与用户流行度偏好之间的对齐程度
-- 提出了一种新的方法（SPREE）来缓解流行度偏差，该方法基于激活导向，可以在推理时调整
-
-
-- 这与之前主要关注全局流行度偏差的方法不同，更关注用户个体层面的对齐
-
-我将聚焦于论文的独特视角：用户个体流行度偏好的精确对齐。与传统方法不同，这项研究不追求简单的流行度压制，而是追求精细化的个性化推荐策略。通过激活导向技术，SPREE能够精准地捕捉和调整每个用户的独特偏好特征。
-
-推理时调整意味着在实际推荐过程中动态优化，而不是依赖预训练模型或固定干预。这种方法的关键在于提供了一种实时、个性化的推荐偏差调节机制。
-
-实验验证显示，该方法在多个数据集上都能稳定提升用户级别的流行度对齐效果，同时不牺牲推荐的整体质量。这种平衡艺术体现了推荐系统设计的精细和智能。
-</think>
-
-# 论文分析报告
+- University of Amsterdam
+- Amazon Music
+- Amazon
 
 ## Aligning Recommendations with User Popularity Preferences
 

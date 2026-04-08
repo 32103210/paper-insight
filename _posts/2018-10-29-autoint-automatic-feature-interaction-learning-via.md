@@ -10,9 +10,19 @@ description: "Click-through rate (CTR) prediction, which aims to predict the pro
 categories:
   - CTR预估
   - 电商
+author_affiliations:
+  - Department of Computer Science
+  - School of EECS, Peking University
+  - University of California, Los Angeles
+  - Mila-Quebec AI Institute
 ---
 
-# AutoInt 论文分析报告
+## 作者单位
+
+- Department of Computer Science
+- School of EECS, Peking University
+- University of California, Los Angeles
+- Mila-Quebec AI Institute
 
 ## 一句话增量
 

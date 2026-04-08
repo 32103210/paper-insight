@@ -193,6 +193,10 @@ def looks_like_affiliation_line(line: str) -> bool:
         return False
 
     lower = normalized.lower()
+    has_affiliation_hint = any(
+        re.search(rf"\b{re.escape(hint)}\b", lower)
+        for hint in AFFILIATION_LINE_HINTS
+    )
     if "@" in lower:
         return False
     if any(lower.startswith(marker) for marker in AFFILIATION_STOP_MARKERS):
@@ -208,10 +212,10 @@ def looks_like_affiliation_line(line: str) -> bool:
         )
     ):
         return False
-    if len(normalized.split()) <= 1 and not any(hint in lower for hint in AFFILIATION_LINE_HINTS):
+    if len(normalized.split()) <= 1 and not has_affiliation_hint:
         return False
 
-    return any(hint in lower for hint in AFFILIATION_LINE_HINTS)
+    return has_affiliation_hint
 
 
 def extract_author_affiliations_from_pdf_text(text: str) -> list:
@@ -258,9 +262,9 @@ def extract_author_affiliations_from_pdf_text(text: str) -> list:
     return affiliations
 
 
-def enrich_paper_author_affiliations(paper: dict) -> dict:
+def enrich_paper_author_affiliations(paper: dict, force_refresh: bool = False) -> dict:
     """在分析前补充 PDF 首页解析出的作者单位。"""
-    author_affiliations = normalize_string_list(paper.get("author_affiliations", []))
+    author_affiliations = [] if force_refresh else normalize_string_list(paper.get("author_affiliations", []))
     if not author_affiliations:
         pdf_text = fetch_pdf_first_page_text(paper.get("pdf_url") or paper.get("source_url", ""))
         author_affiliations = extract_author_affiliations_from_pdf_text(pdf_text)
@@ -273,7 +277,7 @@ def enrich_paper_author_affiliations(paper: dict) -> dict:
         is_industry_affiliation = None
 
     if is_industry_affiliation:
-        current_industry = normalize_string_list(paper.get("industry_affiliations", []))
+        current_industry = [] if force_refresh else normalize_string_list(paper.get("industry_affiliations", []))
         if not current_industry and author_affiliations:
             paper["industry_affiliations"] = [
                 affiliation
@@ -326,6 +330,7 @@ def build_paper_from_post(filepath: Path) -> Optional[dict]:
     abstract = extract_abstract_from_post(body, frontmatter)
     categories = normalize_categories(frontmatter.get("categories", []))
     industry_affiliations = normalize_string_list(frontmatter.get("industry_affiliations", []))
+    author_affiliations = normalize_string_list(frontmatter.get("author_affiliations", []))
 
     if not title or not abstract:
         return None
@@ -345,6 +350,7 @@ def build_paper_from_post(filepath: Path) -> Optional[dict]:
         "post_date": post_date,
         "categories": categories,
         "industry_affiliations": industry_affiliations,
+        "author_affiliations": author_affiliations,
         "output_path": str(filepath),
     }
 
@@ -485,8 +491,19 @@ description: {json.dumps(abstract_first_line[:200], ensure_ascii=False)}
         for affiliation in industry_affiliations:
             frontmatter += f"  - {affiliation}\n"
 
+    author_affiliations = normalize_string_list(paper.get("author_affiliations", []))
+    if author_affiliations:
+        frontmatter += "author_affiliations:\n"
+        for affiliation in author_affiliations:
+            frontmatter += f"  - {affiliation}\n"
+
     frontmatter += "---\n\n"
     return frontmatter
+
+
+def strip_author_affiliations_section(content: str) -> str:
+    """移除正文中已有的作者单位段落，避免重复插入。"""
+    return re.sub(r'## 作者单位\s*.*?(?=\n##\s+|\Z)', '', content or '', flags=re.DOTALL).lstrip()
 
 
 def save_analysis(paper: dict, analysis: str, output_dir: str = "_posts", output_path: Optional[str] = None):
@@ -514,6 +531,8 @@ def save_analysis(paper: dict, analysis: str, output_dir: str = "_posts", output
         filename = f"{date_str}-{slug}.md"
         filepath = Path(output_dir) / filename
 
+    analysis_content = strip_author_affiliations_section(analysis_content)
+
     author_affiliations = normalize_string_list(paper.get("author_affiliations", []))
     author_affiliation_section = ""
     if author_affiliations:
@@ -532,6 +551,63 @@ def save_analysis(paper: dict, analysis: str, output_dir: str = "_posts", output
     if categories:
         print(f"  Categories: {', '.join(categories)}")
     return filepath
+
+
+def refresh_author_affiliations_in_post(filepath: Path) -> bool:
+    """为已有分析文章补充作者单位 frontmatter 和正文段落。"""
+    frontmatter, body = load_post(filepath)
+    if not frontmatter:
+        return False
+
+    title = str(frontmatter.get("title", "")).strip()
+    source = str(frontmatter.get("source", "")).strip()
+    authors_text = str(frontmatter.get("authors", "")).strip()
+    abstract = extract_abstract_from_post(body, frontmatter)
+    categories = normalize_categories(frontmatter.get("categories", []))
+    industry_affiliations = normalize_string_list(frontmatter.get("industry_affiliations", []))
+    author_affiliations = normalize_string_list(frontmatter.get("author_affiliations", []))
+
+    if not title or not source:
+        return False
+
+    paper = {
+        "id": normalize_arxiv_id(str(frontmatter.get("arxiv_id", "")) or source) or filepath.stem,
+        "title": title,
+        "authors": [a.strip() for a in authors_text.split(",") if a.strip()] or ["Unknown"],
+        "abstract": abstract,
+        "published": str(frontmatter.get("date", "")).strip(),
+        "pdf_url": source,
+        "source_url": source,
+        "post_date": str(frontmatter.get("date", "")).strip()[:10],
+        "categories": categories,
+        "industry_affiliations": industry_affiliations,
+        "author_affiliations": author_affiliations,
+    }
+
+    enrich_paper_author_affiliations(paper, force_refresh=True)
+    if not paper.get("author_affiliations"):
+        return False
+
+    frontmatter_text = generate_frontmatter(paper, categories)
+    body_content = strip_author_affiliations_section(body)
+    author_section = "## 作者单位\n\n" + "\n".join(
+        f"- {affiliation}" for affiliation in normalize_string_list(paper["author_affiliations"])
+    ) + "\n\n"
+
+    filepath.write_text(frontmatter_text + author_section + body_content, encoding="utf-8")
+    return True
+
+
+def backfill_author_affiliations(posts_dir: str, limit: Optional[int] = None) -> int:
+    """为已有文章批量补充作者单位信息。"""
+    updated = 0
+    for index, filepath in enumerate(sorted(Path(posts_dir).glob("*.md")), 1):
+        if limit is not None and updated >= limit:
+            break
+        if refresh_author_affiliations_in_post(filepath):
+            updated += 1
+            print(f"[{index}] Updated author affiliations: {filepath.name}")
+    return updated
 
 
 def analyze_single_paper(paper: dict, client: OpenAI) -> tuple:
@@ -612,9 +688,15 @@ def main(argv: Optional[list[str]] = None, stdin_input: Optional[str] = None) ->
     parser.add_argument('--parallel', action='store_true', help='启用并行分析')
     parser.add_argument('--workers', type=int, default=MAX_WORKERS, help=f'并行工作线程数 (默认 {MAX_WORKERS})')
     parser.add_argument('--backfill-missing', action='store_true', help='为已有但缺少 AI 分析的文章补全分析')
+    parser.add_argument('--backfill-author-affiliations', action='store_true', help='为已有文章补充作者单位信息')
     parser.add_argument('--posts-dir', default='_posts', help='文章目录（默认 _posts）')
     parser.add_argument('--limit', type=int, help='限制处理文章数')
     args = parser.parse_args(argv)
+
+    if args.backfill_author_affiliations:
+        updated = backfill_author_affiliations(args.posts_dir, args.limit)
+        print(f"Backfilled author affiliations for {updated} posts")
+        return 0
 
     # 检查 API Key
     if not MINIMAX_API_KEY:

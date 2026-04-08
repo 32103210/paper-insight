@@ -10,9 +10,19 @@ description: "The sequential recommendation (SR) task aims to predict the next i
 categories:
   - 序列推荐
   - 通用
+author_affiliations:
+  - Shenzhen Technology University
+  - City University of Hong Kong
+  - McGill University
+  - Shenzhen University
 ---
 
-# 论文分析报告：Retrieve-then-Adapt
+## 作者单位
+
+- Shenzhen Technology University
+- City University of Hong Kong
+- McGill University
+- Shenzhen University
 
 ## 1. 一句话增量
 

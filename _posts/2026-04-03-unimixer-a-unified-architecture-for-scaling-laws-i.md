@@ -1,19 +1,25 @@
 ---
 layout: post
+analysis_generated: true
 title: "UniMixer: A Unified Architecture for Scaling Laws in Recommendation Systems"
 date: 2026-04-03
-arxiv_id: 2604.00590
+arxiv_id: "2604.00590"
 authors: "Mingming Ha, Guanchen Wang, Linxun Chen, Xuan Rao, Yuexin Shi, Tianbao Ma, Zhaojie Liu, Yunqian Fan, Zilong Lu, Yanan Niu, Han Li, Kun Gai"
-source: https://arxiv.org/pdf/2604.00590v2
+source: "https://arxiv.org/abs/2604.00590v2"
 description: "In recent years, the scaling laws of recommendation models have attracted increasing attention, which govern the relationship between performance and parameters/FLOPs of recommenders."
 categories:
   - 通用
   - 电商
   - 自监督
+industry_affiliations:
+  - Kuaishou Technology, Beijing, China
+author_affiliations:
+  - Kuaishou Technology, Beijing, China
 ---
 
-<think>
-让我仔细分析这篇论文，然后按照指定的维度生成完整的Markdown报告。
+## 作者单位
+
+- Kuaishou Technology, Beijing, China
 
 ## 论文基本信息
 - 标题：UniMixer: A Unified Architecture for Scaling Laws in Recommendation Systems

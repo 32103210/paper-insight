@@ -9,10 +9,28 @@ source: "https://arxiv.org/abs/2604.04535v1"
 description: "Modern machine learning systems, such as generative models and recommendation systems, often evolve through a cycle of deployment, user interaction, and periodic model updates."
 categories:
   - 通用
-  - 通用
+industry_affiliations:
+  - Princeton and Google
+  - Tel-Aviv University and Google
+  - Technion and Google
+  - Georgetown and Google
+author_affiliations:
+  - Proceedings of Machine Learning Research vol
+  - Princeton and Google
+  - Tel-Aviv University
+  - Tel-Aviv University and Google
+  - Technion and Google
+  - Georgetown and Google
 ---
 
-# 论文分析报告：Learning from Equivalence Queries, Revisited
+## 作者单位
+
+- Proceedings of Machine Learning Research vol
+- Princeton and Google
+- Tel-Aviv University
+- Tel-Aviv University and Google
+- Technion and Google
+- Georgetown and Google
 
 ## 一句话增量
 

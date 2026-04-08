@@ -10,9 +10,15 @@ description: "Most deep learning recommendation models operate as black boxes, r
 categories:
   - 通用
   - 电商
+author_affiliations:
+  - Department of Computer Science
+  - George Mason University
 ---
 
-# 论文分析报告：LIA - 逻辑规则自编码器
+## 作者单位
+
+- Department of Computer Science
+- George Mason University
 
 ## 1. 一句话增量
 

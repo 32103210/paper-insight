@@ -9,9 +9,15 @@ source: "https://arxiv.org/abs/2604.04038v1"
 description: "Sequential recommendation requires capturing diverse user behaviors, which a single network often fails to capture."
 categories:
   - 序列推荐
+author_affiliations:
+  - Pohang University of
+  - Korea University
 ---
 
-# FLAME 论文分析报告
+## 作者单位
+
+- Pohang University of
+- Korea University
 
 ## 1. 一句话增量
 

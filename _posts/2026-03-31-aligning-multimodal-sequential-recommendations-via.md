@@ -10,9 +10,13 @@ description: "Preference-based alignment objectives have been widely adopted, fr
 categories:
   - 多兴趣
   - 电商
+author_affiliations:
+  - Sun Yat-sen University 2Snap Inc
 ---
 
-# 论文分析报告
+## 作者单位
+
+- Sun Yat-sen University 2Snap Inc
 
 ## 一句话增量
 

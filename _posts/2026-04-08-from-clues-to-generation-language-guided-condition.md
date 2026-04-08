@@ -9,9 +9,13 @@ source: "https://arxiv.org/abs/2604.05365v1"
 description: "Cross-domain Recommendation (CDR) exploits multi-domain correlations to alleviate data sparsity."
 categories:
   - 电商
+author_affiliations:
+  - Anhui University
 ---
 
-# 论文分析报告
+## 作者单位
+
+- Anhui University
 
 ## From Clues to Generation: Language-Guided Conditional Diffusion for Cross-Domain Recommendation
 

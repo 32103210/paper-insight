@@ -9,9 +9,17 @@ source: "https://arxiv.org/abs/1601.02376v1"
 description: "Predicting user responses, such as click-through rate and conversion rate, are critical in many web applications including web search, personalised recommendation, and online advertising."
 categories:
   - CTR预估
+industry_affiliations:
+  - RayCloud Inc., Hangzhou, China
+author_affiliations:
+  - University College London, London, United Kingdom
+  - RayCloud Inc., Hangzhou, China
 ---
 
-# 论文分析报告
+## 作者单位
+
+- University College London, London, United Kingdom
+- RayCloud Inc., Hangzhou, China
 
 ## Deep Learning over Multi-field Categorical Data: A Case Study on User Response Prediction
 

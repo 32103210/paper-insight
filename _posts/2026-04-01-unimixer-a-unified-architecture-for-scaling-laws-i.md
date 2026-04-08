@@ -10,9 +10,15 @@ description: "In recent years, the scaling laws of recommendation models have at
 categories:
   - 通用
   - 电商
+industry_affiliations:
+  - Kuaishou Technology, Beijing, China
+author_affiliations:
+  - Kuaishou Technology, Beijing, China
 ---
 
-# 论文分析报告：UniMixer
+## 作者单位
+
+- Kuaishou Technology, Beijing, China
 
 ## 1. 一句话增量
 

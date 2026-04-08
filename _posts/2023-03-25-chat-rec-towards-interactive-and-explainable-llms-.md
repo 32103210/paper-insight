@@ -10,11 +10,19 @@ description: "Large language models (LLMs) have demonstrated their significant p
 categories:
   - 通用
   - 电商
+author_affiliations:
+  - Shanghai Key Laboratory of Data Science, School of Computer Science, Fudan
+  - University, Shanghai, China
+  - College of Design and Innovation, Tongji University, Shanghai, China
+  - IFM Lab, Department of Computer Science, University of California, Davis, CA
 ---
 
-# 论文分析报告
+## 作者单位
 
----
+- Shanghai Key Laboratory of Data Science, School of Computer Science, Fudan
+- University, Shanghai, China
+- College of Design and Innovation, Tongji University, Shanghai, China
+- IFM Lab, Department of Computer Science, University of California, Davis, CA
 
 ## 论文基本信息
 

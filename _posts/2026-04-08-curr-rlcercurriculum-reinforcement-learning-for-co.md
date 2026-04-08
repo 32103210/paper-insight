@@ -10,9 +10,13 @@ description: "Explainable recommendation systems (RSs) are designed to explicitl
 categories:
   - 通用
   - 电商
+author_affiliations:
+  - Huazhong University of Science and Technology, Wuhan, China
 ---
 
-# 论文分析报告
+## 作者单位
+
+- Huazhong University of Science and Technology, Wuhan, China
 
 ## 一句话增量
 

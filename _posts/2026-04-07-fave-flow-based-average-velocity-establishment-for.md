@@ -10,11 +10,15 @@ description: "Generative recommendation has emerged as a transformative paradigm
 categories:
   - 序列推荐
   - 电商
+author_affiliations:
+  - University of Electronic Science and Technology of China
+  - State Key Laboratory of Internet Architecture
 ---
 
-# 论文分析：FAVE - Flow-based Average Velocity Establishment for Sequential Recommendation
+## 作者单位
 
----
+- University of Electronic Science and Technology of China
+- State Key Laboratory of Internet Architecture
 
 ## 1. 一句话增量
 

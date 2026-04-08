@@ -9,9 +9,13 @@ source: "https://arxiv.org/abs/2604.04457v1"
 description: "Large language models (LLMs) exhibit enhanced capabilities in language understanding and generation."
 categories:
   - 通用
+author_affiliations:
+  - University of Illinois Urbana-Champaign, 2Google DeepMind, 3UC San Diego
 ---
 
-# 论文分析报告
+## 作者单位
+
+- University of Illinois Urbana-Champaign, 2Google DeepMind, 3UC San Diego
 
 ## 一句话增量
 

@@ -10,9 +10,17 @@ description: "Learning sophisticated feature interactions behind user behaviors 
 categories:
   - CTR预估
   - 通用
+industry_affiliations:
+  - Noah’s Ark Research Lab, Huawei, China
+author_affiliations:
+  - Shenzhen Graduate School, Harbin Institute of Technology, China
+  - Noah’s Ark Research Lab, Huawei, China
 ---
 
-# 论文分析报告：DeepFM
+## 作者单位
+
+- Shenzhen Graduate School, Harbin Institute of Technology, China
+- Noah’s Ark Research Lab, Huawei, China
 
 ## 一句话增量
 

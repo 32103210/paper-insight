@@ -1,27 +1,27 @@
 ---
 layout: post
+analysis_generated: true
 title: "Zero-shot Cross-domain Knowledge Distillation: A Case study on YouTube Music"
 date: 2026-04-03
-arxiv_id: 2603.28994
+arxiv_id: "2603.28994"
 authors: "Srivaths Ranganathan, Nikhil Khani, Shawn Andrews, Chieh Lo, Li Wei, Gergo Varady, Jochen Klingenhoefer, Tim Steele, Bernardo Cunha, Aniruddh Nath, Yanwei Song"
-source: https://arxiv.org/pdf/2603.28994v1
+source: "https://arxiv.org/abs/2603.28994v1"
 description: "Knowledge Distillation (KD) has been widely used to improve the quality of latency sensitive models serving live traffic."
 categories:
   - 通用
-  - 通用
   - 知识蒸馏
+industry_affiliations:
+  - Google LLC
+  - Google
+author_affiliations:
+  - Google LLC
+  - Google
 ---
 
-<think>
-这是一篇关于跨领域知识蒸馏的工业界case study论文。让我按照分析维度逐一拆解。
+## 作者单位
 
-首先理解核心内容：
-- 问题：低流量场景下（如音乐推荐）训练大模型不划算，数据不够
-- 方案：跨领域知识蒸馏，从YouTube（高流量）迁移到YouTube Music（低流量）
-- 挑战：跨领域、零样本（没有直接对齐的数据）
-- 贡献：工业界实践经验
-
-让我逐个维度分析：
+- Google LLC
+- Google
 
 ## 1. 一句话增量
 Before: 跨领域知识蒸馏在推荐系统中缺乏工业界实践验证
