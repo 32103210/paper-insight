@@ -7,6 +7,7 @@ metrics:
 - HR@10
 - Latency
 - NDCG@10
+- HIT@5
 entries:
 - algorithm: SIM
   sources:
@@ -28,6 +29,18 @@ entries:
       NDCG@10: 0.5389
       AUC: 0.8512
     paper_date: 2026-04-07
+- algorithm: Next-Scale Generative Reranking
+  sources:
+  - arxiv_id: '2604.05314'
+    paper_title: 'Next-Scale Generative Reranking: A Tree-based Generative Rerank
+      Method at Meituan'
+    source: https://arxiv.org/abs/2604.05314v1
+    post_url: /2026/04/08/next-scale-generative-reranking-a-tree-based-gener/
+    results:
+      NDCG@5: 0.4892
+      NDCG@10: 0.5012
+      AUC: 0.8034
+    paper_date: 2026-04-08
 - algorithm: xDeepFM
   sources:
   - arxiv_id: '1803.05170'
@@ -151,6 +164,18 @@ entries:
     results:
       AUC: 0.7826
     paper_date: ''
+- algorithm: Curr-RLCER
+  sources:
+  - arxiv_id: '2604.05341'
+    paper_title: Curr-RLCER:Curriculum Reinforcement Learning For Coherence Explainable
+      Recommendation
+    source: https://arxiv.org/abs/2604.05341v1
+    post_url: /2026/04/08/curr-rlcercurriculum-reinforcement-learning-for-co/
+    results:
+      NDCG@5: 0.3756
+      HIT@5: 0.5102
+      AUC: 0.7723
+    paper_date: 2026-04-08
 - algorithm: Wide & Deep Learning for Recommender Systems
   sources:
   - arxiv_id: '1606.07792'
@@ -198,3 +223,21 @@ entries:
     post_url: /2018/09/11/deep-interest-evolution-network-for-click-through-/
     results: {}
     paper_date: 2018-09-11
+- algorithm: From Clues to Generation
+  sources:
+  - arxiv_id: '2604.05365'
+    paper_title: 'From Clues to Generation: Language-Guided Conditional Diffusion
+      for Cross-Domain Recommendation'
+    source: https://arxiv.org/abs/2604.05365v1
+    post_url: /2026/04/08/from-clues-to-generation-language-guided-condition/
+    results: {}
+    paper_date: 2026-04-08
+- algorithm: Pay Attention to Sequence Split
+  sources:
+  - arxiv_id: '2604.05309'
+    paper_title: 'Pay Attention to Sequence Split: Uncovering the Impacts of Sub-Sequence
+      Splitting on Sequential Recommendation Models'
+    source: https://arxiv.org/abs/2604.05309v1
+    post_url: /2026/04/08/pay-attention-to-sequence-split-uncovering-the-imp/
+    results: {}
+    paper_date: 2026-04-08

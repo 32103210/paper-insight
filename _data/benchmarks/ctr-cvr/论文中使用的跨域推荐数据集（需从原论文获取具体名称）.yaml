@@ -1,0 +1,14 @@
+dataset: 论文中使用的跨域推荐数据集（需从原论文获取具体名称）
+domain: CTR/CVR Modeling
+description: 论文中使用的跨域推荐数据集（需从原论文获取具体名称） dataset for CTR/CVR Modeling
+metrics: []
+entries:
+- algorithm: From Clues to Generation
+  sources:
+  - arxiv_id: '2604.05365'
+    paper_title: 'From Clues to Generation: Language-Guided Conditional Diffusion
+      for Cross-Domain Recommendation'
+    source: https://arxiv.org/abs/2604.05365v1
+    post_url: /2026/04/08/from-clues-to-generation-language-guided-condition/
+    results: {}
+    paper_date: 2026-04-08
