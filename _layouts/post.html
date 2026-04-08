@@ -4,18 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ page.title }}</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 </head>
-<body class="site-shell page-layout-post page-article">
-  <div class="mobile-chrome">
-    <button class="sidebar-toggle" type="button" aria-controls="site-sidebar" aria-expanded="false">目录</button>
-    <a href="{{ '/' | relative_url }}" class="mobile-brand">Paper Insight</a>
-  </div>
+<body>
   <div class="layout-container">
-    <div class="layout-overlay" data-sidebar-dismiss></div>
     {% include sidebar.html %}
     <main class="main-content">
       {% assign paper_url = page.source | default: page.url | replace: '/pdf/', '/abs/' | replace: '.pdf', '' %}
@@ -23,59 +15,38 @@
       {% if page.analysis_generated or content contains '一句话增量' or content contains '论文分析报告' %}
         {% assign has_analysis = true %}
       {% endif %}
-      {% assign standfirst = page.description | default: page.excerpt | strip_html | strip_newlines %}
-      {% assign unique_categories = page.categories | uniq %}
 
       <article class="post-detail">
         <a href="{{ '/' | relative_url }}" class="back-link">
-          <span>&larr;</span> 返回目录
+          <span>&larr;</span> 返回文章列表
         </a>
 
         <header class="post-header">
-          <div class="post-header-copy">
-            <p class="post-kicker">Research Commentary</p>
-            <h1 class="post-title">{{ page.title }}</h1>
-            {% if standfirst %}
-            <p class="post-standfirst">{{ standfirst }}</p>
-            {% endif %}
-            {% if unique_categories %}
-            <div class="post-tags">
-              {% for category in unique_categories %}
-              <span class="post-tag">{{ category }}</span>
-              {% endfor %}
-            </div>
+          <h1 class="post-title">{{ page.title }}</h1>
+          <div class="post-meta">
+            <span class="date">{{ page.date | date: "%Y-%m-%d" }}</span>
+            {% if page.arxiv_id %}
+            <a href="{{ paper_url }}" class="arxiv-link" target="_blank" rel="noopener">
+              arXiv: {{ page.arxiv_id }}
+            </a>
             {% endif %}
           </div>
+          {% if page.categories %}
+          <div class="post-tags">
+            {% for category in page.categories | uniq %}
+            <span class="post-tag">{{ category }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
 
-          <aside class="post-summary-panel">
-            <div class="post-meta">
-              <div class="post-meta-block">
-                <span class="post-meta-label">Published</span>
-                <span class="post-meta-value">{{ page.date | date: "%Y-%m-%d" }}</span>
-              </div>
-              {% if page.arxiv_id %}
-              <div class="post-meta-block">
-                <span class="post-meta-label">Archive</span>
-                <a href="{{ paper_url }}" class="arxiv-link" target="_blank" rel="noopener">
-                  arXiv {{ page.arxiv_id }}
-                </a>
-              </div>
-              {% endif %}
-              <div class="post-meta-block">
-                <span class="post-meta-label">Status</span>
-                <span class="post-meta-value">{% if has_analysis %}Analysis Ready{% else %}Pending Analysis{% endif %}</span>
-              </div>
-            </div>
-
-            <div class="post-actions">
-              <a href="{{ paper_url }}" class="post-action-link" target="_blank" rel="noopener">查看原论文</a>
-              {% if has_analysis %}
-              <a href="#analysis" class="post-action-link primary">跳到解析</a>
-              {% else %}
-              <span class="post-action-link muted">AI 解析待生成</span>
-              {% endif %}
-            </div>
-          </aside>
+          <div class="post-actions">
+            <a href="{{ paper_url }}" class="post-action-link" target="_blank" rel="noopener">查看原论文</a>
+            {% if has_analysis %}
+            <a href="#analysis" class="post-action-link primary">跳到解析</a>
+            {% else %}
+            <span class="post-action-link muted">AI 解析待生成</span>
+            {% endif %}
+          </div>
         </header>
 
         {% unless has_analysis %}
@@ -85,27 +56,8 @@
         </div>
         {% endunless %}
 
-        <div class="post-reading-grid">
-          <div class="post-content" id="analysis">
-            {{ content }}
-          </div>
-
-          <aside class="post-annotations">
-            <div class="annotation-panel">
-              <span class="annotation-kicker">Editorial Note</span>
-              <p>本页保留论文来源、分析状态与主题归类，阅读体验按研究评论稿件重新编排。</p>
-            </div>
-            {% if unique_categories %}
-            <div class="annotation-panel">
-              <span class="annotation-kicker">Filed Under</span>
-              <ul class="annotation-list">
-                {% for category in unique_categories %}
-                <li>{{ category }}</li>
-                {% endfor %}
-              </ul>
-            </div>
-            {% endif %}
-          </aside>
+        <div class="post-content" id="analysis">
+          {{ content }}
         </div>
       </article>
     </main>
