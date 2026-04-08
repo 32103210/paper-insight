@@ -25,6 +25,7 @@ class PagesWorkflowTests(unittest.TestCase):
 
         build_job = workflow["jobs"]["build"]
         self.assertIn("github.event.workflow_run.conclusion == 'success'", build_job["if"])
+        self.assertEqual(build_job["steps"][2]["with"]["ruby-version"], "3.1")
 
 
 if __name__ == "__main__":
