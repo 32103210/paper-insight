@@ -1,5 +1,6 @@
 import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -89,6 +90,76 @@ class AnalyzerTests(unittest.TestCase):
         self.assertIn("industry_affiliations:\n", frontmatter)
         self.assertIn("  - Meituan\n", frontmatter)
         self.assertIn("  - Google Research\n", frontmatter)
+
+    def test_extract_author_affiliations_from_pdf_text_reads_first_page_units(self):
+        extractor = getattr(analyzer, "extract_author_affiliations_from_pdf_text", lambda _text: [])
+        text = """Next-Scale Generative Reranking
+Shuli Wang1, Alice Doe2
+1 Meituan
+2 School of Computer Science, Tsinghua University
+wangshuli03@meituan.com
+Abstract
+"""
+
+        self.assertEqual(
+            extractor(text),
+            ["Meituan", "School of Computer Science, Tsinghua University"],
+        )
+
+    def test_extract_author_affiliations_from_pdf_text_ignores_title_lines_with_company_names(self):
+        extractor = getattr(analyzer, "extract_author_affiliations_from_pdf_text", lambda _text: [])
+        text = """Next-Scale Generative Reranking: A Tree-based Generative
+Rerank Method at Meituan
+Shuli Wang
+Meituan
+wangshuli03@meituan.com
+Abstract
+"""
+
+        self.assertEqual(extractor(text), ["Meituan"])
+
+    def test_build_user_prompt_includes_author_affiliations_context(self):
+        paper = {
+            **self.paper_ok,
+            "author_affiliations": ["Meituan", "School of Computer Science, Tsinghua University"],
+        }
+
+        prompt = analyzer.build_user_prompt(paper)
+
+        self.assertIn("解析出的作者单位", prompt)
+        self.assertIn("Meituan", prompt)
+        self.assertIn("School of Computer Science, Tsinghua University", prompt)
+
+    @patch.object(
+        analyzer,
+        "fetch_pdf_first_page_text",
+        return_value="1 Meituan\n2 School of Computer Science, Tsinghua University\nAbstract",
+    )
+    def test_enrich_paper_author_affiliations_from_pdf_first_page(self, _mock_fetch_pdf_first_page_text):
+        paper = dict(self.paper_ok)
+
+        analyzer.enrich_paper_author_affiliations(paper)
+
+        self.assertEqual(
+            paper.get("author_affiliations"),
+            ["Meituan", "School of Computer Science, Tsinghua University"],
+        )
+        self.assertEqual(paper.get("industry_affiliations"), ["Meituan"])
+
+    def test_save_analysis_writes_author_affiliations_section(self):
+        paper = {
+            **self.paper_ok,
+            "author_affiliations": ["Meituan", "School of Computer Science, Tsinghua University"],
+        }
+        analysis = "## 1. 一句话增量\n\n这里是分析正文。"
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            filepath = analyzer.save_analysis(paper, analysis, output_dir=temp_dir)
+            content = Path(filepath).read_text(encoding="utf-8")
+
+        self.assertIn("## 作者单位\n", content)
+        self.assertIn("- Meituan\n", content)
+        self.assertIn("- School of Computer Science, Tsinghua University\n", content)
 
 
 if __name__ == "__main__":

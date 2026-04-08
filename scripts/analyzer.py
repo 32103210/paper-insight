@@ -10,10 +10,12 @@ import json
 import sys
 import re
 import argparse
+import io
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
+from urllib import error, request
 from dotenv import load_dotenv
 from openai import OpenAI
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -37,6 +39,27 @@ ANALYSIS_MARKERS = (
     "## 1. 一句话增量",
     "# 论文分析报告",
     "## 博导审稿",
+)
+
+PDF_REQUEST_TIMEOUT = 30
+PDF_USER_AGENT = "paper-insight/1.0 (+https://github.com/32103210/paper-insight)"
+PDF_AFFILIATION_SCAN_CHAR_LIMIT = 4000
+EMAIL_PATTERN = re.compile(
+    r'([A-Za-z0-9._%+-]+)@([A-Za-z0-9.-]+\.[A-Za-z]{2,})',
+    flags=re.IGNORECASE,
+)
+AFFILIATION_LINE_HINTS = (
+    "university", "college", "institute", "school", "academy", "hospital",
+    "faculty", "department", "laboratory", "lab", "research", "center",
+    "centre", "group", "company", "corporation", "corp", "inc", "ltd",
+    "llc", "gmbh", "plc", "ag", "meituan", "google", "amazon", "microsoft",
+    "meta", "facebook", "alibaba", "tencent", "baidu", "huawei", "xiaomi",
+    "shopee", "sea", "openai", "anthropic", "bytedance", "kuaishou",
+)
+AFFILIATION_STOP_MARKERS = ("abstract", "1 introduction", "introduction")
+TITLE_NOISE_KEYWORDS = (
+    "recommendation", "rerank", "method", "framework", "model", "system",
+    "learning", "generative", "retrieval", "ranking",
 )
 
 # 导入 prompt 模板
@@ -112,6 +135,153 @@ def normalize_string_list(raw_values) -> list:
                 normalized.append(value)
 
     return normalized
+
+
+def normalize_pdf_url(url: str) -> str:
+    """将 abs/pdf 链接统一归一化为可下载的 PDF 链接。"""
+    normalized = str(url or "").strip()
+    if not normalized:
+        return ""
+
+    if "/abs/" in normalized:
+        normalized = normalized.replace("/abs/", "/pdf/")
+    if not normalized.endswith(".pdf"):
+        normalized = normalized.rstrip("/") + ".pdf"
+    return normalized
+
+
+def fetch_pdf_first_page_text(pdf_url: str) -> str:
+    """抓取 PDF 首页文本，用于解析作者单位。"""
+    normalized_url = normalize_pdf_url(pdf_url)
+    if not normalized_url:
+        return ""
+
+    req = request.Request(normalized_url, headers={"User-Agent": PDF_USER_AGENT})
+    try:
+        with request.urlopen(req, timeout=PDF_REQUEST_TIMEOUT) as resp:
+            pdf_bytes = resp.read()
+    except (error.HTTPError, error.URLError, TimeoutError):
+        return ""
+
+    try:
+        from pypdf import PdfReader
+    except ImportError:
+        return ""
+
+    try:
+        reader = PdfReader(io.BytesIO(pdf_bytes))
+        if not reader.pages:
+            return ""
+        return (reader.pages[0].extract_text() or "").strip()
+    except Exception:
+        return ""
+
+
+def clean_affiliation_line(line: str) -> str:
+    """清理 PDF 首页中疑似单位行的噪声。"""
+    cleaned = EMAIL_PATTERN.sub("", line or "")
+    cleaned = re.sub(r"\s+", " ", cleaned).strip(" ,;:-")
+    cleaned = re.sub(r"^[\d\W_]+", "", cleaned)
+    cleaned = re.sub(r"[\d\W_]+$", "", cleaned)
+    return cleaned.strip()
+
+
+def looks_like_affiliation_line(line: str) -> bool:
+    """判断一行文本是否像作者单位。"""
+    normalized = str(line or "").strip()
+    if not normalized:
+        return False
+
+    lower = normalized.lower()
+    if "@" in lower:
+        return False
+    if any(lower.startswith(marker) for marker in AFFILIATION_STOP_MARKERS):
+        return False
+    if " at " in lower and len(normalized.split()) > 3:
+        return False
+    if any(keyword in lower for keyword in TITLE_NOISE_KEYWORDS) and not any(
+        hint in lower for hint in (
+            "university", "college", "institute", "school", "academy", "hospital",
+            "faculty", "department", "laboratory", "lab", "research", "center",
+            "centre", "group", "company", "corporation", "corp", "inc", "ltd",
+            "llc", "gmbh", "plc", "ag",
+        )
+    ):
+        return False
+    if len(normalized.split()) <= 1 and not any(hint in lower for hint in AFFILIATION_LINE_HINTS):
+        return False
+
+    return any(hint in lower for hint in AFFILIATION_LINE_HINTS)
+
+
+def extract_author_affiliations_from_pdf_text(text: str) -> list:
+    """从 PDF 首页文本中提取作者单位集合。"""
+    excerpt = str(text or "")[:PDF_AFFILIATION_SCAN_CHAR_LIMIT]
+    if not excerpt:
+        return []
+
+    affiliations = []
+    for raw_line in excerpt.splitlines():
+        line = re.sub(r"\s+", " ", raw_line).strip()
+        if not line:
+            continue
+
+        lower = line.lower()
+        if any(lower.startswith(marker) for marker in AFFILIATION_STOP_MARKERS):
+            break
+
+        cleaned = clean_affiliation_line(line)
+        if looks_like_affiliation_line(cleaned) and cleaned not in affiliations:
+            affiliations.append(cleaned)
+
+    try:
+        from crawler import infer_company_from_email_domain, is_industry_affiliation
+    except Exception:
+        infer_company_from_email_domain = None
+        is_industry_affiliation = None
+
+    if infer_company_from_email_domain:
+        for _local_part, domain in EMAIL_PATTERN.findall(excerpt):
+            company = infer_company_from_email_domain(domain)
+            if company and company not in affiliations:
+                affiliations.append(company)
+
+    if is_industry_affiliation:
+        normalized = []
+        for affiliation in affiliations:
+            if not affiliation:
+                continue
+            if affiliation not in normalized:
+                normalized.append(affiliation)
+        return normalized
+
+    return affiliations
+
+
+def enrich_paper_author_affiliations(paper: dict) -> dict:
+    """在分析前补充 PDF 首页解析出的作者单位。"""
+    author_affiliations = normalize_string_list(paper.get("author_affiliations", []))
+    if not author_affiliations:
+        pdf_text = fetch_pdf_first_page_text(paper.get("pdf_url") or paper.get("source_url", ""))
+        author_affiliations = extract_author_affiliations_from_pdf_text(pdf_text)
+        if author_affiliations:
+            paper["author_affiliations"] = author_affiliations
+
+    try:
+        from crawler import is_industry_affiliation
+    except Exception:
+        is_industry_affiliation = None
+
+    if is_industry_affiliation:
+        current_industry = normalize_string_list(paper.get("industry_affiliations", []))
+        if not current_industry and author_affiliations:
+            paper["industry_affiliations"] = [
+                affiliation
+                for affiliation in author_affiliations
+                if is_industry_affiliation(affiliation)
+            ]
+
+    return paper
 
 
 def load_post(filepath: Path) -> tuple[dict, str]:
@@ -217,6 +387,7 @@ def analyze_paper(client: OpenAI, paper: dict) -> str:
     Returns:
         Markdown 格式的分析报告
     """
+    enrich_paper_author_affiliations(paper)
     user_prompt = build_user_prompt(paper)
 
     response = client.chat.completions.create(
@@ -343,9 +514,16 @@ def save_analysis(paper: dict, analysis: str, output_dir: str = "_posts", output
         filename = f"{date_str}-{slug}.md"
         filepath = Path(output_dir) / filename
 
+    author_affiliations = normalize_string_list(paper.get("author_affiliations", []))
+    author_affiliation_section = ""
+    if author_affiliations:
+        author_affiliation_section = "## 作者单位\n\n" + "\n".join(
+            f"- {affiliation}" for affiliation in author_affiliations
+        ) + "\n\n"
+
     # 生成 frontmatter + 分析内容
     frontmatter = generate_frontmatter(paper, categories)
-    content = frontmatter + analysis_content
+    content = frontmatter + author_affiliation_section + analysis_content
 
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(content)

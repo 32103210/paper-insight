@@ -77,6 +77,13 @@ Benchmark数据: 暂未提取（论文中未找到结构化实验数据）
 
 def build_user_prompt(paper: dict) -> str:
     """构建用户 prompt，包含论文信息"""
+    author_affiliations = paper.get("author_affiliations", []) or []
+    author_affiliation_block = "暂未解析到明确作者单位"
+    if author_affiliations:
+        author_affiliation_block = "\n".join(
+            f"- {affiliation}" for affiliation in author_affiliations
+        )
+
     return f"""请分析以下这篇论文：
 
 # 论文标题
@@ -87,6 +94,9 @@ def build_user_prompt(paper: dict) -> str:
 
 # arXiv URL
 {paper['pdf_url'].replace('.pdf', '')}
+
+# 解析出的作者单位
+{author_affiliation_block}
 
 # 摘要
 {paper['abstract']}
