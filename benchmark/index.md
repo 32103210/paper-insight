@@ -3,28 +3,589 @@ layout: page
 title: Benchmark Leaderboard
 ---
 
-<section class="benchmark-hero">
-  <div class="benchmark-hero-meta">
-    <span class="cover-meta-item">Benchmark Ledger</span>
-    <span class="cover-meta-item">CTR/CVR · LLM4Rec</span>
-  </div>
+# Benchmark Leaderboard
 
-  <div class="benchmark-hero-grid">
-    <div>
-      <p class="cover-kicker">Experimental Index</p>
-      <h1 class="benchmark-hero-title">推荐算法实验台账</h1>
-      <p class="benchmark-hero-copy">把论文中的关键实验结果整理成一份可浏览的研究台账，按数据集、指标和时间线建立统一索引，并连接到真实论文与本站分析页面。</p>
-    </div>
+推荐算法领域论文性能排行榜。从学术论文中提取实验数据，按数据集和指标分类展示。
 
-    <aside class="rail-panel benchmark-note-card">
-      <span class="benchmark-note-label">Editorial Note</span>
-      <p class="benchmark-note">这一页不只是排行榜。它更像研究参考册：一边保留模型表现，一边给出时间线与热门论文索引，方便快速回到原文和分析稿。</p>
-    </aside>
-  </div>
-</section>
+<style>
+/* Benchmark Page Specific Styles */
+.benchmark-page {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Domain Tabs */
+.domain-tabs {
+  display: flex;
+  border-bottom: 2px solid #e5e5e5;
+  margin-bottom: 32px;
+}
+
+.domain-tab {
+  padding: 16px 32px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #666;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.domain-tab:hover {
+  color: #333;
+}
+
+.domain-tab.active {
+  color: #2563eb;
+}
+
+.domain-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #2563eb;
+  border-radius: 3px 3px 0 0;
+}
+
+/* Section Header */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.dataset-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #f3f4f6;
+  color: #666;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Table Container */
+.table-container {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e5e5;
+  overflow: hidden;
+  margin-bottom: 40px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Table */
+.benchmark-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.benchmark-table thead {
+  background: #f8f9fa;
+}
+
+.benchmark-table th {
+  padding: 16px 20px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #666;
+  border-bottom: 1px solid #e5e5e5;
+  white-space: nowrap;
+}
+
+.benchmark-table th.rank-header {
+  width: 80px;
+  text-align: center;
+}
+
+.benchmark-table th.metric-header {
+  text-align: right;
+}
+
+/* Table Body */
+.benchmark-table tbody tr {
+  transition: background 0.15s;
+}
+
+.benchmark-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.benchmark-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+
+.benchmark-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Rank Cell */
+.rank-cell {
+  text-align: center;
+  width: 80px;
+}
+
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.rank-badge.gold {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: #000;
+  box-shadow: 0 2px 8px rgba(255, 165, 0, 0.3);
+}
+
+.rank-badge.silver {
+  background: linear-gradient(135deg, #E8E8E8 0%, #C0C0C0 100%);
+  color: #333;
+  box-shadow: 0 2px 8px rgba(192, 192, 192, 0.3);
+}
+
+.rank-badge.bronze {
+  background: linear-gradient(135deg, #CD7F32 0%, #A0522D 100%);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(160, 82, 45, 0.3);
+}
+
+.rank-num {
+  font-weight: 600;
+  color: #999;
+}
+
+/* Algorithm Cell */
+.algo-cell {
+  min-width: 180px;
+}
+
+.algo-name {
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 4px;
+}
+
+.algo-name:hover {
+  color: #2563eb;
+}
+
+.algo-name.disabled {
+  color: #1a1a2e;
+  cursor: default;
+  text-decoration: none;
+}
+
+.algo-meta {
+  font-size: 12px;
+  color: #999;
+}
+
+/* Metric Cell */
+.metric-cell {
+  text-align: right;
+  font-family: 'SF Mono', 'Menlo', monospace;
+  font-size: 15px;
+  font-weight: 600;
+  color: #2563eb;
+  white-space: nowrap;
+}
+
+.metric-cell.best {
+  color: #059669;
+}
+
+/* Improvement Cell */
+.improvement-cell {
+  text-align: right;
+  font-size: 13px;
+  color: #059669;
+  white-space: nowrap;
+}
+
+/* Paper Cell */
+.paper-cell {
+  max-width: 300px;
+}
+
+.paper-title {
+  display: block;
+  font-size: 13px;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+
+.paper-links {
+  display: flex;
+  gap: 8px;
+}
+
+.paper-link {
+  font-size: 12px;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.paper-link:hover {
+  text-decoration: underline;
+}
+
+.paper-link.disabled {
+  color: #94a3b8;
+  cursor: default;
+  text-decoration: none;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .domain-tabs {
+    overflow-x: auto;
+  }
+
+  .domain-tab {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+  .benchmark-table {
+    min-width: 800px;
+  }
+}
+
+/* Right Floating Panel */
+.right-panel {
+  position: fixed;
+  right: 8px;
+  top: 80px;
+  width: 260px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  z-index: 100;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+.right-panel::-webkit-scrollbar {
+  width: 4px;
+}
+
+.right-panel::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 2px;
+}
+
+.right-panel-section {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #e5e5e5;
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.right-panel-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #e5e5e5;
+}
+
+.right-panel-section:last-child {
+  margin-bottom: 0;
+}
+
+.panel-timeline-month {
+  margin-bottom: 8px;
+}
+
+.panel-timeline-month:last-child {
+  margin-bottom: 0;
+}
+
+.panel-timeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.panel-timeline-header:hover {
+  background: #e9ecef;
+}
+
+.panel-timeline-header.expanded {
+  background: #e8f4ff;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-bottom: 0;
+}
+
+.panel-timeline-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-timeline-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  background: #2563eb;
+  color: white;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.panel-timeline-arrow {
+  font-size: 10px;
+  color: #666;
+  transition: transform 0.2s;
+}
+
+.panel-timeline-header.expanded .panel-timeline-arrow {
+  transform: rotate(180deg);
+}
+
+.panel-timeline-content {
+  display: none;
+  background: #fff;
+  border: 1px solid #e8f4ff;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  padding: 6px 8px;
+}
+
+.panel-timeline-header.expanded + .panel-timeline-content {
+  display: block;
+}
+
+.panel-timeline-content.collapsed {
+  max-height: 120px;
+  overflow: hidden;
+  position: relative;
+}
+
+.panel-timeline-content.collapsed::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: linear-gradient(transparent, #fff);
+  pointer-events: none;
+}
+
+.panel-timeline-show-more {
+  display: none;
+  width: 100%;
+  padding: 6px 8px;
+  margin-top: 4px;
+  background: #f0f7ff;
+  border: 1px solid #d0e4ff;
+  border-radius: 4px;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.panel-timeline-show-more:hover {
+  background: #e0f0ff;
+}
+
+.panel-timeline-content.collapsed + .panel-timeline-show-more {
+  display: block;
+}
+
+.panel-timeline-item {
+  padding: 4px 0;
+  font-size: 11px;
+  line-height: 1.3;
+  border-bottom: 1px dashed #f0f0f0;
+}
+
+.panel-timeline-item:last-child {
+  border-bottom: none;
+}
+
+.panel-timeline-item a {
+  color: #444;
+  text-decoration: none;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.15s;
+}
+
+.panel-timeline-item a:hover {
+  color: #2563eb;
+}
+
+.panel-timeline-item a::before {
+  content: '•';
+  color: #2563eb;
+  margin-right: 6px;
+  font-weight: bold;
+}
+
+.panel-popular-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 5px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.panel-popular-item:last-child {
+  border-bottom: none;
+}
+
+.panel-popular-rank {
+  font-weight: 700;
+  width: 20px;
+  min-width: 20px;
+  color: #666;
+  font-size: 13px;
+}
+
+.panel-popular-rank.top-1 { color: #FFD700; }
+.panel-popular-rank.top-2 { color: #C0C0C0; }
+.panel-popular-rank.top-3 { color: #CD7F32; }
+
+.panel-popular-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.panel-popular-title {
+  font-size: 12px;
+  color: #333;
+  font-weight: 500;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.panel-popular-title:hover {
+  color: #2563eb;
+}
+
+.panel-popular-meta {
+  font-size: 11px;
+  color: #999;
+}
+
+/* Main content area with right sidebar */
+.benchmark-layout {
+  display: flex;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: flex-start;
+}
+
+.benchmark-main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Right Sidebar - sticky positioning */
+.right-panel {
+  width: 300px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 80px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+.right-panel::-webkit-scrollbar {
+  width: 4px;
+}
+
+.right-panel::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 2px;
+}
+
+@media (max-width: 1100px) {
+  .benchmark-layout {
+    flex-direction: column;
+  }
+
+  .right-panel {
+    width: 100%;
+    position: static;
+    max-height: none;
+  }
+}
+</style>
 
 <div class="benchmark-layout">
   <main class="benchmark-main">
+
+    <!-- Domain Tabs -->
     <div class="domain-tabs">
       <button class="domain-tab active" data-domain="ctr-cvr">
         CTR/CVR Modeling
@@ -34,6 +595,7 @@ title: Benchmark Leaderboard
       </button>
     </div>
 
+    <!-- CTR/CVR Section -->
     <div id="ctr-cvr-section" class="domain-section active">
       <div class="section-header">
         <h2 class="section-title">CTR/CVR Modeling Leaderboard</h2>
@@ -51,7 +613,9 @@ title: Benchmark Leaderboard
               <th>Paper</th>
             </tr>
           </thead>
-          <tbody id="ctr-tbody"></tbody>
+          <tbody id="ctr-tbody">
+            <!-- Populated by JS -->
+          </tbody>
         </table>
       </div>
 
@@ -71,11 +635,14 @@ title: Benchmark Leaderboard
               <th>Paper</th>
             </tr>
           </thead>
-          <tbody id="taobao-tbody"></tbody>
+          <tbody id="taobao-tbody">
+            <!-- Populated by JS -->
+          </tbody>
         </table>
       </div>
     </div>
 
+    <!-- LLM4Rec Section -->
     <div id="llm4rec-section" class="domain-section" style="display:none;">
       <div class="section-header">
         <h2 class="section-title">LLM4Rec Leaderboard</h2>
@@ -98,7 +665,9 @@ title: Benchmark Leaderboard
               <th>Paper</th>
             </tr>
           </thead>
-          <tbody id="movielens-tbody"></tbody>
+          <tbody id="movielens-tbody">
+            <!-- Populated by JS -->
+          </tbody>
         </table>
       </div>
 
@@ -118,25 +687,35 @@ title: Benchmark Leaderboard
               <th>Paper</th>
             </tr>
           </thead>
-          <tbody id="amazon-llm-tbody"></tbody>
+          <tbody id="amazon-llm-tbody">
+            <!-- Populated by JS -->
+          </tbody>
         </table>
       </div>
     </div>
+
   </main>
 
+  <!-- Right Sidebar -->
   <aside class="right-panel">
     <div class="right-panel-section">
       <h3 class="right-panel-title">时间线</h3>
-      <div id="panel-timeline"></div>
+      <div id="panel-timeline">
+        <!-- Populated by JS -->
+      </div>
     </div>
     <div class="right-panel-section">
       <h3 class="right-panel-title">热门论文</h3>
-      <div id="panel-popular"></div>
+      <div id="panel-popular">
+        <!-- Populated by JS -->
+      </div>
     </div>
   </aside>
+
 </div>
 
 <script>
+// Benchmark Data - New format with sources array
 const DATA = {
 {% for domain in site.data.benchmarks %}
   "{{ domain[0] }}": {
@@ -168,6 +747,7 @@ const DATA = {
 {% endfor %}
 };
 
+// Posts data for right panel
 const POSTS = [
 {% for post in site.posts %}
   {
@@ -257,6 +837,7 @@ function renderAlgorithmName(name, analysisUrl) {
   return `<a href="${analysisUrl}" class="algo-name">${name}</a>`;
 }
 
+// Render Timeline in Right Panel
 function renderPanelTimeline() {
   const timeline = {};
   POSTS.forEach(post => {
@@ -274,7 +855,7 @@ function renderPanelTimeline() {
     const [year, m] = month.split('-');
     const monthName = `${year}年${parseInt(m)}月`;
     const posts = timeline[month];
-    const isExpanded = idx === 0;
+    const isExpanded = idx === 0; // First month expanded by default
 
     html += `<div class="panel-timeline-month">`;
     html += `<div class="panel-timeline-header${isExpanded ? ' expanded' : ''}" data-month="${month}">`;
@@ -302,12 +883,16 @@ function renderPanelTimeline() {
   const container = document.getElementById('panel-timeline');
   if (container) container.innerHTML = html;
 
+  // Add click handlers for collapsible timeline
   container.querySelectorAll('.panel-timeline-header').forEach(header => {
     header.addEventListener('click', () => {
       const isExpanded = header.classList.toggle('expanded');
       const month = header.dataset.month;
+      const content = container.querySelector(`.panel-timeline-content[data-month="${month}"]`) ||
+                      header.nextElementSibling;
       const showMore = container.querySelector(`.panel-timeline-show-more[data-month="${month}"]`);
 
+      // Find and update content
       let contentDiv = header.nextElementSibling;
       while (contentDiv && !contentDiv.classList.contains('panel-timeline-content')) {
         contentDiv = contentDiv.nextElementSibling;
@@ -316,11 +901,12 @@ function renderPanelTimeline() {
         contentDiv.classList.toggle('collapsed', !isExpanded);
       }
       if (showMore) {
-        showMore.style.display = isExpanded ? 'none' : 'inline-flex';
+        showMore.style.display = isExpanded ? 'none' : 'block';
       }
     });
   });
 
+  // Add click handlers for show more buttons
   container.querySelectorAll('.panel-timeline-show-more').forEach(btn => {
     btn.addEventListener('click', () => {
       const month = btn.dataset.month;
@@ -337,6 +923,7 @@ function renderPanelTimeline() {
   });
 }
 
+// Render Popular Papers in Right Panel
 function renderPanelPopular() {
   const sorted = [...POSTS].sort((a, b) => {
     if (!a.date) return 1;
@@ -364,6 +951,8 @@ function renderPanelPopular() {
   if (container) container.innerHTML = html;
 }
 
+// Flatten entries with sources for sorting and rendering
+// Each source becomes a separate row, but we track algorithm groups for rank display
 function flattenEntriesWithSources(entries) {
   const result = [];
   for (const entry of entries) {
@@ -378,6 +967,7 @@ function flattenEntriesWithSources(entries) {
   return result;
 }
 
+// Render CTR/CVR row (single metric AUC)
 function renderRow(flatEntry, rank, metric, baseline, showRank) {
   const source = flatEntry.source;
   const analysisUrl = resolveAnalysisUrl(source, flatEntry.algorithm);
@@ -393,6 +983,8 @@ function renderRow(flatEntry, rank, metric, baseline, showRank) {
     else if (rank === 2) rankHtml = '<span class="rank-badge silver">2</span>';
     else if (rank === 3) rankHtml = '<span class="rank-badge bronze">3</span>';
     else rankHtml = `<span class="rank-num">${rank}</span>`;
+  } else {
+    rankHtml = '';
   }
 
   return `
@@ -415,6 +1007,7 @@ function renderRow(flatEntry, rank, metric, baseline, showRank) {
   `;
 }
 
+// Render dual metric row (for LLM4Rec with HR@10 and NDCG@10)
 function renderDualRow(flatEntry, rank, showRank) {
   const source = flatEntry.source;
   const analysisUrl = resolveAnalysisUrl(source, flatEntry.algorithm);
@@ -430,6 +1023,8 @@ function renderDualRow(flatEntry, rank, showRank) {
     else if (rank === 2) rankHtml = '<span class="rank-badge silver">2</span>';
     else if (rank === 3) rankHtml = '<span class="rank-badge bronze">3</span>';
     else rankHtml = `<span class="rank-num">${rank}</span>`;
+  } else {
+    rankHtml = '';
   }
 
   return `
@@ -452,10 +1047,12 @@ function renderDualRow(flatEntry, rank, showRank) {
   `;
 }
 
+// Sort and render CTR table
 function renderCTRSection() {
   const ctrData = DATA['ctr-cvr'];
   if (!ctrData) return;
 
+  // Amazon table
   const amazonEntries = ctrData['amazon']?.entries || [];
   const flattenedAmazon = flattenEntriesWithSources(amazonEntries);
   const sortedAmazon = [...flattenedAmazon].sort((a, b) => {
@@ -477,6 +1074,7 @@ function renderCTRSection() {
     })
     .join('');
 
+  // Taobao table
   const taobaoEntries = ctrData['taobao']?.entries || [];
   const flattenedTaobao = flattenEntriesWithSources(taobaoEntries);
   const sortedTaobao = [...flattenedTaobao].sort((a, b) => {
@@ -499,10 +1097,12 @@ function renderCTRSection() {
     .join('');
 }
 
+// Sort and render LLM4Rec section
 function renderLLMSection() {
   const llmData = DATA['llm4rec'];
   if (!llmData) return;
 
+  // MovieLens table
   const mlEntries = llmData['movielens']?.entries || [];
   const flattenedML = flattenEntriesWithSources(mlEntries);
   const sortedML = [...flattenedML].sort((a, b) => {
@@ -523,6 +1123,7 @@ function renderLLMSection() {
     })
     .join('');
 
+  // Amazon table
   const amazonEntries = llmData['amazon']?.entries || [];
   const flattenedAmazon = flattenEntriesWithSources(amazonEntries);
   const sortedAmazon = [...flattenedAmazon].sort((a, b) => {
@@ -544,6 +1145,7 @@ function renderLLMSection() {
     .join('');
 }
 
+// Tab switching
 document.querySelectorAll('.domain-tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.domain-tab').forEach(t => t.classList.remove('active'));
@@ -558,11 +1160,13 @@ document.querySelectorAll('.domain-tab').forEach(tab => {
   });
 });
 
+// Initial render
 renderCTRSection();
 renderLLMSection();
 renderPanelTimeline();
 renderPanelPopular();
 
+// Handle hash
 if (window.location.hash === '#llm4rec') {
   document.querySelector('[data-domain="llm4rec"]').click();
 }
