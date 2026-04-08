@@ -30,6 +30,37 @@ class CrawlerTests(unittest.TestCase):
             ["Meituan", "Google Research"],
         )
 
+    def test_extract_industry_affiliations_from_html_falls_back_to_company_email_domain(self):
+        html = """
+        <div class="ltx_authors">
+          <span class="ltx_contact ltx_role_email">
+            <a href="mailto:alice@meituan.com">alice@meituan.com</a>
+          </span>
+          <span class="ltx_contact ltx_role_email">
+            <a href="mailto:bob@research.google.com">bob@research.google.com</a>
+          </span>
+        </div>
+        """
+
+        self.assertEqual(
+            crawler.extract_industry_affiliations_from_html(html),
+            ["Meituan", "Google"],
+        )
+
+    def test_extract_industry_affiliations_from_html_ignores_public_email_domains(self):
+        html = """
+        <div class="ltx_authors">
+          <span class="ltx_contact ltx_role_email">
+            <a href="mailto:alice@gmail.com">alice@gmail.com</a>
+          </span>
+          <span class="ltx_contact ltx_role_email">
+            <a href="mailto:bob@outlook.com">bob@outlook.com</a>
+          </span>
+        </div>
+        """
+
+        self.assertEqual(crawler.extract_industry_affiliations_from_html(html), [])
+
     @patch.object(crawler.time, "sleep")
     @patch.object(crawler, "fetch_industry_affiliations", return_value=["Meituan"])
     @patch.object(crawler, "search_with_retry")

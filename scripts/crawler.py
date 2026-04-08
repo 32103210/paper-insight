@@ -68,6 +68,80 @@ AFFILIATION_PATTERN = re.compile(
     r'ltx_affiliation_institution">([^<]+)</span>',
     flags=re.IGNORECASE,
 )
+EMAIL_PATTERN = re.compile(
+    r'([A-Za-z0-9._%+-]+)@([A-Za-z0-9.-]+\.[A-Za-z]{2,})',
+    flags=re.IGNORECASE,
+)
+PUBLIC_EMAIL_DOMAINS = {
+    "gmail.com",
+    "googlemail.com",
+    "outlook.com",
+    "hotmail.com",
+    "live.com",
+    "msn.com",
+    "icloud.com",
+    "me.com",
+    "mac.com",
+    "163.com",
+    "126.com",
+    "yeah.net",
+    "qq.com",
+    "foxmail.com",
+    "sina.com",
+    "sina.cn",
+    "sohu.com",
+    "aol.com",
+    "gmx.com",
+    "proton.me",
+    "protonmail.com",
+}
+EMAIL_DOMAIN_COMPANY_MAP = {
+    "meituan.com": "Meituan",
+    "google.com": "Google",
+    "deepmind.com": "DeepMind",
+    "amazon.com": "Amazon",
+    "amazon.science": "Amazon",
+    "apple.com": "Apple",
+    "microsoft.com": "Microsoft",
+    "meta.com": "Meta",
+    "fb.com": "Meta",
+    "bytedance.com": "ByteDance",
+    "tiktok.com": "ByteDance",
+    "alibaba.com": "Alibaba",
+    "alibaba-inc.com": "Alibaba",
+    "antgroup.com": "Ant Group",
+    "tencent.com": "Tencent",
+    "baidu.com": "Baidu",
+    "huawei.com": "Huawei",
+    "xiaomi.com": "Xiaomi",
+    "jd.com": "JD.com",
+    "kuaishou.com": "Kuaishou",
+    "shopee.com": "Shopee",
+    "sea.com": "Sea",
+    "openai.com": "OpenAI",
+    "anthropic.com": "Anthropic",
+    "linkedin.com": "LinkedIn",
+    "airbnb.com": "Airbnb",
+    "uber.com": "Uber",
+    "booking.com": "Booking.com",
+    "trip.com": "Trip.com",
+    "adobe.com": "Adobe",
+    "ibm.com": "IBM",
+    "oracle.com": "Oracle",
+    "intel.com": "Intel",
+    "nvidia.com": "NVIDIA",
+    "qualcomm.com": "Qualcomm",
+    "paypal.com": "PayPal",
+    "ebay.com": "eBay",
+    "shopify.com": "Shopify",
+    "instacart.com": "Instacart",
+    "pinterest.com": "Pinterest",
+    "doordash.com": "DoorDash",
+    "grab.com": "Grab",
+    "spotify.com": "Spotify",
+    "snap.com": "Snap",
+    "rakuten.com": "Rakuten",
+}
 
 
 def search_with_retry(client, search, max_retries=MAX_RETRIES):
@@ -178,12 +252,54 @@ def is_industry_affiliation(name: str) -> bool:
     return False
 
 
+def infer_company_from_email_domain(domain: str) -> str:
+    """从邮箱域名推断公司名，排除公共邮箱。"""
+    normalized = normalize_affiliation_lookup(domain)
+    if not normalized:
+        return ""
+
+    labels = normalized.split()
+    if not labels:
+        return ""
+
+    candidates = [".".join(labels[index:]) for index in range(len(labels) - 1)]
+    for candidate in candidates:
+        if candidate in PUBLIC_EMAIL_DOMAINS:
+            return ""
+        if candidate in EMAIL_DOMAIN_COMPANY_MAP:
+            return EMAIL_DOMAIN_COMPANY_MAP[candidate]
+
+    if any(
+        re.search(rf"\b{re.escape(normalize_affiliation_lookup(keyword))}\b", normalized)
+        for keyword in INDUSTRY_KEYWORDS
+    ):
+        company_token = labels[-2] if len(labels) >= 2 else labels[0]
+        return company_token.upper() if len(company_token) <= 4 else company_token.title()
+
+    return ""
+
+
+def extract_industry_affiliations_from_emails(html: str) -> List[str]:
+    """从邮箱域名中提取工业界单位。"""
+    affiliations = []
+    for _local_part, domain in EMAIL_PATTERN.findall(html or ""):
+        affiliation = infer_company_from_email_domain(domain)
+        if affiliation and affiliation not in affiliations:
+            affiliations.append(affiliation)
+
+    return affiliations
+
+
 def extract_industry_affiliations_from_html(html: str) -> List[str]:
     """从 arXiv HTML 页面中提取工业界单位。"""
     affiliations = []
     for match in AFFILIATION_PATTERN.findall(html or ""):
         affiliation = normalize_affiliation_name(match)
         if affiliation and is_industry_affiliation(affiliation) and affiliation not in affiliations:
+            affiliations.append(affiliation)
+
+    for affiliation in extract_industry_affiliations_from_emails(html):
+        if affiliation not in affiliations:
             affiliations.append(affiliation)
 
     return affiliations
