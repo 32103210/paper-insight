@@ -3,7 +3,7 @@ layout: page
 title: Paper Insight
 ---
 
-{% assign industrial_posts = site.posts | where_exp: "post", "post.industry_affiliations and post.industry_affiliations != empty" %}
+{% assign industrial_posts = site.posts | where_exp: "post", "post.industry_affiliations != empty" %}
 
 <script>
 window.POSTS_DATA = [

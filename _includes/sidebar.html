@@ -1,4 +1,4 @@
-{% assign industrial_posts = site.posts | where_exp: "post", "post.industry_affiliations and post.industry_affiliations != empty" %}
+{% assign industrial_posts = site.posts | where_exp: "post", "post.industry_affiliations != empty" %}
 
 <aside class="sidebar">
   <div class="sidebar-header">
