@@ -74,10 +74,10 @@ entries:
     paper_date: ''
 - algorithm: RoDPO
   sources:
-  - arxiv_id: 2603.29259
+  - arxiv_id: '2603.29259'
     paper_title: Aligning Multimodal Sequential Recommendations via Robust Direct
       Preference Optimization with Sparse MoE
-    source: https://arxiv.org/pdf/2603.29259v1
+    source: https://arxiv.org/abs/2603.29259v1
     post_url: /2026/04/03/aligning-multimodal-sequential-recommendations-via/
     results:
       HR@10: 0.6324
@@ -107,10 +107,10 @@ entries:
 - algorithm: Aligning Multimodal Sequential Recommendations via Robust Direct Preference
     Optimization with Sparse MoE
   sources:
-  - arxiv_id: 2603.29259
+  - arxiv_id: '2603.29259'
     paper_title: Aligning Multimodal Sequential Recommendations via Robust Direct
       Preference Optimization with Sparse MoE
-    source: https://arxiv.org/pdf/2603.29259v1
+    source: https://arxiv.org/abs/2603.29259v1
     post_url: /2026/04/03/aligning-multimodal-sequential-recommendations-via/
     results: {}
     paper_date: 2026-03-31

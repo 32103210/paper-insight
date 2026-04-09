@@ -5,6 +5,7 @@ metrics:
 - AUC
 - NDCG@5
 - HR@10
+- Recall@10
 entries:
 - algorithm: SIM
   sources:
@@ -135,3 +136,13 @@ entries:
     post_url: /2018/09/11/deep-interest-evolution-network-for-click-through-/
     results: {}
     paper_date: 2018-09-11
+- algorithm: Retrieve-then-Adapt
+  sources:
+  - arxiv_id: '2604.05379'
+    paper_title: 'Retrieve-then-Adapt: Retrieval-Augmented Test-Time Adaptation for
+      Sequential Recommendation'
+    source: https://arxiv.org/abs/2604.05379v1
+    post_url: /2026/04/08/retrieve-then-adapt-retrieval-augmented-test-time/
+    results:
+      Recall@10: 0.2487
+    paper_date: 2026-04-08

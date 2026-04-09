@@ -6,6 +6,9 @@ metrics:
 - HR@10
 - AUC
 - Latency
+- Recall@20
+- NDCG@20
+- Recall@10
 entries:
 - algorithm: Wide & Deep Learning for Recommender Systems
   sources:
@@ -31,10 +34,10 @@ entries:
 - algorithm: Aligning Multimodal Sequential Recommendations via Robust Direct Preference
     Optimization with Sparse MoE
   sources:
-  - arxiv_id: 2603.29259
+  - arxiv_id: '2603.29259'
     paper_title: Aligning Multimodal Sequential Recommendations via Robust Direct
       Preference Optimization with Sparse MoE
-    source: https://arxiv.org/pdf/2603.29259v1
+    source: https://arxiv.org/abs/2603.29259v1
     post_url: /2026/04/03/aligning-multimodal-sequential-recommendations-via/
     results: {}
     paper_date: 2026-03-31
@@ -54,3 +57,32 @@ entries:
     post_url: /2018/09/11/deep-interest-evolution-network-for-click-through-/
     results: {}
     paper_date: 2018-09-11
+- algorithm: A Logical-Rule Autoencoder for Interpretable Recommendations
+  sources:
+  - arxiv_id: '2604.04270'
+    paper_title: A Logical-Rule Autoencoder for Interpretable Recommendations
+    source: https://arxiv.org/abs/2604.04270v1
+    post_url: /2026/04/07/a-logical-rule-autoencoder-for-interpretable-recom/
+    results:
+      Recall@20: 0.1545
+      NDCG@20: 0.068
+    paper_date: 2026-04-07
+- algorithm: Retrieve-then-Adapt
+  sources:
+  - arxiv_id: '2604.05379'
+    paper_title: 'Retrieve-then-Adapt: Retrieval-Augmented Test-Time Adaptation for
+      Sequential Recommendation'
+    source: https://arxiv.org/abs/2604.05379v1
+    post_url: /2026/04/08/retrieve-then-adapt-retrieval-augmented-test-time/
+    results:
+      Recall@10: 0.2487
+    paper_date: 2026-04-08
+- algorithm: FLAME
+  sources:
+  - arxiv_id: '2604.04038'
+    paper_title: 'FLAME: Condensing Ensemble Diversity into a Single Network for Efficient
+      Sequential Recommendation'
+    source: https://arxiv.org/abs/2604.04038v1
+    post_url: /2026/04/07/flame-condensing-ensemble-diversity-into-a-single/
+    results: {}
+    paper_date: 2026-04-07

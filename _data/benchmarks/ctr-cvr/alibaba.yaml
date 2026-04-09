@@ -22,3 +22,20 @@ entries:
     results:
       AUC: 0.7956
     paper_date: 2019-05-16
+- algorithm: RCLRec
+  sources:
+  - arxiv_id: '2603.28124'
+    paper_title: 'RCLRec: Reverse Curriculum Learning for Modeling Sparse Conversions
+      in Generative Recommendation'
+    source: https://arxiv.org/abs/2603.28124v1
+    post_url: /2026/03/30/rclrec-reverse-curriculum-learning-for-modeling-sp/
+    results: {}
+    paper_date: 2026-03-30
+- algorithm: Deep Interest Evolution Network for Click-Through Rate Prediction
+  sources:
+  - arxiv_id: '1809.03672'
+    paper_title: Deep Interest Evolution Network for Click-Through Rate Prediction
+    source: https://arxiv.org/abs/1809.03672v5
+    post_url: /2018/09/11/deep-interest-evolution-network-for-click-through-/
+    results: {}
+    paper_date: 2018-09-11

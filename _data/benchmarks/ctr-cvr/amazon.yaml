@@ -8,6 +8,9 @@ metrics:
 - Latency
 - NDCG@10
 - HIT@5
+- Recall@20
+- NDCG@20
+- Recall@10
 entries:
 - algorithm: SIM
   sources:
@@ -110,10 +113,10 @@ entries:
     paper_date: ''
 - algorithm: RoDPO
   sources:
-  - arxiv_id: 2603.29259
+  - arxiv_id: '2603.29259'
     paper_title: Aligning Multimodal Sequential Recommendations via Robust Direct
       Preference Optimization with Sparse MoE
-    source: https://arxiv.org/pdf/2603.29259v1
+    source: https://arxiv.org/abs/2603.29259v1
     post_url: /2026/04/03/aligning-multimodal-sequential-recommendations-via/
     results:
       AUC: 0.7925
@@ -189,10 +192,10 @@ entries:
 - algorithm: Aligning Multimodal Sequential Recommendations via Robust Direct Preference
     Optimization with Sparse MoE
   sources:
-  - arxiv_id: 2603.29259
+  - arxiv_id: '2603.29259'
     paper_title: Aligning Multimodal Sequential Recommendations via Robust Direct
       Preference Optimization with Sparse MoE
-    source: https://arxiv.org/pdf/2603.29259v1
+    source: https://arxiv.org/abs/2603.29259v1
     post_url: /2026/04/03/aligning-multimodal-sequential-recommendations-via/
     results: {}
     paper_date: 2026-04-03
@@ -241,3 +244,40 @@ entries:
     post_url: /2026/04/08/pay-attention-to-sequence-split-uncovering-the-imp/
     results: {}
     paper_date: 2026-04-08
+- algorithm: A Logical-Rule Autoencoder for Interpretable Recommendations
+  sources:
+  - arxiv_id: '2604.04270'
+    paper_title: A Logical-Rule Autoencoder for Interpretable Recommendations
+    source: https://arxiv.org/abs/2604.04270v1
+    post_url: /2026/04/07/a-logical-rule-autoencoder-for-interpretable-recom/
+    results:
+      Recall@20: 0.1545
+      NDCG@20: 0.068
+    paper_date: 2026-04-07
+- algorithm: Retrieve-then-Adapt
+  sources:
+  - arxiv_id: '2604.05379'
+    paper_title: 'Retrieve-then-Adapt: Retrieval-Augmented Test-Time Adaptation for
+      Sequential Recommendation'
+    source: https://arxiv.org/abs/2604.05379v1
+    post_url: /2026/04/08/retrieve-then-adapt-retrieval-augmented-test-time/
+    results:
+      Recall@10: 0.2487
+    paper_date: 2026-04-08
+- algorithm: Aligning Recommendations with User Popularity Preferences
+  sources:
+  - arxiv_id: '2604.01036'
+    paper_title: Aligning Recommendations with User Popularity Preferences
+    source: https://arxiv.org/abs/2604.01036v1
+    post_url: /2026/04/03/aligning-recommendations-with-user-popularity-pref/
+    results: {}
+    paper_date: 2026-04-03
+- algorithm: FLAME
+  sources:
+  - arxiv_id: '2604.04038'
+    paper_title: 'FLAME: Condensing Ensemble Diversity into a Single Network for Efficient
+      Sequential Recommendation'
+    source: https://arxiv.org/abs/2604.04038v1
+    post_url: /2026/04/07/flame-condensing-ensemble-diversity-into-a-single/
+    results: {}
+    paper_date: 2026-04-07
