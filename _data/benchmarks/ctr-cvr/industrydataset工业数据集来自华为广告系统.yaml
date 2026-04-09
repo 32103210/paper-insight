@@ -1,0 +1,14 @@
+dataset: Industry Dataset (工业数据集，来自华为广告系统)
+domain: CTR/CVR Modeling
+description: industrydataset工业数据集来自华为广告系统 dataset for CTR/CVR Modeling
+metrics: []
+entries:
+- algorithm: No One Left Behind
+  sources:
+  - arxiv_id: '2512.13300'
+    paper_title: 'No One Left Behind: How to Exploit the Incomplete and Skewed Multi-Label
+      Data for Conversion Rate Prediction'
+    source: https://arxiv.org/abs/2512.13300v1
+    post_url: /2025/12/15/no-one-left-behind-how-to-exploit-the-incomplete-and-skewed-/
+    results: {}
+    paper_date: 2025-12-15

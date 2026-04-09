@@ -1,0 +1,14 @@
+dataset: Pinterest Internal Ads Dataset (大规模生产数据集)
+domain: CTR/CVR Modeling
+description: pinterestinternaladsdataset大规模生产数据集 dataset for CTR/CVR Modeling
+metrics: []
+entries:
+- algorithm: ML-DCN
+  sources:
+  - arxiv_id: '2602.09194'
+    paper_title: 'ML-DCN: Masked Low-Rank Deep Crossing Network Towards Scalable Ads
+      Click-through Rate Prediction at Pinterest'
+    source: https://arxiv.org/abs/2602.09194v1
+    post_url: /2026/02/09/ml-dcn-masked-low-rank-deep-crossing-network-towards-scalabl/
+    results: {}
+    paper_date: 2026-02-09

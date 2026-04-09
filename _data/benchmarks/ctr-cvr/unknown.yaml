@@ -3,6 +3,7 @@ domain: CTR/CVR Modeling
 description: unknown dataset for CTR/CVR Modeling
 metrics:
 - AUC
+- LogLoss
 entries:
 - algorithm: xDeepFM
   sources:
@@ -14,13 +15,25 @@ entries:
     results:
       AUC: 0.7691
     paper_date: 2018-03-14
+- algorithm: Distribution-Aware End-to-End Embedding for Streaming Numerical Features
+    in Click-Through Rate Prediction
+  sources:
+  - arxiv_id: '2602.03223'
+    paper_title: Distribution-Aware End-to-End Embedding for Streaming Numerical Features
+      in Click-Through Rate Prediction
+    source: https://arxiv.org/abs/2602.03223v1
+    post_url: /2026/02/03/distribution-aware-end-to-end-embedding-for-streaming-numeri/
+    results:
+      AUC: 0.7412
+      LogLoss: 0.4655
+    paper_date: 2026-02-03
 - algorithm: Chat
   sources:
   - arxiv_id: '2303.14524'
     paper_title: 'Chat-REC: Towards Interactive and Explainable LLMs-Augmented Recommender
       System'
     source: https://arxiv.org/abs/2303.14524v2
-    post_url: /2023/03/25/chat-rec-towards-interactive-and-explainable-llms-/
+    post_url: ''
     results: {}
     paper_date: 2023-03-25
 - algorithm: UniMixer
@@ -80,7 +93,7 @@ entries:
     paper_title: 'Chat-REC: Towards Interactive and Explainable LLMs-Augmented Recommender
       System'
     source: https://arxiv.org/abs/2303.14524v2
-    post_url: /2023/03/25/chat-rec-towards-interactive-and-explainable-llms-/
+    post_url: ''
     results: {}
     paper_date: 2023-03-25
 - algorithm: Zero-shot Cross-domain Knowledge Distillation
@@ -100,3 +113,49 @@ entries:
     post_url: /2026/04/07/learning-from-equivalence-queries-revisited/
     results: {}
     paper_date: 2026-04-07
+- algorithm: MISS
+  sources:
+  - arxiv_id: '2508.14515'
+    paper_title: 'MISS: Multi-Modal Tree Indexing and Searching with Lifelong Sequential
+      Behavior for Retrieval Recommendation'
+    source: https://arxiv.org/abs/2508.14515v1
+    post_url: /2025/08/20/miss-multi-modal-tree-indexing-and-searching-with-lifelong-s/
+    results: {}
+    paper_date: 2025-08-20
+- algorithm: Experimenting, Fast and Slow
+  sources:
+  - arxiv_id: '2506.18744'
+    paper_title: 'Experimenting, Fast and Slow: Bayesian Optimization of Long-term
+      Outcomes with Online Experiments'
+    source: https://arxiv.org/abs/2506.18744v2
+    post_url: /2025/06/23/experimenting-fast-and-slow-bayesian-optimization-of-long-te/
+    results: {}
+    paper_date: 2025-06-23
+- algorithm: Towards End-to-End Alignment of User Satisfaction via Questionnaire in
+    Video Recommendation
+  sources:
+  - arxiv_id: '2601.20215'
+    paper_title: Towards End-to-End Alignment of User Satisfaction via Questionnaire
+      in Video Recommendation
+    source: https://arxiv.org/abs/2601.20215v1
+    post_url: /2026/01/28/towards-end-to-end-alignment-of-user-satisfaction-via-questi/
+    results: {}
+    paper_date: 2026-01-28
+- algorithm: Semantic IDs for Recommender Systems at Snapchat
+  sources:
+  - arxiv_id: '2604.03949'
+    paper_title: 'Semantic IDs for Recommender Systems at Snapchat: Use Cases, Technical
+      Challenges, and Design Choices'
+    source: https://arxiv.org/abs/2604.03949v1
+    post_url: /2026/04/05/semantic-ids-for-recommender-systems-at-snapchat-use-cases-t/
+    results: {}
+    paper_date: 2026-04-05
+- algorithm: MBD
+  sources:
+  - arxiv_id: '2603.14422'
+    paper_title: 'MBD: A Model-Based Debiasing Framework Across User, Content, and
+      Model Dimensions'
+    source: https://arxiv.org/abs/2603.14422v1
+    post_url: /2026/03/15/mbd-a-model-based-debiasing-framework-across-user-content-an/
+    results: {}
+    paper_date: 2026-03-15

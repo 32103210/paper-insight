@@ -1,6 +1,6 @@
 dataset: Google App Store (Google Play) 真实数据
-domain: CTR/CVR Modeling
-description: googleappstore(googleplay)真实数据 dataset for CTR/CVR Modeling
+domain: LLM4Rec
+description: googleappstoregoogleplay真实数据 dataset for LLM4Rec
 metrics:
 - AUC
 - Latency

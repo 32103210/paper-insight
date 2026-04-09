@@ -1,0 +1,13 @@
+dataset: 合成数据 (Synthetic), Yahoo! R3, Coat Dataset
+domain: CTR/CVR Modeling
+description: 合成数据syntheticyahoor3coatdataset dataset for CTR/CVR Modeling
+metrics: []
+entries:
+- algorithm: Off-Policy Evaluation and Learning for the Future under Non-Stationarity
+  sources:
+  - arxiv_id: '2506.20417'
+    paper_title: Off-Policy Evaluation and Learning for the Future under Non-Stationarity
+    source: https://arxiv.org/abs/2506.20417v1
+    post_url: /2025/06/25/off-policy-evaluation-and-learning-for-the-future-under-non-/
+    results: {}
+    paper_date: 2025-06-25

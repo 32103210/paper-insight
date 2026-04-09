@@ -12,7 +12,7 @@ entries:
     paper_title: 'TALLRec: An Effective and Efficient Tuning Framework to Align Large
       Language Model with Recommendation'
     source: https://arxiv.org/abs/2305.00447v3
-    post_url: /2023/04/30/tallrec-an-effective-and-efficient-tuning-framewor/
+    post_url: ''
     results:
       NDCG@5: 0.3156
       HR@10: 0.4821
@@ -39,7 +39,7 @@ entries:
     paper_title: 'Retrieve-then-Adapt: Retrieval-Augmented Test-Time Adaptation for
       Sequential Recommendation'
     source: https://arxiv.org/abs/2604.05379v1
-    post_url: /2026/04/08/retrieve-then-adapt-retrieval-augmented-test-time/
+    post_url: ''
     results:
       Recall@10: 0.2487
     paper_date: 2026-04-08

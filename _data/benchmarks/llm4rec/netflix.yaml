@@ -1,0 +1,16 @@
+dataset: Netflix
+domain: LLM4Rec
+description: netflix dataset for LLM4Rec
+metrics:
+- NDCG@10
+entries:
+- algorithm: Bridging Search and Recommendation in Generative Retrieval
+  sources:
+  - arxiv_id: '2410.16823'
+    paper_title: 'Bridging Search and Recommendation in Generative Retrieval: Does
+      One Task Help the Other?'
+    source: https://arxiv.org/abs/2410.16823v1
+    post_url: /2024/10/22/bridging-search-and-recommendation-in-generative-retrieval-d/
+    results:
+      NDCG@10: 0.3712
+    paper_date: 2024-10-22

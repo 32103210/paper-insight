@@ -3,9 +3,11 @@ layout: page
 title: Paper Insight
 ---
 
+{% assign industrial_posts = site.posts | where_exp: "post", "post.industry_affiliations and post.industry_affiliations != empty" %}
+
 <script>
 window.POSTS_DATA = [
-{% for post in site.posts %}
+{% for post in industrial_posts %}
   {
     title: {{ post.title | jsonify }},
     url: {{ post.url | relative_url | jsonify }},
@@ -32,7 +34,7 @@ window.POSTS_DATA = [
 <div class="home-content-grid">
   <!-- Posts container -->
   <div id="posts-container">
-    {% for post in site.posts %}
+    {% for post in industrial_posts %}
     <article class="post-card">
       <div class="post-card-header">
         <h3 class="post-card-title">

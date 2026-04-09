@@ -1,6 +1,6 @@
 dataset: Industrial (广告CTR数据集)
 domain: CTR/CVR Modeling
-description: industrial(广告ctr数据集) dataset for CTR/CVR Modeling
+description: industrial广告ctr数据集 dataset for CTR/CVR Modeling
 metrics:
 - AUC
 - LogLoss
@@ -10,7 +10,7 @@ entries:
   - arxiv_id: '1611.00144'
     paper_title: Product-based Neural Networks for User Response Prediction
     source: https://arxiv.org/abs/1611.00144v1
-    post_url: /2016/11/01/product-based-neural-networks-for-user-response-pr/
+    post_url: ''
     results:
       AUC: 0.7431
       LogLoss: 0.4256
@@ -20,7 +20,7 @@ entries:
   - arxiv_id: '1611.00144'
     paper_title: Product-based Neural Networks for User Response Prediction
     source: https://arxiv.org/abs/1611.00144v1
-    post_url: /2016/11/01/product-based-neural-networks-for-user-response-pr/
+    post_url: ''
     results:
       AUC: 0.7431
       LogLoss: 0.4256

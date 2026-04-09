@@ -3,7 +3,19 @@ domain: CTR/CVR Modeling
 description: alibaba dataset for CTR/CVR Modeling
 metrics:
 - AUC
+- NDCG@10
 entries:
+- algorithm: EST
+  sources:
+  - arxiv_id: '2602.10811'
+    paper_title: 'EST: Towards Efficient Scaling Laws in Click-Through Rate Prediction
+      via Unified Modeling'
+    source: https://arxiv.org/abs/2602.10811v1
+    post_url: /2026/02/11/est-towards-efficient-scaling-laws-in-click-through-rate-pre/
+    results:
+      NDCG@10: 0.5012
+      AUC: 0.8142
+    paper_date: 2026-02-11
 - algorithm: Deep Session Interest Network for Click
   sources:
   - arxiv_id: '1905.06482'
@@ -22,6 +34,26 @@ entries:
     results:
       AUC: 0.7956
     paper_date: 2019-05-16
+- algorithm: Modeling Cascaded Delay Feedback for Online Net Conversion Rate Prediction
+  sources:
+  - arxiv_id: '2601.19965'
+    paper_title: 'Modeling Cascaded Delay Feedback for Online Net Conversion Rate
+      Prediction: Benchmark, Insights and Solutions'
+    source: https://arxiv.org/abs/2601.19965v2
+    post_url: /2026/01/27/modeling-cascaded-delay-feedback-for-online-net-conversion-r/
+    results:
+      AUC: 0.7123
+    paper_date: 2026-01-27
+- algorithm: MAC
+  sources:
+  - arxiv_id: '2603.02184'
+    paper_title: 'MAC: A Conversion Rate Prediction Benchmark Featuring Labels Under
+      Multiple Attribution Mechanisms'
+    source: https://arxiv.org/abs/2603.02184v1
+    post_url: /2026/03/02/mac-a-conversion-rate-prediction-benchmark-featuring-labels-/
+    results:
+      AUC: 0.6789
+    paper_date: 2026-03-02
 - algorithm: RCLRec
   sources:
   - arxiv_id: '2603.28124'
@@ -31,6 +63,24 @@ entries:
     post_url: /2026/03/30/rclrec-reverse-curriculum-learning-for-modeling-sp/
     results: {}
     paper_date: 2026-03-30
+- algorithm: Semantic Trimming and Auxiliary Multi-step Prediction for Generative
+    Recommendation
+  sources:
+  - arxiv_id: '2604.05329'
+    paper_title: Semantic Trimming and Auxiliary Multi-step Prediction for Generative
+      Recommendation
+    source: https://arxiv.org/abs/2604.05329v1
+    post_url: /2026/04/07/semantic-trimming-and-auxiliary-multi-step-prediction-for-ge/
+    results: {}
+    paper_date: 2026-04-07
+- algorithm: A Long-term Value Prediction Framework In Video Ranking
+  sources:
+  - arxiv_id: '2602.17058'
+    paper_title: A Long-term Value Prediction Framework In Video Ranking
+    source: https://arxiv.org/abs/2602.17058v1
+    post_url: /2026/02/19/a-long-term-value-prediction-framework-in-video-ranking/
+    results: {}
+    paper_date: 2026-02-19
 - algorithm: Deep Interest Evolution Network for Click-Through Rate Prediction
   sources:
   - arxiv_id: '1809.03672'
@@ -39,3 +89,58 @@ entries:
     post_url: /2018/09/11/deep-interest-evolution-network-for-click-through-/
     results: {}
     paper_date: 2018-09-11
+- algorithm: Scaling Transformers for Discriminative Recommendation via Generative
+    Pretraining
+  sources:
+  - arxiv_id: '2506.03699'
+    paper_title: Scaling Transformers for Discriminative Recommendation via Generative
+      Pretraining
+    source: https://arxiv.org/abs/2506.03699v2
+    post_url: /2025/06/04/scaling-transformers-for-discriminative-recommendation-via-g/
+    results: {}
+    paper_date: 2025-06-04
+- algorithm: ChoirRec
+  sources:
+  - arxiv_id: '2510.09393'
+    paper_title: 'ChoirRec: Semantic User Grouping via LLMs for Conversion Rate Prediction
+      of Low-Activity Users'
+    source: https://arxiv.org/abs/2510.09393v2
+    post_url: /2025/10/10/choirrec-semantic-user-grouping-via-llms-for-conversion-rate/
+    results: {}
+    paper_date: 2025-10-10
+- algorithm: See Beyond a Single View
+  sources:
+  - arxiv_id: '2508.15217'
+    paper_title: 'See Beyond a Single View: Multi-Attribution Learning Leads to Better
+      Conversion Rate Prediction'
+    source: https://arxiv.org/abs/2508.15217v1
+    post_url: /2025/08/21/see-beyond-a-single-view-multi-attribution-learning-leads-to/
+    results: {}
+    paper_date: 2025-08-21
+- algorithm: TBGRecall
+  sources:
+  - arxiv_id: '2508.11977'
+    paper_title: 'TBGRecall: A Generative Retrieval Model for E-commerce Recommendation
+      Scenarios'
+    source: https://arxiv.org/abs/2508.11977v2
+    post_url: /2025/08/16/tbgrecall-a-generative-retrieval-model-for-e-commerce-recomm/
+    results: {}
+    paper_date: 2025-08-16
+- algorithm: Infer As You Train
+  sources:
+  - arxiv_id: '2511.14403'
+    paper_title: 'Infer As You Train: A Symmetric Paradigm of Masked Generative for
+      Click-Through Rate Prediction'
+    source: https://arxiv.org/abs/2511.14403v1
+    post_url: /2025/11/18/infer-as-you-train-a-symmetric-paradigm-of-masked-generative/
+    results: {}
+    paper_date: 2025-11-18
+- algorithm: Delayed Feedback Modeling for Post-Click Gross Merchandise Volume Prediction
+  sources:
+  - arxiv_id: '2601.20307'
+    paper_title: 'Delayed Feedback Modeling for Post-Click Gross Merchandise Volume
+      Prediction: Benchmark, Insights and Approaches'
+    source: https://arxiv.org/abs/2601.20307v1
+    post_url: /2026/01/28/delayed-feedback-modeling-for-post-click-gross-merchandise-v/
+    results: {}
+    paper_date: 2026-01-28

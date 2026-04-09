@@ -1,0 +1,15 @@
+dataset: OTTO (私有电商数据集)
+domain: CTR/CVR Modeling
+description: otto私有电商数据集 dataset for CTR/CVR Modeling
+metrics: []
+entries:
+- algorithm: Industry Insights from Comparing Deep Learning and GBDT Models for E-Commerce
+    Learning-to-Rank
+  sources:
+  - arxiv_id: '2507.20753'
+    paper_title: Industry Insights from Comparing Deep Learning and GBDT Models for
+      E-Commerce Learning-to-Rank
+    source: https://arxiv.org/abs/2507.20753v1
+    post_url: /2025/07/28/industry-insights-from-comparing-deep-learning-and-gbdt-mode/
+    results: {}
+    paper_date: 2025-07-28

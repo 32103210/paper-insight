@@ -102,6 +102,13 @@ def normalize_algorithm_name(value: str) -> str:
     return normalize_paper_title(value).replace(' ', '')
 
 
+def normalize_dataset_filename(value: str) -> str:
+    """Normalize dataset names into filesystem-safe keys."""
+    normalized = str(value or '').lower()
+    normalized = re.sub(r'[^0-9a-z\u4e00-\u9fff]+', '', normalized)
+    return normalized or 'unknown'
+
+
 def extract_algorithm_name(title: str) -> str:
     """Extract a stable algorithm/model name from a paper title."""
     if not title:
@@ -183,7 +190,7 @@ def load_existing_data() -> Dict[str, Dict[str, dict]]:
         domain = domain_dir.name
 
         for yaml_file in domain_dir.glob('*.yaml'):
-            dataset = yaml_file.stem
+            dataset = normalize_dataset_filename(yaml_file.stem)
             try:
                 with open(yaml_file, 'r', encoding='utf-8') as f:
                     data = yaml.safe_load(f)
@@ -191,8 +198,17 @@ def load_existing_data() -> Dict[str, Dict[str, dict]]:
                         # Ensure entries are in new format
                         entries = data.get('entries', [])
                         converted_entries = [_convert_entry_to_new_format(e) for e in entries]
-                        data['entries'] = converted_entries
-                        benchmarks[domain][dataset] = data
+                        current = benchmarks[domain][dataset]
+                        current['dataset'] = current.get('dataset') or data.get('dataset', dataset)
+                        current['domain'] = current.get('domain') or data.get('domain', domain)
+                        current['description'] = current.get('description') or data.get('description', '')
+                        current.setdefault('metrics', [])
+                        current.setdefault('entries', [])
+                        for metric in data.get('metrics', []):
+                            if metric not in current['metrics']:
+                                current['metrics'].append(metric)
+                        for entry in converted_entries:
+                            current['entries'] = merge_entry(current['entries'], entry)
                     else:
                         benchmarks[domain][dataset] = {
                             'dataset': dataset,
@@ -365,9 +381,19 @@ def normalize_categories(categories) -> List[str]:
     return result
 
 
+def has_industry_affiliations(frontmatter: dict) -> bool:
+    """判断文章 frontmatter 是否包含工业界单位。"""
+    affiliations = frontmatter.get('industry_affiliations', [])
+    if not isinstance(affiliations, list):
+        affiliations = [affiliations] if affiliations else []
+
+    return any(str(item).strip() for item in affiliations)
+
+
 def extract_metrics_from_text(text: str) -> List[dict]:
     """从文本中提取指标和数值"""
     results = []
+    seen = set()
 
     # 匹配模式: Metric@K: value 或 Metric@K = value
     # 例如: NDCG@5: 0.452, HR@10 = 0.682
@@ -381,17 +407,23 @@ def extract_metrics_from_text(text: str) -> List[dict]:
         for match in matches:
             metric_name = match[0]
             k = match[1]
-            value = float(match[2])
+            try:
+                value = float(match[2])
+            except ValueError:
+                continue
 
             # 标准化指标名
             if metric_name in METRIC_ALIASES:
                 metric_name = METRIC_ALIASES[metric_name]
 
             full_metric = f"{metric_name}@{k}"
-            results.append({
-                'metric': full_metric,
-                'value': value
-            })
+            item = (full_metric, value)
+            if item not in seen:
+                seen.add(item)
+                results.append({
+                    'metric': full_metric,
+                    'value': value
+                })
 
     # 匹配独立指标: AUC: 0.8021, LogLoss = 0.123
     standalone_patterns = [
@@ -402,11 +434,17 @@ def extract_metrics_from_text(text: str) -> List[dict]:
         matches = re.findall(pattern, text)
         for match in matches:
             metric_name = METRIC_ALIASES.get(match[0], match[0])
-            value = float(match[1])
-            results.append({
-                'metric': metric_name,
-                'value': value
-            })
+            try:
+                value = float(match[1])
+            except ValueError:
+                continue
+            item = (metric_name, value)
+            if item not in seen:
+                seen.add(item)
+                results.append({
+                    'metric': metric_name,
+                    'value': value
+                })
 
     return results
 
@@ -461,6 +499,10 @@ def extract_benchmark_section(text: str) -> tuple[List[str], List[dict]]:
 
         for metric_name, k, value in metric_matches:
             metric_name = METRIC_ALIASES.get(metric_name, metric_name)
+            try:
+                metric_value = float(value)
+            except ValueError:
+                continue
             if k:
                 full_metric = f"{metric_name}@{k}"
             else:
@@ -468,7 +510,7 @@ def extract_benchmark_section(text: str) -> tuple[List[str], List[dict]]:
 
             results.append({
                 'metric': full_metric,
-                'value': float(value)
+                'value': metric_value
             })
 
     return datasets, results
@@ -576,6 +618,9 @@ def extract_benchmark_from_post(filepath: Path) -> dict:
     frontmatter, body = extract_frontmatter(content)
 
     if not frontmatter:
+        return None
+
+    if not has_industry_affiliations(frontmatter):
         return None
 
     # 提取基本信息
@@ -692,7 +737,7 @@ def main():
 
         for dataset in datasets:
             # Normalize dataset name to prevent duplicates (Amazon vs amazon)
-            normalized_dataset = dataset.lower().replace('-', '').replace(' ', '')
+            normalized_dataset = normalize_dataset_filename(dataset)
             bench = benchmarks[domain][normalized_dataset]
 
             # Ensure entries structure
@@ -728,6 +773,8 @@ def main():
     for domain, datasets in benchmarks.items():
         domain_dir = output_dir / domain
         domain_dir.mkdir(parents=True, exist_ok=True)
+        for existing_file in domain_dir.glob('*.yaml'):
+            existing_file.unlink()
 
         for dataset, bench in datasets.items():
             # 按主要指标排序
@@ -738,9 +785,9 @@ def main():
             bench['description'] = f"{dataset} dataset for {DOMAIN_NAMES.get(domain, domain)}"
 
             # 写入文件
-            filename = domain_dir / f"{dataset.lower().replace('-', '')}.yaml"
+            filename = domain_dir / f"{normalize_dataset_filename(dataset)}.yaml"
             # Normalize dataset name to prevent duplicate files for same dataset with different casing
-            normalized_dataset = dataset.lower().replace('-', '').replace(' ', '')
+            normalized_dataset = normalize_dataset_filename(dataset)
             filename = domain_dir / f"{normalized_dataset}.yaml"
             with open(filename, 'w', encoding='utf-8') as f:
                 yaml.dump(bench, f, allow_unicode=True, sort_keys=False)

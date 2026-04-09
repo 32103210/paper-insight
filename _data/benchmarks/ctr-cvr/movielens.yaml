@@ -6,10 +6,30 @@ metrics:
 - HR@10
 - AUC
 - Latency
-- Recall@20
-- NDCG@20
-- Recall@10
+- NDCG@10
+- LogLoss
 entries:
+- algorithm: A Self-boosted Framework for Calibrated Ranking
+  sources:
+  - arxiv_id: '2406.08010'
+    paper_title: A Self-boosted Framework for Calibrated Ranking
+    source: https://arxiv.org/abs/2406.08010v1
+    post_url: /2024/06/12/a-self-boosted-framework-for-calibrated-ranking/
+    results:
+      AUC: 0.8912
+      LogLoss: 0.3987
+    paper_date: 2024-06-12
+- algorithm: EST
+  sources:
+  - arxiv_id: '2602.10811'
+    paper_title: 'EST: Towards Efficient Scaling Laws in Click-Through Rate Prediction
+      via Unified Modeling'
+    source: https://arxiv.org/abs/2602.10811v1
+    post_url: /2026/02/11/est-towards-efficient-scaling-laws-in-click-through-rate-pre/
+    results:
+      NDCG@10: 0.5012
+      AUC: 0.8142
+    paper_date: 2026-02-11
 - algorithm: Wide & Deep Learning for Recommender Systems
   sources:
   - arxiv_id: '1606.07792'
@@ -26,7 +46,7 @@ entries:
     paper_title: 'TALLRec: An Effective and Efficient Tuning Framework to Align Large
       Language Model with Recommendation'
     source: https://arxiv.org/abs/2305.00447v3
-    post_url: /2023/04/30/tallrec-an-effective-and-efficient-tuning-framewor/
+    post_url: ''
     results:
       NDCG@5: 0.3156
       HR@10: 0.4821
@@ -34,11 +54,11 @@ entries:
 - algorithm: Aligning Multimodal Sequential Recommendations via Robust Direct Preference
     Optimization with Sparse MoE
   sources:
-  - arxiv_id: '2603.29259'
+  - arxiv_id: 2603.29259
     paper_title: Aligning Multimodal Sequential Recommendations via Robust Direct
       Preference Optimization with Sparse MoE
-    source: https://arxiv.org/abs/2603.29259v1
-    post_url: /2026/04/03/aligning-multimodal-sequential-recommendations-via/
+    source: https://arxiv.org/pdf/2603.29259v1
+    post_url: ''
     results: {}
     paper_date: 2026-03-31
 - algorithm: Deep Interest Evolution Network for Click
@@ -57,32 +77,20 @@ entries:
     post_url: /2018/09/11/deep-interest-evolution-network-for-click-through-/
     results: {}
     paper_date: 2018-09-11
-- algorithm: A Logical-Rule Autoencoder for Interpretable Recommendations
+- algorithm: An End-to-End Multi-objective Ensemble Ranking Framework for Video Recommendation
   sources:
-  - arxiv_id: '2604.04270'
-    paper_title: A Logical-Rule Autoencoder for Interpretable Recommendations
-    source: https://arxiv.org/abs/2604.04270v1
-    post_url: /2026/04/07/a-logical-rule-autoencoder-for-interpretable-recom/
-    results:
-      Recall@20: 0.1545
-      NDCG@20: 0.068
-    paper_date: 2026-04-07
-- algorithm: Retrieve-then-Adapt
-  sources:
-  - arxiv_id: '2604.05379'
-    paper_title: 'Retrieve-then-Adapt: Retrieval-Augmented Test-Time Adaptation for
-      Sequential Recommendation'
-    source: https://arxiv.org/abs/2604.05379v1
-    post_url: /2026/04/08/retrieve-then-adapt-retrieval-augmented-test-time/
-    results:
-      Recall@10: 0.2487
-    paper_date: 2026-04-08
-- algorithm: FLAME
-  sources:
-  - arxiv_id: '2604.04038'
-    paper_title: 'FLAME: Condensing Ensemble Diversity into a Single Network for Efficient
-      Sequential Recommendation'
-    source: https://arxiv.org/abs/2604.04038v1
-    post_url: /2026/04/07/flame-condensing-ensemble-diversity-into-a-single/
+  - arxiv_id: '2508.05093'
+    paper_title: An End-to-End Multi-objective Ensemble Ranking Framework for Video
+      Recommendation
+    source: https://arxiv.org/abs/2508.05093v2
+    post_url: /2025/08/07/an-end-to-end-multi-objective-ensemble-ranking-framework-for/
     results: {}
-    paper_date: 2026-04-07
+    paper_date: 2025-08-07
+- algorithm: Disentangled Interest Network for Out-of-Distribution CTR Prediction
+  sources:
+  - arxiv_id: '2602.00002'
+    paper_title: Disentangled Interest Network for Out-of-Distribution CTR Prediction
+    source: https://arxiv.org/abs/2602.00002v1
+    post_url: /2025/11/14/disentangled-interest-network-for-out-of-distribution-ctr-pr/
+    results: {}
+    paper_date: 2025-11-14

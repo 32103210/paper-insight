@@ -1,0 +1,14 @@
+dataset: Kuaishou Industrial Dataset (两个工业数据集，未披露具体名称)
+domain: CTR/CVR Modeling
+description: kuaishouindustrialdataset两个工业数据集未披露具体名称 dataset for CTR/CVR Modeling
+metrics: []
+entries:
+- algorithm: Rethinking Multi-objective Ranking Ensemble in Recommender System
+  sources:
+  - arxiv_id: '2601.02955'
+    paper_title: 'Rethinking Multi-objective Ranking Ensemble in Recommender System:
+      From Score Fusion to Rank Consistency'
+    source: https://arxiv.org/abs/2601.02955v3
+    post_url: /2026/01/06/rethinking-multi-objective-ranking-ensemble-in-recommender-s/
+    results: {}
+    paper_date: 2026-01-06

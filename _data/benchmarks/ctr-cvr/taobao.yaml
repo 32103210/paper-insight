@@ -5,7 +5,7 @@ metrics:
 - AUC
 - NDCG@5
 - HR@10
-- Recall@10
+- NDCG@10
 entries:
 - algorithm: SIM
   sources:
@@ -81,6 +81,17 @@ entries:
     results:
       AUC: 0.8945
     paper_date: ''
+- algorithm: EST
+  sources:
+  - arxiv_id: '2602.10811'
+    paper_title: 'EST: Towards Efficient Scaling Laws in Click-Through Rate Prediction
+      via Unified Modeling'
+    source: https://arxiv.org/abs/2602.10811v1
+    post_url: /2026/02/11/est-towards-efficient-scaling-laws-in-click-through-rate-pre/
+    results:
+      NDCG@10: 0.5012
+      AUC: 0.8142
+    paper_date: 2026-02-11
 - algorithm: UniMixer
   sources:
   - arxiv_id: '2604.00590'
@@ -109,13 +120,33 @@ entries:
     results:
       AUC: 0.7956
     paper_date: 2019-05-16
+- algorithm: Modeling Cascaded Delay Feedback for Online Net Conversion Rate Prediction
+  sources:
+  - arxiv_id: '2601.19965'
+    paper_title: 'Modeling Cascaded Delay Feedback for Online Net Conversion Rate
+      Prediction: Benchmark, Insights and Solutions'
+    source: https://arxiv.org/abs/2601.19965v2
+    post_url: /2026/01/27/modeling-cascaded-delay-feedback-for-online-net-conversion-r/
+    results:
+      AUC: 0.7123
+    paper_date: 2026-01-27
+- algorithm: MAC
+  sources:
+  - arxiv_id: '2603.02184'
+    paper_title: 'MAC: A Conversion Rate Prediction Benchmark Featuring Labels Under
+      Multiple Attribution Mechanisms'
+    source: https://arxiv.org/abs/2603.02184v1
+    post_url: /2026/03/02/mac-a-conversion-rate-prediction-benchmark-featuring-labels-/
+    results:
+      AUC: 0.6789
+    paper_date: 2026-03-02
 - algorithm: TALLRec
   sources:
   - arxiv_id: '2305.00447'
     paper_title: 'TALLRec: An Effective and Efficient Tuning Framework to Align Large
       Language Model with Recommendation'
     source: https://arxiv.org/abs/2305.00447v3
-    post_url: /2023/04/30/tallrec-an-effective-and-efficient-tuning-framewor/
+    post_url: ''
     results:
       NDCG@5: 0.3156
       HR@10: 0.4821
@@ -136,13 +167,47 @@ entries:
     post_url: /2018/09/11/deep-interest-evolution-network-for-click-through-/
     results: {}
     paper_date: 2018-09-11
-- algorithm: Retrieve-then-Adapt
+- algorithm: A Long-term Value Prediction Framework In Video Ranking
   sources:
-  - arxiv_id: '2604.05379'
-    paper_title: 'Retrieve-then-Adapt: Retrieval-Augmented Test-Time Adaptation for
-      Sequential Recommendation'
-    source: https://arxiv.org/abs/2604.05379v1
-    post_url: /2026/04/08/retrieve-then-adapt-retrieval-augmented-test-time/
-    results:
-      Recall@10: 0.2487
-    paper_date: 2026-04-08
+  - arxiv_id: '2602.17058'
+    paper_title: A Long-term Value Prediction Framework In Video Ranking
+    source: https://arxiv.org/abs/2602.17058v1
+    post_url: /2026/02/19/a-long-term-value-prediction-framework-in-video-ranking/
+    results: {}
+    paper_date: 2026-02-19
+- algorithm: ChoirRec
+  sources:
+  - arxiv_id: '2510.09393'
+    paper_title: 'ChoirRec: Semantic User Grouping via LLMs for Conversion Rate Prediction
+      of Low-Activity Users'
+    source: https://arxiv.org/abs/2510.09393v2
+    post_url: /2025/10/10/choirrec-semantic-user-grouping-via-llms-for-conversion-rate/
+    results: {}
+    paper_date: 2025-10-10
+- algorithm: See Beyond a Single View
+  sources:
+  - arxiv_id: '2508.15217'
+    paper_title: 'See Beyond a Single View: Multi-Attribution Learning Leads to Better
+      Conversion Rate Prediction'
+    source: https://arxiv.org/abs/2508.15217v1
+    post_url: /2025/08/21/see-beyond-a-single-view-multi-attribution-learning-leads-to/
+    results: {}
+    paper_date: 2025-08-21
+- algorithm: TBGRecall
+  sources:
+  - arxiv_id: '2508.11977'
+    paper_title: 'TBGRecall: A Generative Retrieval Model for E-commerce Recommendation
+      Scenarios'
+    source: https://arxiv.org/abs/2508.11977v2
+    post_url: /2025/08/16/tbgrecall-a-generative-retrieval-model-for-e-commerce-recomm/
+    results: {}
+    paper_date: 2025-08-16
+- algorithm: Delayed Feedback Modeling for Post-Click Gross Merchandise Volume Prediction
+  sources:
+  - arxiv_id: '2601.20307'
+    paper_title: 'Delayed Feedback Modeling for Post-Click Gross Merchandise Volume
+      Prediction: Benchmark, Insights and Approaches'
+    source: https://arxiv.org/abs/2601.20307v1
+    post_url: /2026/01/28/delayed-feedback-modeling-for-post-click-gross-merchandise-v/
+    results: {}
+    paper_date: 2026-01-28

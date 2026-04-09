@@ -1,17 +1,13 @@
 dataset: CIKM
 domain: CTR/CVR Modeling
 description: cikm dataset for CTR/CVR Modeling
-metrics:
-- Recall@20
-- NDCG@20
+metrics: []
 entries:
-- algorithm: A Logical-Rule Autoencoder for Interpretable Recommendations
+- algorithm: A Long-term Value Prediction Framework In Video Ranking
   sources:
-  - arxiv_id: '2604.04270'
-    paper_title: A Logical-Rule Autoencoder for Interpretable Recommendations
-    source: https://arxiv.org/abs/2604.04270v1
-    post_url: /2026/04/07/a-logical-rule-autoencoder-for-interpretable-recom/
-    results:
-      Recall@20: 0.1545
-      NDCG@20: 0.068
-    paper_date: 2026-04-07
+  - arxiv_id: '2602.17058'
+    paper_title: A Long-term Value Prediction Framework In Video Ranking
+    source: https://arxiv.org/abs/2602.17058v1
+    post_url: /2026/02/19/a-long-term-value-prediction-framework-in-video-ranking/
+    results: {}
+    paper_date: 2026-02-19

@@ -1,0 +1,14 @@
+dataset: Meituan Food Delivery Platform（美团外卖平台）
+domain: LLM4Rec
+description: meituanfooddeliveryplatform美团外卖平台 dataset for LLM4Rec
+metrics: []
+entries:
+- algorithm: MBGR
+  sources:
+  - arxiv_id: '2604.02684'
+    paper_title: 'MBGR: Multi-Business Prediction for Generative Recommendation at
+      Meituan'
+    source: https://arxiv.org/abs/2604.02684v1
+    post_url: /2026/04/03/mbgr-multi-business-prediction-for-generative-recommendation/
+    results: {}
+    paper_date: 2026-04-03

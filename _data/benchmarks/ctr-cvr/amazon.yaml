@@ -8,9 +8,8 @@ metrics:
 - Latency
 - NDCG@10
 - HIT@5
-- Recall@20
-- NDCG@20
-- Recall@10
+- reduction
+- LogLoss
 entries:
 - algorithm: SIM
   sources:
@@ -21,17 +20,38 @@ entries:
     results:
       AUC: 0.915
     paper_date: ''
+- algorithm: A Self-boosted Framework for Calibrated Ranking
+  sources:
+  - arxiv_id: '2406.08010'
+    paper_title: A Self-boosted Framework for Calibrated Ranking
+    source: https://arxiv.org/abs/2406.08010v1
+    post_url: /2024/06/12/a-self-boosted-framework-for-calibrated-ranking/
+    results:
+      AUC: 0.8912
+      LogLoss: 0.3987
+    paper_date: 2024-06-12
 - algorithm: FAVE
   sources:
   - arxiv_id: '2604.04427'
     paper_title: 'FAVE: Flow-based Average Velocity Establishment for Sequential Recommendation'
     source: https://arxiv.org/abs/2604.04427v1
-    post_url: /2026/04/07/fave-flow-based-average-velocity-establishment-for/
+    post_url: ''
     results:
       NDCG@5: 0.4534
       NDCG@10: 0.5389
       AUC: 0.8512
     paper_date: 2026-04-07
+- algorithm: EST
+  sources:
+  - arxiv_id: '2602.10811'
+    paper_title: 'EST: Towards Efficient Scaling Laws in Click-Through Rate Prediction
+      via Unified Modeling'
+    source: https://arxiv.org/abs/2602.10811v1
+    post_url: /2026/02/11/est-towards-efficient-scaling-laws-in-click-through-rate-pre/
+    results:
+      NDCG@10: 0.5012
+      AUC: 0.8142
+    paper_date: 2026-02-11
 - algorithm: Next-Scale Generative Reranking
   sources:
   - arxiv_id: '2604.05314'
@@ -79,7 +99,7 @@ entries:
     paper_title: 'AutoInt: Automatic Feature Interaction Learning via Self-Attentive
       Neural Networks'
     source: https://arxiv.org/abs/1810.11921v2
-    post_url: /2018/10/29/autoint-automatic-feature-interaction-learning-via/
+    post_url: ''
     results:
       AUC: 0.7985
     paper_date: ''
@@ -113,11 +133,11 @@ entries:
     paper_date: ''
 - algorithm: RoDPO
   sources:
-  - arxiv_id: '2603.29259'
+  - arxiv_id: 2603.29259
     paper_title: Aligning Multimodal Sequential Recommendations via Robust Direct
       Preference Optimization with Sparse MoE
-    source: https://arxiv.org/abs/2603.29259v1
-    post_url: /2026/04/03/aligning-multimodal-sequential-recommendations-via/
+    source: https://arxiv.org/pdf/2603.29259v1
+    post_url: ''
     results:
       AUC: 0.7925
     paper_date: ''
@@ -153,7 +173,7 @@ entries:
   - arxiv_id: '1611.00144'
     paper_title: Product-based Neural Networks for User Response Prediction
     source: https://arxiv.org/abs/1611.00144v1
-    post_url: /2016/11/01/product-based-neural-networks-for-user-response-pr/
+    post_url: ''
     results:
       AUC: 0.7856
     paper_date: ''
@@ -173,7 +193,7 @@ entries:
     paper_title: Curr-RLCER:Curriculum Reinforcement Learning For Coherence Explainable
       Recommendation
     source: https://arxiv.org/abs/2604.05341v1
-    post_url: /2026/04/08/curr-rlcercurriculum-reinforcement-learning-for-co/
+    post_url: ''
     results:
       NDCG@5: 0.3756
       HIT@5: 0.5102
@@ -192,11 +212,11 @@ entries:
 - algorithm: Aligning Multimodal Sequential Recommendations via Robust Direct Preference
     Optimization with Sparse MoE
   sources:
-  - arxiv_id: '2603.29259'
+  - arxiv_id: 2603.29259
     paper_title: Aligning Multimodal Sequential Recommendations via Robust Direct
       Preference Optimization with Sparse MoE
-    source: https://arxiv.org/abs/2603.29259v1
-    post_url: /2026/04/03/aligning-multimodal-sequential-recommendations-via/
+    source: https://arxiv.org/pdf/2603.29259v1
+    post_url: ''
     results: {}
     paper_date: 2026-04-03
 - algorithm: TALLRec
@@ -205,7 +225,7 @@ entries:
     paper_title: 'TALLRec: An Effective and Efficient Tuning Framework to Align Large
       Language Model with Recommendation'
     source: https://arxiv.org/abs/2305.00447v3
-    post_url: /2023/04/30/tallrec-an-effective-and-efficient-tuning-framewor/
+    post_url: ''
     results:
       NDCG@5: 0.3156
       HR@10: 0.4821
@@ -232,7 +252,7 @@ entries:
     paper_title: 'From Clues to Generation: Language-Guided Conditional Diffusion
       for Cross-Domain Recommendation'
     source: https://arxiv.org/abs/2604.05365v1
-    post_url: /2026/04/08/from-clues-to-generation-language-guided-condition/
+    post_url: ''
     results: {}
     paper_date: 2026-04-08
 - algorithm: Pay Attention to Sequence Split
@@ -241,29 +261,55 @@ entries:
     paper_title: 'Pay Attention to Sequence Split: Uncovering the Impacts of Sub-Sequence
       Splitting on Sequential Recommendation Models'
     source: https://arxiv.org/abs/2604.05309v1
-    post_url: /2026/04/08/pay-attention-to-sequence-split-uncovering-the-imp/
+    post_url: ''
     results: {}
     paper_date: 2026-04-08
-- algorithm: A Logical-Rule Autoencoder for Interpretable Recommendations
+- algorithm: SafeCRS
   sources:
-  - arxiv_id: '2604.04270'
-    paper_title: A Logical-Rule Autoencoder for Interpretable Recommendations
-    source: https://arxiv.org/abs/2604.04270v1
-    post_url: /2026/04/07/a-logical-rule-autoencoder-for-interpretable-recom/
+  - arxiv_id: '2603.03536'
+    paper_title: 'SafeCRS: Personalized Safety Alignment for LLM-Based Conversational
+      Recommender Systems'
+    source: https://arxiv.org/abs/2603.03536v1
+    post_url: /2026/03/03/safecrs-personalized-safety-alignment-for-llm-based-conversa/
     results:
-      Recall@20: 0.1545
-      NDCG@20: 0.068
+      reduction: 96.5
+    paper_date: 2026-03-03
+- algorithm: An End-to-End Multi-objective Ensemble Ranking Framework for Video Recommendation
+  sources:
+  - arxiv_id: '2508.05093'
+    paper_title: An End-to-End Multi-objective Ensemble Ranking Framework for Video
+      Recommendation
+    source: https://arxiv.org/abs/2508.05093v2
+    post_url: /2025/08/07/an-end-to-end-multi-objective-ensemble-ranking-framework-for/
+    results: {}
+    paper_date: 2025-08-07
+- algorithm: Semantic Trimming and Auxiliary Multi-step Prediction for Generative
+    Recommendation
+  sources:
+  - arxiv_id: '2604.05329'
+    paper_title: Semantic Trimming and Auxiliary Multi-step Prediction for Generative
+      Recommendation
+    source: https://arxiv.org/abs/2604.05329v1
+    post_url: /2026/04/07/semantic-trimming-and-auxiliary-multi-step-prediction-for-ge/
+    results: {}
     paper_date: 2026-04-07
-- algorithm: Retrieve-then-Adapt
+- algorithm: Disentangled Interest Network for Out-of-Distribution CTR Prediction
   sources:
-  - arxiv_id: '2604.05379'
-    paper_title: 'Retrieve-then-Adapt: Retrieval-Augmented Test-Time Adaptation for
-      Sequential Recommendation'
-    source: https://arxiv.org/abs/2604.05379v1
-    post_url: /2026/04/08/retrieve-then-adapt-retrieval-augmented-test-time/
-    results:
-      Recall@10: 0.2487
-    paper_date: 2026-04-08
+  - arxiv_id: '2602.00002'
+    paper_title: Disentangled Interest Network for Out-of-Distribution CTR Prediction
+    source: https://arxiv.org/abs/2602.00002v1
+    post_url: /2025/11/14/disentangled-interest-network-for-out-of-distribution-ctr-pr/
+    results: {}
+    paper_date: 2025-11-14
+- algorithm: TBGRecall
+  sources:
+  - arxiv_id: '2508.11977'
+    paper_title: 'TBGRecall: A Generative Retrieval Model for E-commerce Recommendation
+      Scenarios'
+    source: https://arxiv.org/abs/2508.11977v2
+    post_url: /2025/08/16/tbgrecall-a-generative-retrieval-model-for-e-commerce-recomm/
+    results: {}
+    paper_date: 2025-08-16
 - algorithm: Aligning Recommendations with User Popularity Preferences
   sources:
   - arxiv_id: '2604.01036'
@@ -272,12 +318,12 @@ entries:
     post_url: /2026/04/03/aligning-recommendations-with-user-popularity-pref/
     results: {}
     paper_date: 2026-04-03
-- algorithm: FLAME
+- algorithm: Infer As You Train
   sources:
-  - arxiv_id: '2604.04038'
-    paper_title: 'FLAME: Condensing Ensemble Diversity into a Single Network for Efficient
-      Sequential Recommendation'
-    source: https://arxiv.org/abs/2604.04038v1
-    post_url: /2026/04/07/flame-condensing-ensemble-diversity-into-a-single/
+  - arxiv_id: '2511.14403'
+    paper_title: 'Infer As You Train: A Symmetric Paradigm of Masked Generative for
+      Click-Through Rate Prediction'
+    source: https://arxiv.org/abs/2511.14403v1
+    post_url: /2025/11/18/infer-as-you-train-a-symmetric-paradigm-of-masked-generative/
     results: {}
-    paper_date: 2026-04-07
+    paper_date: 2025-11-18

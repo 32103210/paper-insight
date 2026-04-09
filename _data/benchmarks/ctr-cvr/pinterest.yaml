@@ -1,0 +1,24 @@
+dataset: Pinterest
+domain: CTR/CVR Modeling
+description: pinterest dataset for CTR/CVR Modeling
+metrics: []
+entries:
+- algorithm: ML-DCN
+  sources:
+  - arxiv_id: '2602.09194'
+    paper_title: 'ML-DCN: Masked Low-Rank Deep Crossing Network Towards Scalable Ads
+      Click-through Rate Prediction at Pinterest'
+    source: https://arxiv.org/abs/2602.09194v1
+    post_url: /2026/02/09/ml-dcn-masked-low-rank-deep-crossing-network-towards-scalabl/
+    results: {}
+    paper_date: 2026-02-09
+- algorithm: On the Practice of Deep Hierarchical Ensemble Network for Ad Conversion
+    Rate Prediction
+  sources:
+  - arxiv_id: '2504.08169'
+    paper_title: On the Practice of Deep Hierarchical Ensemble Network for Ad Conversion
+      Rate Prediction
+    source: https://arxiv.org/abs/2504.08169v3
+    post_url: /2025/04/10/on-the-practice-of-deep-hierarchical-ensemble-network-for-ad/
+    results: {}
+    paper_date: 2025-04-10

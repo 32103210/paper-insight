@@ -1,0 +1,14 @@
+dataset: Meta电商会话数据（未公开命名）
+domain: CTR/CVR Modeling
+description: meta电商会话数据未公开命名 dataset for CTR/CVR Modeling
+metrics: []
+entries:
+- algorithm: Click A, Buy B
+  sources:
+  - arxiv_id: '2507.15113'
+    paper_title: 'Click A, Buy B: Rethinking Conversion Attribution in E- Commerce
+      Recommendations'
+    source: https://arxiv.org/abs/2507.15113v1
+    post_url: /2025/07/20/click-a-buy-b-rethinking-conversion-attribution-in-e-commerc/
+    results: {}
+    paper_date: 2025-07-20

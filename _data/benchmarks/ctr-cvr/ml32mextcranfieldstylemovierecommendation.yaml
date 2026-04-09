@@ -1,0 +1,15 @@
+dataset: ML-32M-ext (Cranfield-style movie recommendation)
+domain: CTR/CVR Modeling
+description: ml32mextcranfieldstylemovierecommendation dataset for CTR/CVR Modeling
+metrics: []
+entries:
+- algorithm: Do LLM-judges Align with Human Relevance in Cranfield-style Recommender
+    Evaluation?
+  sources:
+  - arxiv_id: '2511.23312'
+    paper_title: Do LLM-judges Align with Human Relevance in Cranfield-style Recommender
+      Evaluation?
+    source: https://arxiv.org/abs/2511.23312v1
+    post_url: /2025/11/28/do-llm-judges-align-with-human-relevance-in-cranfield-style-/
+    results: {}
+    paper_date: 2025-11-28

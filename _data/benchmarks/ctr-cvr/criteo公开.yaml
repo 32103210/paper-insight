@@ -1,6 +1,6 @@
 dataset: Criteo (公开)
 domain: CTR/CVR Modeling
-description: criteo(公开) dataset for CTR/CVR Modeling
+description: criteo公开 dataset for CTR/CVR Modeling
 metrics:
 - AUC
 - LogLoss

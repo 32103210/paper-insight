@@ -5,6 +5,7 @@ arXiv 论文爬虫
 """
 
 import arxiv
+import io
 import json
 import os
 import sys
@@ -12,6 +13,7 @@ import time
 import logging
 import re
 from datetime import datetime, timedelta
+from pathlib import Path
 from typing import List
 from html import unescape
 from urllib import error, request
@@ -27,6 +29,13 @@ GENERAL_SEARCH_QUERIES = [
     "recommender system ranking",
     "graph neural network recommendation",
     "sequential recommendation",
+    "click-through rate prediction",
+    "conversion rate prediction",
+    "advertising ranking",
+    "reranking recommendation",
+    "multimodal recommendation",
+    "e-commerce recommendation",
+    "short video recommendation",
 ]
 LLM4REC_SEARCH_QUERIES = [
     "llm for recommendation",
@@ -56,6 +65,11 @@ INITIAL_RETRY_DELAY = 15
 
 HTML_REQUEST_TIMEOUT = 20
 HTML_USER_AGENT = "paper-insight/1.0 (+https://github.com/32103210/paper-insight)"
+PDF_REQUEST_TIMEOUT = 30
+PDF_AFFILIATION_SCAN_CHAR_LIMIT = 4000
+PDF_STOP_MARKERS = ("abstract", "1 introduction", "introduction")
+MAX_AFFILIATION_WORDS = 12
+MAX_AFFILIATION_LENGTH = 100
 
 INDUSTRY_KEYWORDS = (
     "google", "alphabet", "meta", "facebook", "amazon", "apple", "microsoft",
@@ -252,6 +266,15 @@ def normalize_affiliation_lookup(name: str) -> str:
     return normalized
 
 
+def normalize_arxiv_id(value: str) -> str:
+    """标准化 arXiv ID，去掉版本号。"""
+    if not value:
+        return ""
+
+    match = re.search(r'(\d+\.\d+)(?:v\d+)?', str(value))
+    return match.group(1) if match else str(value).strip()
+
+
 def matches_industry_keyword(value: str) -> bool:
     """判断文本中是否包含已知工业界关键词。"""
     lookup = normalize_affiliation_lookup(value)
@@ -343,6 +366,41 @@ def extract_industry_email_domains_from_html(html: str) -> List[str]:
     return domains
 
 
+def is_plausible_affiliation_name(value: str) -> bool:
+    """过滤掉标题/摘要拼接成的长块文本，只保留像单位名的短串。"""
+    normalized = normalize_affiliation_name(value)
+    if not normalized:
+        return False
+    if len(normalized) > MAX_AFFILIATION_LENGTH:
+        return False
+
+    words = normalized.split()
+    if len(words) > MAX_AFFILIATION_WORDS:
+        return False
+
+    lower = normalized.lower()
+    if ":" in normalized and not any(
+        suffix in lower for suffix in ("inc", "llc", "ltd", "corp", "corporation", "group")
+    ):
+        return False
+    if any(marker in lower for marker in ("abstract", "keywords", "introduction")):
+        return False
+
+    return True
+
+
+def sanitize_industry_affiliations(values: List[str]) -> List[str]:
+    """清洗工业界单位列表，避免把长段落写入 frontmatter。"""
+    sanitized = []
+    for raw_value in values or []:
+        value = normalize_affiliation_name(raw_value)
+        if not is_plausible_affiliation_name(value):
+            continue
+        if value not in sanitized:
+            sanitized.append(value)
+    return sanitized
+
+
 def extract_industry_affiliations_from_html(html: str) -> List[str]:
     """从 arXiv HTML 页面中提取工业界单位。"""
     affiliations = []
@@ -355,7 +413,89 @@ def extract_industry_affiliations_from_html(html: str) -> List[str]:
         if affiliation not in affiliations:
             affiliations.append(affiliation)
 
-    return affiliations
+    return sanitize_industry_affiliations(affiliations)
+
+
+def normalize_pdf_url(url: str) -> str:
+    """将 abs/pdf 链接统一归一化为可下载的 PDF 地址。"""
+    normalized = str(url or "").strip()
+    if not normalized:
+        return ""
+
+    if "/abs/" in normalized:
+        normalized = normalized.replace("/abs/", "/pdf/")
+    if not normalized.endswith(".pdf"):
+        normalized = normalized.rstrip("/") + ".pdf"
+    return normalized
+
+
+def fetch_pdf_first_page_text(pdf_url: str) -> str:
+    """抓取 PDF 首页文本，用于补抓工业界单位。"""
+    normalized_url = normalize_pdf_url(pdf_url)
+    if not normalized_url:
+        return ""
+
+    req = request.Request(normalized_url, headers={"User-Agent": HTML_USER_AGENT})
+    try:
+        with request.urlopen(req, timeout=PDF_REQUEST_TIMEOUT) as resp:
+            pdf_bytes = resp.read()
+    except (error.HTTPError, error.URLError, TimeoutError) as exc:
+        logger.warning("Failed to fetch affiliation PDF for %s: %s", pdf_url, exc)
+        return ""
+
+    try:
+        from pypdf import PdfReader
+    except ImportError:
+        return ""
+
+    try:
+        reader = PdfReader(io.BytesIO(pdf_bytes))
+        if not reader.pages:
+            return ""
+        return (reader.pages[0].extract_text() or "").strip()
+    except Exception as exc:
+        logger.warning("Failed to parse affiliation PDF for %s: %s", pdf_url, exc)
+        return ""
+
+
+def clean_pdf_affiliation_line(line: str) -> str:
+    """清理 PDF 首页中疑似单位行的噪声。"""
+    cleaned = EMAIL_PATTERN.sub("", str(line or ""))
+    cleaned = re.sub(r"\s+", " ", cleaned).strip(" ,;:-")
+    cleaned = re.sub(r"^[\d\W_]+", "", cleaned)
+    cleaned = re.sub(r"[\d\W_]+$", "", cleaned)
+    return cleaned.strip()
+
+
+def extract_industry_signals_from_pdf_text(text: str) -> dict:
+    """从 PDF 首页文本中提取工业界单位和邮箱域名。"""
+    excerpt = str(text or "")[:PDF_AFFILIATION_SCAN_CHAR_LIMIT]
+    if not excerpt:
+        return {"industry_affiliations": [], "industry_email_domains": []}
+
+    affiliations = []
+    for raw_line in excerpt.splitlines():
+        line = re.sub(r"\s+", " ", raw_line).strip()
+        if not line:
+            continue
+
+        lower = line.lower()
+        if any(lower.startswith(marker) for marker in PDF_STOP_MARKERS):
+            break
+
+        cleaned = clean_pdf_affiliation_line(line)
+        if cleaned and is_industry_affiliation(cleaned) and cleaned not in affiliations:
+            affiliations.append(cleaned)
+
+    domains = extract_industry_email_domains_from_html(excerpt)
+    for affiliation in extract_industry_affiliations_from_emails(excerpt):
+        if affiliation not in affiliations:
+            affiliations.append(affiliation)
+
+    return {
+        "industry_affiliations": sanitize_industry_affiliations(affiliations),
+        "industry_email_domains": domains,
+    }
 
 
 def fetch_arxiv_html(arxiv_id: str) -> str:
@@ -376,23 +516,24 @@ def fetch_arxiv_html(arxiv_id: str) -> str:
 
 def fetch_industry_affiliations(arxiv_id: str) -> List[str]:
     """抓取 arXiv HTML 页面中的工业界单位。"""
-    html = fetch_arxiv_html(arxiv_id)
-    if not html:
-        return []
-
-    return extract_industry_affiliations_from_html(html)
+    return fetch_industry_signals(arxiv_id).get("industry_affiliations", [])
 
 
-def fetch_industry_signals(arxiv_id: str) -> dict:
+def fetch_industry_signals(arxiv_id: str, pdf_url: str = "") -> dict:
     """抓取论文的工业界单位和邮箱域名信号。"""
     html = fetch_arxiv_html(arxiv_id)
-    if not html:
+    if html:
+        return {
+            "industry_affiliations": extract_industry_affiliations_from_html(html),
+            "industry_email_domains": extract_industry_email_domains_from_html(html),
+        }
+
+    fallback_pdf_url = pdf_url or f"https://arxiv.org/pdf/{normalize_arxiv_id(arxiv_id)}.pdf"
+    pdf_text = fetch_pdf_first_page_text(fallback_pdf_url)
+    if not pdf_text:
         return {"industry_affiliations": [], "industry_email_domains": []}
 
-    return {
-        "industry_affiliations": extract_industry_affiliations_from_html(html),
-        "industry_email_domains": extract_industry_email_domains_from_html(html),
-    }
+    return extract_industry_signals_from_pdf_text(pdf_text)
 
 
 def build_search_query() -> str:
@@ -400,6 +541,26 @@ def build_search_query() -> str:
     query_terms = GENERAL_SEARCH_QUERIES + LLM4REC_SEARCH_QUERIES
     query_parts = " OR ".join(f'all:"{term}"' for term in query_terms)
     return f"({query_parts}) AND (cat:cs.IR OR cat:cs.LG)"
+
+
+def load_existing_post_ids(posts_dir: str = "_posts") -> set:
+    """加载仓库中已存在文章的 arXiv ID，避免重复补库。"""
+    existing_ids = set()
+    posts_path = Path(posts_dir)
+    if not posts_path.exists():
+        return existing_ids
+
+    for filepath in posts_path.glob("*.md"):
+        try:
+            content = filepath.read_text(encoding="utf-8")
+        except OSError:
+            continue
+
+        match = re.search(r'^arxiv_id:\s*["\']?([0-9]+\.[0-9]+)(?:v\d+)?["\']?\s*$', content, re.MULTILINE)
+        if match:
+            existing_ids.add(match.group(1))
+
+    return existing_ids
 
 
 def classify_paper_topics(title: str, abstract: str) -> List[str]:
@@ -458,7 +619,7 @@ def search_papers(days_back: int = DAYS_BACK, max_results: int = MAX_RESULTS) ->
         if result.published.replace(tzinfo=None) < start_date.replace(tzinfo=None):
             continue
 
-        signals = fetch_industry_signals(result.entry_id.split("/")[-1])
+        signals = fetch_industry_signals(result.entry_id.split("/")[-1], result.pdf_url)
         if not signals["industry_affiliations"] and not signals["industry_email_domains"]:
             continue
 
@@ -487,7 +648,7 @@ def load_processed_ids(filepath: str = "processed_ids.txt") -> set:
     """加载已处理的论文 ID"""
     if os.path.exists(filepath):
         with open(filepath, "r", encoding="utf-8") as f:
-            return set(line.strip() for line in f if line.strip())
+            return {normalize_arxiv_id(line.strip()) for line in f if line.strip()}
     return set()
 
 
@@ -511,7 +672,12 @@ def main() -> int:
 
     # 过滤已处理的论文
     processed = load_processed_ids()
-    new_papers = [p for p in papers if p["id"] not in processed]
+    existing_post_ids = load_existing_post_ids()
+    new_papers = [
+        p for p in papers
+        if normalize_arxiv_id(p["id"]) not in processed
+        and normalize_arxiv_id(p["id"]) not in existing_post_ids
+    ]
 
     print(f"New papers to process: {len(new_papers)}")
 

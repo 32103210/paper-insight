@@ -31,6 +31,9 @@ class SiteLayoutTests(unittest.TestCase):
         self.assertIn('id="home-rail"', index_md)
         self.assertIn('id="archive-timeline"', index_md)
         self.assertIn('id="latest-posts"', index_md)
+        self.assertIn("industrial_posts", index_md)
+        self.assertIn("where_exp", index_md)
+        self.assertNotIn("{% for post in site.posts %}", index_md)
 
     def test_custom_page_and_post_shells_exist(self):
         self.assertTrue((REPO_ROOT / "_layouts/page.html").exists())
@@ -41,6 +44,13 @@ class SiteLayoutTests(unittest.TestCase):
 
         self.assertIn("function renderHomeRail(posts)", app_js)
         self.assertIn("renderHomeRail(posts);", app_js)
+
+    def test_sidebar_counts_only_industrial_posts(self):
+        sidebar_html = self.read_text("_includes/sidebar.html")
+
+        self.assertIn("industrial_posts", sidebar_html)
+        self.assertIn("where_exp", sidebar_html)
+        self.assertNotIn("{% for post in site.posts %}", sidebar_html)
 
 
 if __name__ == "__main__":

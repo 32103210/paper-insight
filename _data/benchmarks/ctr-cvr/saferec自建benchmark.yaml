@@ -1,0 +1,16 @@
+dataset: SafeRec (自建benchmark)
+domain: CTR/CVR Modeling
+description: saferec自建benchmark dataset for CTR/CVR Modeling
+metrics:
+- reduction
+entries:
+- algorithm: SafeCRS
+  sources:
+  - arxiv_id: '2603.03536'
+    paper_title: 'SafeCRS: Personalized Safety Alignment for LLM-Based Conversational
+      Recommender Systems'
+    source: https://arxiv.org/abs/2603.03536v1
+    post_url: /2026/03/03/safecrs-personalized-safety-alignment-for-llm-based-conversa/
+    results:
+      reduction: 96.5
+    paper_date: 2026-03-03

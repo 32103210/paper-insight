@@ -48,7 +48,7 @@ entries:
     paper_title: 'Chat-REC: Towards Interactive and Explainable LLMs-Augmented Recommender
       System'
     source: https://arxiv.org/abs/2303.14524v2
-    post_url: /2023/03/25/chat-rec-towards-interactive-and-explainable-llms-/
+    post_url: ''
     results:
       HR@10: 0.6823
       NDCG@10: 0.4512
@@ -86,11 +86,11 @@ entries:
     paper_date: ''
 - algorithm: RoDPO
   sources:
-  - arxiv_id: '2603.29259'
+  - arxiv_id: 2603.29259
     paper_title: Aligning Multimodal Sequential Recommendations via Robust Direct
       Preference Optimization with Sparse MoE
-    source: https://arxiv.org/abs/2603.29259v1
-    post_url: /2026/04/03/aligning-multimodal-sequential-recommendations-via/
+    source: https://arxiv.org/pdf/2603.29259v1
+    post_url: ''
     results:
       HR@10: 0.6892
       NDCG@10: 0.4625
@@ -112,7 +112,7 @@ entries:
     paper_title: 'TALLRec: An Effective and Efficient Tuning Framework to Align Large
       Language Model with Recommendation'
     source: https://arxiv.org/abs/2305.00447v3
-    post_url: /2023/04/30/tallrec-an-effective-and-efficient-tuning-framewor/
+    post_url: ''
     results:
       HR@10: 0.4821
       NDCG@10: 0.4389
@@ -121,11 +121,11 @@ entries:
 - algorithm: Aligning Multimodal Sequential Recommendations via Robust Direct Preference
     Optimization with Sparse MoE
   sources:
-  - arxiv_id: '2603.29259'
+  - arxiv_id: 2603.29259
     paper_title: Aligning Multimodal Sequential Recommendations via Robust Direct
       Preference Optimization with Sparse MoE
-    source: https://arxiv.org/abs/2603.29259v1
-    post_url: /2026/04/03/aligning-multimodal-sequential-recommendations-via/
+    source: https://arxiv.org/pdf/2603.29259v1
+    post_url: ''
     results: {}
     paper_date: 2026-03-31
 - algorithm: Wide & Deep Learning for Recommender Systems
@@ -161,7 +161,7 @@ entries:
     paper_title: 'AutoInt: Automatic Feature Interaction Learning via Self-Attentive
       Neural Networks'
     source: https://arxiv.org/abs/1810.11921v2
-    post_url: /2018/10/29/autoint-automatic-feature-interaction-learning-via/
+    post_url: ''
     results:
       AUC: 0.7965
       LogLoss: 0.4354
@@ -171,7 +171,7 @@ entries:
   - arxiv_id: '2604.04270'
     paper_title: A Logical-Rule Autoencoder for Interpretable Recommendations
     source: https://arxiv.org/abs/2604.04270v1
-    post_url: /2026/04/07/a-logical-rule-autoencoder-for-interpretable-recom/
+    post_url: ''
     results:
       Recall@20: 0.1545
       NDCG@20: 0.068
@@ -182,7 +182,7 @@ entries:
     paper_title: 'FLAME: Condensing Ensemble Diversity into a Single Network for Efficient
       Sequential Recommendation'
     source: https://arxiv.org/abs/2604.04038v1
-    post_url: /2026/04/07/flame-condensing-ensemble-diversity-into-a-single/
+    post_url: ''
     results: {}
     paper_date: 2026-04-07
 - algorithm: Deep Interest Evolution Network for Click-Through Rate Prediction
@@ -199,7 +199,55 @@ entries:
     paper_title: 'Retrieve-then-Adapt: Retrieval-Augmented Test-Time Adaptation for
       Sequential Recommendation'
     source: https://arxiv.org/abs/2604.05379v1
-    post_url: /2026/04/08/retrieve-then-adapt-retrieval-augmented-test-time/
+    post_url: ''
     results:
       Recall@10: 0.2487
     paper_date: 2026-04-08
+- algorithm: Heterogeneous Multi-treatment Uplift Modeling for Trade-off Optimization
+    in Short-Video Recommendation
+  sources:
+  - arxiv_id: '2511.18997'
+    paper_title: Heterogeneous Multi-treatment Uplift Modeling for Trade-off Optimization
+      in Short-Video Recommendation
+    source: https://arxiv.org/abs/2511.18997v2
+    post_url: /2025/11/24/heterogeneous-multi-treatment-uplift-modeling-for-trade-off-/
+    results:
+      NDCG@10: 0.4567
+      AUC: 0.7123
+    paper_date: 2025-11-24
+- algorithm: COINS
+  sources:
+  - arxiv_id: '2510.12604'
+    paper_title: 'COINS: SemantiC Ids Enhanced COLd Item RepresentatioN for Click-through
+      Rate Prediction in E-commerce Search'
+    source: https://arxiv.org/abs/2510.12604v4
+    post_url: /2025/10/14/coins-semantic-ids-enhanced-cold-item-representation-for-cli/
+    results: {}
+    paper_date: 2025-10-14
+- algorithm: An End-to-End Multi-objective Ensemble Ranking Framework for Video Recommendation
+  sources:
+  - arxiv_id: '2508.05093'
+    paper_title: An End-to-End Multi-objective Ensemble Ranking Framework for Video
+      Recommendation
+    source: https://arxiv.org/abs/2508.05093v2
+    post_url: /2025/08/07/an-end-to-end-multi-objective-ensemble-ranking-framework-for/
+    results: {}
+    paper_date: 2025-08-07
+- algorithm: Disentangled Interest Network for Out-of-Distribution CTR Prediction
+  sources:
+  - arxiv_id: '2602.00002'
+    paper_title: Disentangled Interest Network for Out-of-Distribution CTR Prediction
+    source: https://arxiv.org/abs/2602.00002v1
+    post_url: /2025/11/14/disentangled-interest-network-for-out-of-distribution-ctr-pr/
+    results: {}
+    paper_date: 2025-11-14
+- algorithm: A Self-boosted Framework for Calibrated Ranking
+  sources:
+  - arxiv_id: '2406.08010'
+    paper_title: A Self-boosted Framework for Calibrated Ranking
+    source: https://arxiv.org/abs/2406.08010v1
+    post_url: /2024/06/12/a-self-boosted-framework-for-calibrated-ranking/
+    results:
+      AUC: 0.8912
+      LogLoss: 0.3987
+    paper_date: 2024-06-12

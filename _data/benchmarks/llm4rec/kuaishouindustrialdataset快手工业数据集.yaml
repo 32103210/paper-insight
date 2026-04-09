@@ -1,0 +1,14 @@
+dataset: Kuaishou Industrial Dataset（快手工业数据集）
+domain: LLM4Rec
+description: kuaishouindustrialdataset快手工业数据集 dataset for LLM4Rec
+metrics: []
+entries:
+- algorithm: DualGR
+  sources:
+  - arxiv_id: '2511.12518'
+    paper_title: 'DualGR: Generative Retrieval with Long and Short-Term Interests
+      Modeling'
+    source: https://arxiv.org/abs/2511.12518v2
+    post_url: /2025/11/16/dualgr-generative-retrieval-with-long-and-short-term-interes/
+    results: {}
+    paper_date: 2025-11-16

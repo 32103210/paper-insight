@@ -1,4 +1,5 @@
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -145,6 +146,52 @@ class BenchmarkExtractorTests(unittest.TestCase):
                 "Chat-REC: Towards Interactive and Explainable LLMs-Augmented Recommender System"
             ),
             "Chat-REC",
+        )
+
+    def test_extract_benchmark_from_post_skips_non_industrial_posts(self):
+        content = """---
+layout: post
+title: "Academic Recommendation Paper"
+date: 2026-04-09
+arxiv_id: "2604.99999"
+authors: "Alice"
+source: "https://arxiv.org/abs/2604.99999"
+categories:
+  - CTR预估
+---
+
+## Benchmark数据
+
+- 数据集: Amazon
+- 指标: AUC
+  - ModelX: AUC=0.9123
+"""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            filepath = Path(temp_dir) / "2026-04-09-academic.md"
+            filepath.write_text(content, encoding="utf-8")
+
+            data = benchmark_extractor.extract_benchmark_from_post(filepath)
+
+        self.assertIsNone(data)
+
+    def test_extract_metrics_from_text_ignores_placeholder_ellipsis_values(self):
+        metrics = benchmark_extractor.extract_metrics_from_text(
+            "AUC: 0.9123\nRecall@10 = ...\nNDCG@5: 0.4412"
+        )
+
+        self.assertEqual(
+            metrics,
+            [
+                {"metric": "NDCG@5", "value": 0.4412},
+                {"metric": "AUC", "value": 0.9123},
+            ],
+        )
+
+    def test_normalize_dataset_filename_removes_path_separators(self):
+        self.assertEqual(
+            benchmark_extractor.normalize_dataset_filename("快手工业数据集（线上A/B测试）"),
+            "快手工业数据集线上ab测试",
         )
 
 

@@ -14,7 +14,7 @@ entries:
     paper_title: Curr-RLCER:Curriculum Reinforcement Learning For Coherence Explainable
       Recommendation
     source: https://arxiv.org/abs/2604.05341v1
-    post_url: /2026/04/08/curr-rlcercurriculum-reinforcement-learning-for-co/
+    post_url: ''
     results:
       NDCG@5: 0.3756
       HIT@5: 0.5102

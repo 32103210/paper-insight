@@ -1,3 +1,5 @@
+{% assign industrial_posts = site.posts | where_exp: "post", "post.industry_affiliations and post.industry_affiliations != empty" %}
+
 <aside class="sidebar">
   <div class="sidebar-header">
     <a href="{{ "/" | relative_url }}">Paper Insight</a>
@@ -7,13 +9,13 @@
     <li class="category-all">
       <a href="{{ "/" | relative_url }}" class="category-link active">
         <span class="category-name">全部文章</span>
-        <span class="category-count">{{ site.posts.size }}</span>
+        <span class="category-count">{{ industrial_posts.size }}</span>
       </a>
     </li>
 
     {% comment %}Build category hierarchy{% endcomment %}
     {% assign categories = "" | split: "" %}
-    {% for post in site.posts %}
+    {% for post in industrial_posts %}
       {% if post.categories %}
         {% assign cat1 = post.categories[0] %}
         {% unless categories contains cat1 %}
@@ -26,7 +28,7 @@
     <li class="category-item">
       {% comment %}Count posts for this level1{% endcomment %}
       {% assign count1 = 0 %}
-      {% for post in site.posts %}
+      {% for post in industrial_posts %}
         {% if post.categories and post.categories[0] == cat1 %}
           {% assign count1 = count1 | plus: 1 %}
         {% endif %}
@@ -43,7 +45,7 @@
 
       {% comment %}Level 2 categories{% endcomment %}
       {% assign level2_cats = "" | split: "" %}
-      {% for post in site.posts %}
+      {% for post in industrial_posts %}
         {% if post.categories and post.categories[0] == cat1 and post.categories[1] %}
           {% assign cat2 = post.categories[1] %}
           {% unless level2_cats contains cat2 %}
@@ -57,7 +59,7 @@
         {% for cat2 in level2_cats %}
         <li class="category-item">
           {% assign count2 = 0 %}
-          {% for post in site.posts %}
+          {% for post in industrial_posts %}
             {% if post.categories and post.categories[0] == cat1 and post.categories[1] == cat2 %}
               {% assign count2 = count2 | plus: 1 %}
             {% endif %}

@@ -1,0 +1,23 @@
+dataset: 离线仿真数据集 (基于真实分布模拟)
+domain: CTR/CVR Modeling
+description: 离线仿真数据集基于真实分布模拟 dataset for CTR/CVR Modeling
+metrics:
+- NDCG@5
+- AUC
+- RMSE
+- MAE
+entries:
+- algorithm: Relative Advantage Debiasing for Watch-Time Prediction in Short-Video
+    Recommendation
+  sources:
+  - arxiv_id: '2508.11086'
+    paper_title: Relative Advantage Debiasing for Watch-Time Prediction in Short-Video
+      Recommendation
+    source: https://arxiv.org/abs/2508.11086v3
+    post_url: /2025/08/14/relative-advantage-debiasing-for-watch-time-prediction-in-sh/
+    results:
+      NDCG@5: 0.4932
+      AUC: 0.7234
+      RMSE: 0.987
+      MAE: 0.756
+    paper_date: 2025-08-14

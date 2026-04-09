@@ -1,0 +1,15 @@
+dataset: Retailrocket (LTV prediction)
+domain: CTR/CVR Modeling
+description: retailrocketltvprediction dataset for CTR/CVR Modeling
+metrics: []
+entries:
+- algorithm: Sequential Regression for Continuous Value Prediction using Residual
+    Quantization
+  sources:
+  - arxiv_id: '2602.23012'
+    paper_title: Sequential Regression for Continuous Value Prediction using Residual
+      Quantization
+    source: https://arxiv.org/abs/2602.23012v1
+    post_url: /2026/02/26/sequential-regression-for-continuous-value-prediction-using-/
+    results: {}
+    paper_date: 2026-02-26

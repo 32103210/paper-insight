@@ -1,0 +1,14 @@
+dataset: 快手工业数据集（线上A/B测试）
+domain: LLM4Rec
+description: 快手工业数据集线上ab测试 dataset for LLM4Rec
+metrics: []
+entries:
+- algorithm: MPFormer
+  sources:
+  - arxiv_id: '2508.20400'
+    paper_title: 'MPFormer: Adaptive Framework for Industrial Multi-Task Personalized
+      Sequential Retriever'
+    source: https://arxiv.org/abs/2508.20400v1
+    post_url: /2025/08/28/mpformer-adaptive-framework-for-industrial-multi-task-person/
+    results: {}
+    paper_date: 2025-08-28

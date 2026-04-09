@@ -1,0 +1,14 @@
+dataset: Kuaishou 工业数据集（真实业务数据）
+domain: CTR/CVR Modeling
+description: kuaishou工业数据集真实业务数据 dataset for CTR/CVR Modeling
+metrics: []
+entries:
+- algorithm: An End-to-End Multi-objective Ensemble Ranking Framework for Video Recommendation
+  sources:
+  - arxiv_id: '2508.05093'
+    paper_title: An End-to-End Multi-objective Ensemble Ranking Framework for Video
+      Recommendation
+    source: https://arxiv.org/abs/2508.05093v2
+    post_url: /2025/08/07/an-end-to-end-multi-objective-ensemble-ranking-framework-for/
+    results: {}
+    paper_date: 2025-08-07

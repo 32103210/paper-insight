@@ -1,0 +1,13 @@
+dataset: Industrial LBS Advertising Platform (Meituan)
+domain: CTR/CVR Modeling
+description: industriallbsadvertisingplatformmeituan dataset for CTR/CVR Modeling
+metrics: []
+entries:
+- algorithm: EGA-V1
+  sources:
+  - arxiv_id: '2505.19755'
+    paper_title: 'EGA-V1: Unifying Online Advertising with End-to-End Learning'
+    source: https://arxiv.org/abs/2505.19755v2
+    post_url: /2025/05/26/ega-v1-unifying-online-advertising-with-end-to-end-learning/
+    results: {}
+    paper_date: 2025-05-26
