@@ -144,3 +144,11 @@ entries:
     post_url: /2026/01/28/delayed-feedback-modeling-for-post-click-gross-merchandise-v/
     results: {}
     paper_date: 2026-01-28
+- algorithm: Beyond Dense Connectivity
+  sources:
+  - arxiv_id: '2604.08011'
+    paper_title: 'Beyond Dense Connectivity: Explicit Sparsity for Scalable Recommendation'
+    source: https://arxiv.org/abs/2604.08011v1
+    post_url: /2026/04/11/beyond-dense-connectivity-explicit-sparsity-for-sc/
+    results: {}
+    paper_date: 2026-04-11

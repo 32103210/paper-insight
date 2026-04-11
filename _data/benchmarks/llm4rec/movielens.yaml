@@ -79,7 +79,7 @@ entries:
     paper_title: 'UniMixer: A Unified Architecture for Scaling Laws in Recommendation
       Systems'
     source: https://arxiv.org/abs/2604.00590v2
-    post_url: /2026/04/01/unimixer-a-unified-architecture-for-scaling-laws-i/
+    post_url: /2026/04/03/unimixer-a-unified-architecture-for-scaling-laws-i/
     results:
       HR@10: 0.7056
       NDCG@10: 0.4712
