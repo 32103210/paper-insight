@@ -5,6 +5,8 @@ metrics:
 - NDCG@5
 - HR@10
 - Recall@10
+- NDCG@10
+- AUC
 entries:
 - algorithm: TALLRec
   sources:
@@ -43,3 +45,22 @@ entries:
     results:
       Recall@10: 0.2487
     paper_date: 2026-04-08
+- algorithm: EST
+  sources:
+  - arxiv_id: '2602.10811'
+    paper_title: 'EST: Towards Efficient Scaling Laws in Click-Through Rate Prediction
+      via Unified Modeling'
+    source: https://arxiv.org/abs/2602.10811v1
+    post_url: /2026/02/11/est-towards-efficient-scaling-laws-in-click-through-rate-pre/
+    results:
+      NDCG@10: 0.5012
+      AUC: 0.8142
+    paper_date: 2026-02-11
+- algorithm: Beyond Dense Connectivity
+  sources:
+  - arxiv_id: '2604.08011'
+    paper_title: 'Beyond Dense Connectivity: Explicit Sparsity for Scalable Recommendation'
+    source: https://arxiv.org/abs/2604.08011v1
+    post_url: /2026/04/11/beyond-dense-connectivity-explicit-sparsity-for-sc/
+    results: {}
+    paper_date: 2026-04-11
