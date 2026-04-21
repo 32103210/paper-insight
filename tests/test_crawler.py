@@ -189,6 +189,7 @@ class CrawlerTests(unittest.TestCase):
         self.assertEqual(papers[0]["industry_affiliations"], ["Meituan"])
         self.assertEqual(papers[0].get("industry_email_domains"), ["meituan.com"])
         self.assertEqual(papers[0].get("paper_topics"), ["llm4rec"])
+        self.assertEqual(papers[0].get("post_date"), papers[0]["published"][:10])
 
     @patch.object(crawler.time, "sleep")
     @patch.object(crawler, "search_with_retry", return_value=[])

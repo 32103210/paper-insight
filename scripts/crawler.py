@@ -628,6 +628,7 @@ def search_papers(days_back: int = DAYS_BACK, max_results: int = MAX_RESULTS) ->
             "title": result.title,
             "authors": [a.name for a in result.authors],
             "abstract": result.summary,
+            "post_date": result.published.strftime("%Y-%m-%d"),
             "published": result.published.isoformat(),
             "pdf_url": result.pdf_url,
             "comment": result.comment if hasattr(result, 'comment') else None,

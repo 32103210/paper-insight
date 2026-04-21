@@ -86,6 +86,19 @@ def create_client() -> OpenAI:
     )
 
 
+def infer_post_date(paper: dict) -> str:
+    """优先使用显式 post_date，否则回退到 published 的日期部分。"""
+    explicit_date = str(paper.get("post_date", "")).strip()
+    if explicit_date:
+        return explicit_date[:10]
+
+    published = str(paper.get("published", "")).strip()
+    if published:
+        return published[:10]
+
+    return datetime.now().strftime("%Y-%m-%d")
+
+
 def normalize_arxiv_id(value: str) -> str:
     """标准化 arXiv ID，去掉版本号。"""
     if not value:
@@ -503,7 +516,7 @@ def generate_frontmatter(paper: dict, categories: list = None) -> str:
     source_url = paper.get('source_url') or paper.get('pdf_url', '')
     source_url = source_url.replace('/pdf/', '/abs/').replace('.pdf', '')
     arxiv_id = extract_arxiv_id(source_url)
-    date_str = paper.get('post_date') or datetime.now().strftime("%Y-%m-%d")
+    date_str = infer_post_date(paper)
 
     # 提取一句话摘要用于 description
     abstract_text = (paper.get('abstract') or '').replace('\n', ' ').strip()
@@ -568,7 +581,7 @@ def save_analysis(paper: dict, analysis: str, output_dir: str = "_posts", output
     if output_path:
         filepath = Path(output_path)
     else:
-        date_str = paper.get('post_date') or datetime.now().strftime("%Y-%m-%d")
+        date_str = infer_post_date(paper)
         slug = slugify(paper['title'])
         filename = f"{date_str}-{slug}.md"
         filepath = Path(output_dir) / filename

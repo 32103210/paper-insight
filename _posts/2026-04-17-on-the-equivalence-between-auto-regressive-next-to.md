@@ -2,7 +2,7 @@
 layout: post
 analysis_generated: true
 title: "On the Equivalence Between Auto-Regressive Next Token Prediction and Full-Item-Vocabulary Maximum Likelihood Estimation in Generative Recommendation--A Short Note"
-date: 2026-04-21
+date: 2026-04-17
 arxiv_id: "2604.15739"
 authors: "Yusheng Huang, Shuang Yang, Zhaojie Liu, Han Li"
 source: "https://arxiv.org/abs/2604.15739v1"

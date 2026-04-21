@@ -123,6 +123,17 @@ class AnalyzerTests(unittest.TestCase):
         self.assertIn("  - Meituan\n", frontmatter)
         self.assertIn("  - Google Research\n", frontmatter)
 
+    def test_generate_frontmatter_falls_back_to_published_date(self):
+        paper = {
+            **self.paper_ok,
+            "post_date": "",
+            "published": "2026-04-17T06:27:42+00:00",
+        }
+
+        frontmatter = analyzer.generate_frontmatter(paper, ["通用"])
+
+        self.assertIn("date: 2026-04-17\n", frontmatter)
+
     def test_generate_frontmatter_writes_author_affiliations(self):
         paper = {
             **self.paper_ok,

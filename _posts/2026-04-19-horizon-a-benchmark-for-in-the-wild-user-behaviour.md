@@ -2,7 +2,7 @@
 layout: post
 analysis_generated: true
 title: "HORIZON: A Benchmark for In-the-wild User Behaviour Modeling"
-date: 2026-04-21
+date: 2026-04-19
 arxiv_id: "2604.17259"
 authors: "Arnav Goel, Pranjal A Chitale, Bhawna Paliwal, Bishal Santra, Amit Sharma"
 source: "https://arxiv.org/abs/2604.17259v1"

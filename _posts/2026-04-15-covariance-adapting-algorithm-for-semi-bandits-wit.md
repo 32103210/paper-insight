@@ -2,7 +2,7 @@
 layout: post
 analysis_generated: true
 title: "Covariance-adapting algorithm for semi-bandits with application to sparse rewards"
-date: 2026-04-21
+date: 2026-04-15
 arxiv_id: "2604.13738"
 authors: "Pierre Perrault, Vianney Perchet, Michal Valko"
 source: "https://arxiv.org/abs/2604.13738v1"

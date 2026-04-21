@@ -2,7 +2,7 @@
 layout: post
 analysis_generated: true
 title: "Modular Representation Compression: Adapting LLMs for Efficient and Effective Recommendations"
-date: 2026-04-21
+date: 2026-04-20
 arxiv_id: "2604.18146"
 authors: "Yunjia Xi, Menghui Zhu, Jianghao Lin, Bo Chen, Ruiming Tang, Yong Yu, Weinan Zhang"
 source: "https://arxiv.org/abs/2604.18146v1"

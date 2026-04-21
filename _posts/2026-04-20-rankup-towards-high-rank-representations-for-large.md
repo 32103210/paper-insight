@@ -2,7 +2,7 @@
 layout: post
 analysis_generated: true
 title: "RankUp: Towards High-rank Representations for Large Scale Advertising Recommender Systems"
-date: 2026-04-21
+date: 2026-04-20
 arxiv_id: "2604.17878"
 authors: "Jin Chen, Shangyu Zhang, Bin Hu, Chao Zhou, Junwei Pan, Gengsheng Xue, Wentao Ning, Gengyu Weng, Wang Zheng, Shaohua Liu, Zeen Xu, Chengyuan Mai, Tingyu Jiang, Lifeng Wang, Shudong Huang, Chengguo Yin, Haijie Gu, Jie Jiang"
 source: "https://arxiv.org/abs/2604.17878v1"
