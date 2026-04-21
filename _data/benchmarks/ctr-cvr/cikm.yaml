@@ -11,3 +11,12 @@ entries:
     post_url: /2026/02/19/a-long-term-value-prediction-framework-in-video-ranking/
     results: {}
     paper_date: 2026-02-19
+- algorithm: TokenFormer
+  sources:
+  - arxiv_id: '2604.13737'
+    paper_title: 'TokenFormer: Unify the Multi-Field and Sequential Recommendation
+      Worlds'
+    source: https://arxiv.org/abs/2604.13737v1
+    post_url: /2026/04/15/tokenformer-unify-the-multi-field-and-sequential-r/
+    results: {}
+    paper_date: 2026-04-15

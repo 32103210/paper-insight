@@ -1,0 +1,19 @@
+dataset: adversarial dataset (473 highly confusing samples)
+domain: CTR/CVR Modeling
+description: adversarialdataset473highlyconfusingsamples dataset for CTR/CVR Modeling
+metrics:
+- FPR
+- Reduction
+entries:
+- algorithm: Transparent and Controllable Recommendation Filtering via Multimodal
+    Multi-Agent Collaboration
+  sources:
+  - arxiv_id: '2604.17459'
+    paper_title: Transparent and Controllable Recommendation Filtering via Multimodal
+      Multi-Agent Collaboration
+    source: https://arxiv.org/abs/2604.17459v1
+    post_url: /2026/04/19/transparent-and-controllable-recommendation-filter/
+    results:
+      FPR: 100.0
+      Reduction: 74.3
+    paper_date: 2026-04-19

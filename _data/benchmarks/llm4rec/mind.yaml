@@ -10,6 +10,6 @@ entries:
     paper_title: Covariance-adapting algorithm for semi-bandits with application to
       sparse rewards
     source: https://arxiv.org/abs/2604.13738v1
-    post_url: /2026/04/21/covariance-adapting-algorithm-for-semi-bandits-wit/
+    post_url: /2026/04/15/covariance-adapting-algorithm-for-semi-bandits-wit/
     results: {}
-    paper_date: 2026-04-21
+    paper_date: 2026-04-15
