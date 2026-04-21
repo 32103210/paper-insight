@@ -64,6 +64,38 @@ class AnalyzerTests(unittest.TestCase):
     @patch.object(analyzer, "create_client", return_value=object())
     @patch.object(analyzer, "save_processed_id")
     @patch.object(analyzer, "save_analysis")
+    @patch.object(analyzer, "analyze_paper")
+    def test_run_analysis_batch_retries_rate_limit_errors_serially(
+        self,
+        mock_analyze_paper,
+        mock_save_analysis,
+        mock_save_processed_id,
+        _mock_create_client,
+    ):
+        mock_analyze_paper.side_effect = [
+            RuntimeError("Error code: 529 - overloaded"),
+            "analysis",
+        ]
+
+        with patch.object(analyzer, "time", create=True) as mock_time:
+            summary = analyzer.run_analysis_batch(
+                [self.paper_ok],
+                parallel=False,
+                workers=1,
+                backfill_missing=False,
+            )
+
+        self.assertEqual(summary.total, 1)
+        self.assertEqual(summary.succeeded, 1)
+        self.assertEqual(summary.failed, 0)
+        self.assertEqual(mock_analyze_paper.call_count, 2)
+        mock_time.sleep.assert_called_once_with(30)
+        mock_save_analysis.assert_called_once()
+        mock_save_processed_id.assert_called_once_with(self.paper_ok["id"])
+
+    @patch.object(analyzer, "create_client", return_value=object())
+    @patch.object(analyzer, "save_processed_id")
+    @patch.object(analyzer, "save_analysis")
     @patch.object(analyzer, "analyze_paper", side_effect=RuntimeError("invalid api key"))
     def test_main_returns_nonzero_when_all_papers_fail(
         self,

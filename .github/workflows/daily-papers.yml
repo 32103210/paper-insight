@@ -21,7 +21,7 @@ on:
 jobs:
   analyze-papers:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 180
 
     permissions:
       contents: write
@@ -61,13 +61,8 @@ jobs:
           # 打印爬虫输出的前30行（非JSON部分）用于调试
           head -30 crawler_output.txt | grep -v -e '---PAPERS_JSON---' -e '---END_JSON---' || true
 
-          ANALYZER_ARGS=(--parallel)
-          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
-            ANALYZER_ARGS=()
-          fi
-
           # 从输出中提取 JSON 并运行分析器
-          grep -A 1000 -- "---PAPERS_JSON---" crawler_output.txt | grep -B 1000 -- "---END_JSON---" | sed '1d;$d' | python scripts/analyzer.py "${ANALYZER_ARGS[@]}"
+          grep -A 1000 -- "---PAPERS_JSON---" crawler_output.txt | grep -B 1000 -- "---END_JSON---" | sed '1d;$d' | python scripts/analyzer.py
 
       - name: Commit and push
         if: ${{ always() && steps.analyze.outcome != 'cancelled' }}

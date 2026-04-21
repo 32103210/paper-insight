@@ -11,6 +11,7 @@ import sys
 import re
 import argparse
 import io
+import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -18,7 +19,6 @@ from typing import Optional
 from urllib import error, request
 from dotenv import load_dotenv
 from openai import OpenAI
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import yaml
 
 # 确保可以导入同目录下的模块
@@ -33,6 +33,7 @@ MINIMAX_BASE_URL = os.getenv("MINIMAX_BASE_URL", "https://api.minimax.io/v1")
 
 # 并行分析的最大线程数
 MAX_WORKERS = 3
+RATE_LIMIT_RETRY_DELAYS = (30, 60, 120)
 
 ANALYSIS_MARKERS = (
     "## 一句话增量",
@@ -409,6 +410,47 @@ def analyze_paper(client: OpenAI, paper: dict) -> str:
     return response.choices[0].message.content
 
 
+def is_rate_limit_error(exc: Exception) -> bool:
+    """判断是否为可重试的限流/拥堵错误。"""
+    status_code = getattr(exc, "status_code", None)
+    if status_code in {429, 529}:
+        return True
+
+    response = getattr(exc, "response", None)
+    response_status = getattr(response, "status_code", None)
+    if response_status in {429, 529}:
+        return True
+
+    message = str(exc or "")
+    rate_limit_markers = (
+        "Error code: 429",
+        "Error code: 529",
+        "'http_code': '429'",
+        "'http_code': '529'",
+        '"http_code": "429"',
+        '"http_code": "529"',
+        "rate_limit_error",
+        "overloaded_error",
+        "Too Many Requests",
+    )
+    return any(marker in message for marker in rate_limit_markers)
+
+
+def analyze_single_paper(paper: dict, client: OpenAI) -> tuple:
+    """分析单篇论文，返回 (paper, analysis, error)。"""
+    for attempt in range(len(RATE_LIMIT_RETRY_DELAYS) + 1):
+        try:
+            analysis = analyze_paper(client, paper)
+            return (paper, analysis, None)
+        except Exception as exc:
+            if not is_rate_limit_error(exc) or attempt >= len(RATE_LIMIT_RETRY_DELAYS):
+                return (paper, None, str(exc))
+
+            delay = RATE_LIMIT_RETRY_DELAYS[attempt]
+            print(f"  Rate limited, waiting {delay}s before retry...")
+            time.sleep(delay)
+
+
 def extract_arxiv_id(url: str) -> str:
     """从 URL 提取 arXiv ID"""
     normalized = normalize_arxiv_id(url)
@@ -610,15 +652,6 @@ def backfill_author_affiliations(posts_dir: str, limit: Optional[int] = None) ->
     return updated
 
 
-def analyze_single_paper(paper: dict, client: OpenAI) -> tuple:
-    """分析单篇论文，返回 (paper, analysis, error)"""
-    try:
-        analysis = analyze_paper(client, paper)
-        return (paper, analysis, None)
-    except Exception as e:
-        return (paper, None, str(e))
-
-
 def collect_missing_posts(posts_dir: str, limit: Optional[int] = None) -> list:
     """收集还没有 AI 分析的历史文章。"""
     missing_posts = []
@@ -646,30 +679,18 @@ def run_analysis_batch(
     client = create_client()
 
     if parallel and len(papers_json) > 1:
-        print(f"Using parallel mode with {workers} workers")
-        with ThreadPoolExecutor(max_workers=workers) as executor:
-            futures = {executor.submit(analyze_single_paper, paper, client): paper for paper in papers_json}
-
-            for i, future in enumerate(as_completed(futures), 1):
-                paper, analysis, error = future.result()
-                if error:
-                    summary.failed += 1
-                    print(f"[{i}/{len(papers_json)}] {paper['title'][:60]}... Error: {error}")
-                    continue
-
-                save_analysis(paper, analysis, output_path=paper.get('output_path'))
-                if not backfill_missing:
-                    save_processed_id(paper.get('id', ''))
-                summary.succeeded += 1
-                print(f"[{i}/{len(papers_json)}] {paper['title'][:60]}... Done!")
-
-        return summary
+        print("Parallel mode requested, but disabled for rate-limit protection; using serial mode.")
 
     for i, paper in enumerate(papers_json, 1):
         print(f"\n[{i}/{len(papers_json)}] Analyzing: {paper['title'][:60]}...")
 
+        paper, analysis, error = analyze_single_paper(paper, client)
+        if error:
+            summary.failed += 1
+            print(f"  Error: {error}")
+            continue
+
         try:
-            analysis = analyze_paper(client, paper)
             save_analysis(paper, analysis, output_path=paper.get('output_path'))
             if not backfill_missing:
                 save_processed_id(paper.get('id', ''))

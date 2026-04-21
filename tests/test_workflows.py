@@ -35,6 +35,16 @@ class PagesWorkflowTests(unittest.TestCase):
         config = self.load_yaml("_config.yml")
         self.assertEqual(config.get("repository"), "32103210/paper-insight")
 
+    def test_analysis_workflows_run_without_parallel_flag(self):
+        daily = self.load_workflow(".github/workflows/daily-papers.yml")
+        backfill = self.load_workflow(".github/workflows/backfill-analysis.yml")
+
+        daily_run_script = daily["jobs"]["analyze-papers"]["steps"][3]["run"]
+        backfill_run_script = backfill["jobs"]["backfill"]["steps"][3]["run"]
+
+        self.assertNotIn("--parallel", daily_run_script)
+        self.assertNotIn("--parallel", backfill_run_script)
+
 
 if __name__ == "__main__":
     unittest.main()
