@@ -216,3 +216,23 @@ entries:
     post_url: /2026/04/11/beyond-dense-connectivity-explicit-sparsity-for-sc/
     results: {}
     paper_date: 2026-04-11
+- algorithm: HORIZON
+  sources:
+  - arxiv_id: '2604.17259'
+    paper_title: 'HORIZON: A Benchmark for In-the-wild User Behaviour Modeling'
+    source: https://arxiv.org/abs/2604.17259v1
+    post_url: /2026/04/21/horizon-a-benchmark-for-in-the-wild-user-behaviour/
+    results: {}
+    paper_date: 2026-04-21
+- algorithm: Modular Representation Compression
+  sources:
+  - arxiv_id: '2604.18146'
+    paper_title: 'Modular Representation Compression: Adapting LLMs for Efficient
+      and Effective Recommendations'
+    source: https://arxiv.org/abs/2604.18146v1
+    post_url: /2026/04/21/modular-representation-compression-adapting-llms-f/
+    results:
+      NDCG@5: 0.4289
+      NDCG@10: 0.5012
+      AUC: 0.7689
+    paper_date: 2026-04-21

@@ -1,0 +1,17 @@
+dataset: Unknown
+domain: LLM4Rec
+description: unknown dataset for LLM4Rec
+metrics: []
+entries:
+- algorithm: On the Equivalence Between Auto-Regressive Next Token Prediction and
+    Full-Item-Vocabulary Maximum Likelihood Estimation in Generative Recommendation--A
+    Short Note
+  sources:
+  - arxiv_id: '2604.15739'
+    paper_title: On the Equivalence Between Auto-Regressive Next Token Prediction
+      and Full-Item-Vocabulary Maximum Likelihood Estimation in Generative Recommendation--A
+      Short Note
+    source: https://arxiv.org/abs/2604.15739v1
+    post_url: /2026/04/21/on-the-equivalence-between-auto-regressive-next-to/
+    results: {}
+    paper_date: 2026-04-21

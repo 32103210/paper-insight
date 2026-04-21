@@ -1,0 +1,15 @@
+dataset: Weixin Video Accounts（微信视频号）、Official Accounts（公众号）、Moments（朋友圈）
+domain: CTR/CVR Modeling
+description: weixinvideoaccounts微信视频号officialaccounts公众号moments朋友圈 dataset for CTR/CVR
+  Modeling
+metrics: []
+entries:
+- algorithm: RankUp
+  sources:
+  - arxiv_id: '2604.17878'
+    paper_title: 'RankUp: Towards High-rank Representations for Large Scale Advertising
+      Recommender Systems'
+    source: https://arxiv.org/abs/2604.17878v1
+    post_url: /2026/04/21/rankup-towards-high-rank-representations-for-large/
+    results: {}
+    paper_date: 2026-04-21

@@ -1,0 +1,13 @@
+dataset: Diginetica
+domain: LLM4Rec
+description: diginetica dataset for LLM4Rec
+metrics: []
+entries:
+- algorithm: HORIZON
+  sources:
+  - arxiv_id: '2604.17259'
+    paper_title: 'HORIZON: A Benchmark for In-the-wild User Behaviour Modeling'
+    source: https://arxiv.org/abs/2604.17259v1
+    post_url: /2026/04/21/horizon-a-benchmark-for-in-the-wild-user-behaviour/
+    results: {}
+    paper_date: 2026-04-21

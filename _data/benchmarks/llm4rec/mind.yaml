@@ -1,0 +1,15 @@
+dataset: MIND
+domain: LLM4Rec
+description: mind dataset for LLM4Rec
+metrics: []
+entries:
+- algorithm: Covariance-adapting algorithm for semi-bandits with application to sparse
+    rewards
+  sources:
+  - arxiv_id: '2604.13738'
+    paper_title: Covariance-adapting algorithm for semi-bandits with application to
+      sparse rewards
+    source: https://arxiv.org/abs/2604.13738v1
+    post_url: /2026/04/21/covariance-adapting-algorithm-for-semi-bandits-wit/
+    results: {}
+    paper_date: 2026-04-21
