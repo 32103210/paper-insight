@@ -344,3 +344,11 @@ entries:
     post_url: /2026/04/15/tokenformer-unify-the-multi-field-and-sequential-r/
     results: {}
     paper_date: 2026-04-15
+- algorithm: CS3
+  sources:
+  - arxiv_id: '2604.19269'
+    paper_title: 'CS3: Efficient Online Capability Synergy for Two-Tower Recommendation'
+    source: https://arxiv.org/abs/2604.19269v1
+    post_url: /2026/04/21/cs3-efficient-online-capability-synergy-for-two-to/
+    results: {}
+    paper_date: 2026-04-21
