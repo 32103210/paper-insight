@@ -219,3 +219,12 @@ entries:
     post_url: /2026/04/11/beyond-dense-connectivity-explicit-sparsity-for-sc/
     results: {}
     paper_date: 2026-04-11
+- algorithm: From Hidden Profiles to Governable Personalization
+  sources:
+  - arxiv_id: '2604.20065'
+    paper_title: 'From Hidden Profiles to Governable Personalization: Recommender
+      Systems in the Age of LLM Agents'
+    source: https://arxiv.org/abs/2604.20065v1
+    post_url: /2026/04/22/from-hidden-profiles-to-governable-personalization/
+    results: {}
+    paper_date: 2026-04-22
