@@ -120,6 +120,18 @@ entries:
     results:
       AUC: 0.7956
     paper_date: 2019-05-16
+- algorithm: Modular Representation Compression
+  sources:
+  - arxiv_id: '2604.18146'
+    paper_title: 'Modular Representation Compression: Adapting LLMs for Efficient
+      and Effective Recommendations'
+    source: https://arxiv.org/abs/2604.18146v1
+    post_url: /2026/04/20/modular-representation-compression-adapting-llms-f/
+    results:
+      NDCG@5: 0.4289
+      NDCG@10: 0.5012
+      AUC: 0.7689
+    paper_date: 2026-04-20
 - algorithm: Modeling Cascaded Delay Feedback for Online Net Conversion Rate Prediction
   sources:
   - arxiv_id: '2601.19965'
