@@ -114,3 +114,11 @@ entries:
     post_url: /2026/04/11/beyond-dense-connectivity-explicit-sparsity-for-sc/
     results: {}
     paper_date: 2026-04-11
+- algorithm: HORIZON
+  sources:
+  - arxiv_id: '2604.17259'
+    paper_title: 'HORIZON: A Benchmark for In-the-wild User Behaviour Modeling'
+    source: https://arxiv.org/abs/2604.17259v1
+    post_url: /2026/04/19/horizon-a-benchmark-for-in-the-wild-user-behaviour/
+    results: {}
+    paper_date: 2026-04-19
