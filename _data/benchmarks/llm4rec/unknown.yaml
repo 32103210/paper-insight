@@ -15,3 +15,11 @@ entries:
     post_url: /2026/04/17/on-the-equivalence-between-auto-regressive-next-to/
     results: {}
     paper_date: 2026-04-17
+- algorithm: Kwai Summary Attention Technical Report
+  sources:
+  - arxiv_id: '2604.24432'
+    paper_title: Kwai Summary Attention Technical Report
+    source: https://arxiv.org/abs/2604.24432v1
+    post_url: /2026/04/27/kwai-summary-attention-technical-report/
+    results: {}
+    paper_date: 2026-04-27
