@@ -1,0 +1,13 @@
+dataset: Kuaishou内部数据集、Tmall公开数据集
+domain: LLM4Rec
+description: kuaishou内部数据集tmall公开数据集 dataset for LLM4Rec
+metrics: []
+entries:
+- algorithm: Action-Aware Generative Sequence Modeling for Short Video Recommendation
+  sources:
+  - arxiv_id: '2604.25834'
+    paper_title: Action-Aware Generative Sequence Modeling for Short Video Recommendation
+    source: https://arxiv.org/abs/2604.25834v1
+    post_url: /2026/04/28/action-aware-generative-sequence-modeling-for-shor/
+    results: {}
+    paper_date: 2026-04-28

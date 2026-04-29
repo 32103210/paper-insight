@@ -23,3 +23,11 @@ entries:
     post_url: /2026/04/27/kwai-summary-attention-technical-report/
     results: {}
     paper_date: 2026-04-27
+- algorithm: Harmonizing Generative Retrieval and Ranking in Chain-of-Recommendation
+  sources:
+  - arxiv_id: '2604.25787'
+    paper_title: Harmonizing Generative Retrieval and Ranking in Chain-of-Recommendation
+    source: https://arxiv.org/abs/2604.25787v1
+    post_url: /2026/04/28/harmonizing-generative-retrieval-and-ranking-in-ch/
+    results: {}
+    paper_date: 2026-04-28

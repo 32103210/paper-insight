@@ -8,6 +8,7 @@ metrics:
 - Latency
 - NDCG@10
 - LogLoss
+- MRR@5
 entries:
 - algorithm: A Self-boosted Framework for Calibrated Ranking
   sources:
@@ -122,3 +123,14 @@ entries:
     post_url: /2026/04/19/horizon-a-benchmark-for-in-the-wild-user-behaviour/
     results: {}
     paper_date: 2026-04-19
+- algorithm: From Local Indices to Global Identifiers
+  sources:
+  - arxiv_id: '2604.25291'
+    paper_title: 'From Local Indices to Global Identifiers: Generative Reranking for
+      Recommender Systems via Global Action Space'
+    source: https://arxiv.org/abs/2604.25291v1
+    post_url: /2026/04/28/from-local-indices-to-global-identifiers-generativ/
+    results:
+      NDCG@5: 0.4654
+      MRR@5: 0.4423
+    paper_date: 2026-04-28

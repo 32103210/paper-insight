@@ -159,3 +159,13 @@ entries:
     post_url: /2026/03/15/mbd-a-model-based-debiasing-framework-across-user-content-an/
     results: {}
     paper_date: 2026-03-15
+- algorithm: Versioned Late Materialization for Ultra-Long Sequence Training in Recommendation
+    Systems at Scale
+  sources:
+  - arxiv_id: '2604.24806'
+    paper_title: Versioned Late Materialization for Ultra-Long Sequence Training in
+      Recommendation Systems at Scale
+    source: https://arxiv.org/abs/2604.24806v1
+    post_url: /2026/04/27/versioned-late-materialization-for-ultra-long-sequ/
+    results: {}
+    paper_date: 2026-04-27

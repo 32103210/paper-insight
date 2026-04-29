@@ -6,6 +6,7 @@ metrics:
 - NDCG@5
 - HR@10
 - NDCG@10
+- MRR@5
 entries:
 - algorithm: SIM
   sources:
@@ -240,3 +241,14 @@ entries:
     post_url: /2026/04/22/from-hidden-profiles-to-governable-personalization/
     results: {}
     paper_date: 2026-04-22
+- algorithm: From Local Indices to Global Identifiers
+  sources:
+  - arxiv_id: '2604.25291'
+    paper_title: 'From Local Indices to Global Identifiers: Generative Reranking for
+      Recommender Systems via Global Action Space'
+    source: https://arxiv.org/abs/2604.25291v1
+    post_url: /2026/04/28/from-local-indices-to-global-identifiers-generativ/
+    results:
+      NDCG@5: 0.4654
+      MRR@5: 0.4423
+    paper_date: 2026-04-28
