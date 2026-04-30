@@ -222,6 +222,29 @@ entries:
       AUC: 0.74
       Latency: 3.0
     paper_date: 2016-06-24
+- algorithm: Meta-Learning and Targeted Differential Privacy to Improve the Accuracy-Privacy
+    Trade-off in Recommendations
+  sources:
+  - arxiv_id: '2604.26390'
+    paper_title: Meta-Learning and Targeted Differential Privacy to Improve the Accuracy-Privacy
+      Trade-off in Recommendations
+    source: https://arxiv.org/abs/2604.26390v1
+    post_url: /2026/04/29/meta-learning-and-targeted-differential-privacy-to/
+    results:
+      NDCG@5: 0.3723
+      AUC: 0.7102
+    paper_date: 2026-04-29
+- algorithm: TimeMM
+  sources:
+  - arxiv_id: '2604.26247'
+    paper_title: 'TimeMM: Time-as-Operator Spectral Filtering for Dynamic Multimodal
+      Recommendation'
+    source: https://arxiv.org/abs/2604.26247v1
+    post_url: /2026/04/29/timemm-time-as-operator-spectral-filtering-for-dyn/
+    results:
+      NDCG@10: 0.0
+      AUC: 0.0
+    paper_date: 2026-04-29
 - algorithm: Aligning Multimodal Sequential Recommendations via Robust Direct Preference
     Optimization with Sparse MoE
   sources:
