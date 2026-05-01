@@ -11,6 +11,7 @@ metrics:
 - Recall@20
 - NDCG@20
 - Recall@10
+- MRR@5
 entries:
 - algorithm: LLMRerank
   sources:
@@ -310,3 +311,26 @@ entries:
       NDCG@10: 0.0
       HR@10: 0.0
     paper_date: 2026-04-29
+- algorithm: Meta-Learning and Targeted Differential Privacy to Improve the Accuracy-Privacy
+    Trade-off in Recommendations
+  sources:
+  - arxiv_id: '2604.26390'
+    paper_title: Meta-Learning and Targeted Differential Privacy to Improve the Accuracy-Privacy
+      Trade-off in Recommendations
+    source: https://arxiv.org/abs/2604.26390v1
+    post_url: /2026/04/29/meta-learning-and-targeted-differential-privacy-to/
+    results:
+      NDCG@5: 0.3723
+      AUC: 0.7102
+    paper_date: 2026-04-29
+- algorithm: From Local Indices to Global Identifiers
+  sources:
+  - arxiv_id: '2604.25291'
+    paper_title: 'From Local Indices to Global Identifiers: Generative Reranking for
+      Recommender Systems via Global Action Space'
+    source: https://arxiv.org/abs/2604.25291v1
+    post_url: /2026/04/28/from-local-indices-to-global-identifiers-generativ/
+    results:
+      NDCG@5: 0.4654
+      MRR@5: 0.4423
+    paper_date: 2026-04-28
