@@ -1,22 +1,10 @@
-dataset: MIND
+dataset: LastFM
 domain: CTR/CVR Modeling
-description: mind dataset for CTR/CVR Modeling
+description: lastfm dataset for CTR/CVR Modeling
 metrics:
-- NDCG@5
 - NDCG@10
 - HR@10
 entries:
-- algorithm: Retrieval Augmented Conversational Recommendation with Reinforcement
-    Learning
-  sources:
-  - arxiv_id: '2604.04457'
-    paper_title: Retrieval Augmented Conversational Recommendation with Reinforcement
-      Learning
-    source: https://arxiv.org/abs/2604.04457v1
-    post_url: ''
-    results:
-      NDCG@5: 0.412
-    paper_date: 2026-04-07
 - algorithm: Factorized Latent Reasoning for LLM-based Recommendation
   sources:
   - arxiv_id: '2604.26760'

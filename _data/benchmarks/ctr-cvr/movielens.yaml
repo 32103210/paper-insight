@@ -146,3 +146,13 @@ entries:
       NDCG@5: 0.4654
       MRR@5: 0.4423
     paper_date: 2026-04-28
+- algorithm: Factorized Latent Reasoning for LLM-based Recommendation
+  sources:
+  - arxiv_id: '2604.26760'
+    paper_title: Factorized Latent Reasoning for LLM-based Recommendation
+    source: https://arxiv.org/abs/2604.26760v1
+    post_url: /2026/04/29/factorized-latent-reasoning-for-llm-based-recommen/
+    results:
+      NDCG@10: 0.0
+      HR@10: 0.0
+    paper_date: 2026-04-29
