@@ -152,3 +152,12 @@ entries:
     post_url: /2026/04/11/beyond-dense-connectivity-explicit-sparsity-for-sc/
     results: {}
     paper_date: 2026-04-11
+- algorithm: RecGPT-Mobile
+  sources:
+  - arxiv_id: '2605.04726'
+    paper_title: 'RecGPT-Mobile: On-Device Large Language Models for User Intent Understanding
+      in Taobao Feed Recommendation'
+    source: https://arxiv.org/abs/2605.04726v1
+    post_url: /2026/05/06/recgpt-mobile-on-device-large-language-models-for/
+    results: {}
+    paper_date: 2026-05-06

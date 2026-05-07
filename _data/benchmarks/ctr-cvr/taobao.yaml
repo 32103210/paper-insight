@@ -262,3 +262,12 @@ entries:
       NDCG@5: 0.4654
       MRR@5: 0.4423
     paper_date: 2026-04-28
+- algorithm: RecGPT-Mobile
+  sources:
+  - arxiv_id: '2605.04726'
+    paper_title: 'RecGPT-Mobile: On-Device Large Language Models for User Intent Understanding
+      in Taobao Feed Recommendation'
+    source: https://arxiv.org/abs/2605.04726v1
+    post_url: /2026/05/06/recgpt-mobile-on-device-large-language-models-for/
+    results: {}
+    paper_date: 2026-05-06

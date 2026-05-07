@@ -270,3 +270,13 @@ entries:
       NDCG@5: 0.4654
       MRR@5: 0.4423
     paper_date: 2026-04-28
+- algorithm: FEDIN
+  sources:
+  - arxiv_id: '2605.01726'
+    paper_title: 'FEDIN: Frequency-Enhanced Deep Interest Network for Click-Through
+      Rate Prediction'
+    source: https://arxiv.org/abs/2605.01726v1
+    post_url: /2026/05/03/fedin-frequency-enhanced-deep-interest-network-for/
+    results:
+      AUC: 0.8123
+    paper_date: 2026-05-03
