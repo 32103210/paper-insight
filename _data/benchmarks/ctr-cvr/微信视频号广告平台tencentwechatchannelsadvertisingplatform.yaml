@@ -1,0 +1,15 @@
+dataset: 微信视频号广告平台（Tencent WeChat Channels Advertising Platform）
+domain: CTR/CVR Modeling
+description: 微信视频号广告平台tencentwechatchannelsadvertisingplatform dataset for CTR/CVR
+  Modeling
+metrics: []
+entries:
+- algorithm: Unified Value Alignment for Generative Recommendation in Industrial Advertising
+  sources:
+  - arxiv_id: '2605.05803'
+    paper_title: Unified Value Alignment for Generative Recommendation in Industrial
+      Advertising
+    source: https://arxiv.org/abs/2605.05803v1
+    post_url: /2026/05/07/unified-value-alignment-for-generative-recommendat/
+    results: {}
+    paper_date: 2026-05-07
