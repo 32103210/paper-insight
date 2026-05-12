@@ -1,0 +1,15 @@
+dataset: 暂未披露（论文仅提及"大规模"和"at scale"，未提供具体数据集名称）
+domain: CTR/CVR Modeling
+description: 暂未披露论文仅提及大规模和atscale未提供具体数据集名称 dataset for CTR/CVR Modeling
+metrics: []
+entries:
+- algorithm: A General Framework for Multimodal LLM-Based Multimedia Understanding
+    in Large-Scale Recommendation Systems
+  sources:
+  - arxiv_id: '2605.09338'
+    paper_title: A General Framework for Multimodal LLM-Based Multimedia Understanding
+      in Large-Scale Recommendation Systems
+    source: https://arxiv.org/abs/2605.09338v1
+    post_url: /2026/05/10/a-general-framework-for-multimodal-llm-based-multi/
+    results: {}
+    paper_date: 2026-05-10
