@@ -1,0 +1,14 @@
+dataset: RecRM-Bench (自建数据集)
+domain: CTR/CVR Modeling
+description: recrmbench自建数据集 dataset for CTR/CVR Modeling
+metrics: []
+entries:
+- algorithm: RecRM-Bench
+  sources:
+  - arxiv_id: '2605.11874'
+    paper_title: 'RecRM-Bench: Benchmarking Multidimensional Reward Modeling for Agentic
+      Recommender Systems'
+    source: https://arxiv.org/abs/2605.11874v1
+    post_url: /2026/05/12/recrm-bench-benchmarking-multidimensional-reward-m/
+    results: {}
+    paper_date: 2026-05-12

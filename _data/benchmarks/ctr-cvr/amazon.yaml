@@ -427,3 +427,12 @@ entries:
       NDCG@10: 0.0
       HR@10: 0.0
     paper_date: 2026-04-29
+- algorithm: RecRM-Bench
+  sources:
+  - arxiv_id: '2605.11874'
+    paper_title: 'RecRM-Bench: Benchmarking Multidimensional Reward Modeling for Agentic
+      Recommender Systems'
+    source: https://arxiv.org/abs/2605.11874v1
+    post_url: /2026/05/12/recrm-bench-benchmarking-multidimensional-reward-m/
+    results: {}
+    paper_date: 2026-05-12

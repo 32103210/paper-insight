@@ -169,3 +169,11 @@ entries:
     post_url: /2026/04/27/versioned-late-materialization-for-ultra-long-sequ/
     results: {}
     paper_date: 2026-04-27
+- algorithm: A Cascaded Generative Approach for e-Commerce Recommendations
+  sources:
+  - arxiv_id: '2605.11118'
+    paper_title: A Cascaded Generative Approach for e-Commerce Recommendations
+    source: https://arxiv.org/abs/2605.11118v1
+    post_url: /2026/05/11/a-cascaded-generative-approach-for-e-commerce-reco/
+    results: {}
+    paper_date: 2026-05-11
