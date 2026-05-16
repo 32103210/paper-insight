@@ -14,3 +14,11 @@ entries:
     results:
       NDCG@10: 0.3712
     paper_date: 2024-10-22
+- algorithm: Logging Policy Design for Off-Policy Evaluation
+  sources:
+  - arxiv_id: '2605.15108'
+    paper_title: Logging Policy Design for Off-Policy Evaluation
+    source: https://arxiv.org/abs/2605.15108v1
+    post_url: /2026/05/14/logging-policy-design-for-off-policy-evaluation/
+    results: {}
+    paper_date: 2026-05-14
