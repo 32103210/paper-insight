@@ -344,3 +344,31 @@ entries:
     results:
       AUC: 0.8123
     paper_date: 2026-05-03
+- algorithm: RecRM-Bench
+  sources:
+  - arxiv_id: '2605.11874'
+    paper_title: 'RecRM-Bench: Benchmarking Multidimensional Reward Modeling for Agentic
+      Recommender Systems'
+    source: https://arxiv.org/abs/2605.11874v1
+    post_url: /2026/05/12/recrm-bench-benchmarking-multidimensional-reward-m/
+    results: {}
+    paper_date: 2026-05-12
+- algorithm: Discrimination Is Generation
+  sources:
+  - arxiv_id: '2605.14853'
+    paper_title: 'Discrimination Is Generation: Unifying Ranking and Retrieval from
+      a Tokenizer Perspective'
+    source: https://arxiv.org/abs/2605.14853v1
+    post_url: /2026/05/14/discrimination-is-generation-unifying-ranking-and/
+    results: {}
+    paper_date: 2026-05-14
+- algorithm: Asymmetric Generative Recommendation via Multi-Expert Projection and
+    Multi-Faceted Hierarchical Quantization
+  sources:
+  - arxiv_id: '2605.14512'
+    paper_title: Asymmetric Generative Recommendation via Multi-Expert Projection
+      and Multi-Faceted Hierarchical Quantization
+    source: https://arxiv.org/abs/2605.14512v1
+    post_url: /2026/05/14/asymmetric-generative-recommendation-via-multi-exp/
+    results: {}
+    paper_date: 2026-05-14
