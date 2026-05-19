@@ -1,0 +1,19 @@
+dataset: Kuaishou Industrial Dataset (工业数据集), Public Short-Video Benchmarks
+domain: CTR/CVR Modeling
+description: kuaishouindustrialdataset工业数据集publicshortvideobenchmarks dataset for
+  CTR/CVR Modeling
+metrics:
+- WUAUC
+- MAE
+entries:
+- algorithm: DADF
+  sources:
+  - arxiv_id: '2605.17863'
+    paper_title: 'DADF: A Distribution-Aware Debiasing Framework for Watch-Time Regression
+      in Recommender Systems'
+    source: https://arxiv.org/abs/2605.17863v1
+    post_url: /2026/05/18/dadf-a-distribution-aware-debiasing-framework-for/
+    results:
+      WUAUC: 0.0
+      MAE: 0.0
+    paper_date: 2026-05-18

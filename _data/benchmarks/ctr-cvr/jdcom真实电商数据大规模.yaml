@@ -1,0 +1,15 @@
+dataset: JD.com 真实电商数据（大规模）
+domain: CTR/CVR Modeling
+description: jdcom真实电商数据大规模 dataset for CTR/CVR Modeling
+metrics: []
+entries:
+- algorithm: Text-Guided Visual Representation Learning for Robust Multimodal E-Commerce
+    Recommendation
+  sources:
+  - arxiv_id: '2605.17366'
+    paper_title: Text-Guided Visual Representation Learning for Robust Multimodal
+      E-Commerce Recommendation
+    source: https://arxiv.org/abs/2605.17366v1
+    post_url: /2026/05/17/text-guided-visual-representation-learning-for-rob/
+    results: {}
+    paper_date: 2026-05-17

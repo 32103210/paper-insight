@@ -1,0 +1,13 @@
+dataset: 实验使用了多个数据集（包括模拟数据集和工业数据集，具体名称在摘要中未详细列出）
+domain: CTR/CVR Modeling
+description: 实验使用了多个数据集包括模拟数据集和工业数据集具体名称在摘要中未详细列出 dataset for CTR/CVR Modeling
+metrics: []
+entries:
+- algorithm: Offline Contextual Bandits in the Presence of New Actions
+  sources:
+  - arxiv_id: '2605.18509'
+    paper_title: Offline Contextual Bandits in the Presence of New Actions
+    source: https://arxiv.org/abs/2605.18509v1
+    post_url: /2026/05/18/offline-contextual-bandits-in-the-presence-of-new/
+    results: {}
+    paper_date: 2026-05-18

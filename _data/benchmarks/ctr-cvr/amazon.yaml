@@ -455,3 +455,11 @@ entries:
     post_url: /2026/05/14/asymmetric-generative-recommendation-via-multi-exp/
     results: {}
     paper_date: 2026-05-14
+- algorithm: RAGR
+  sources:
+  - arxiv_id: '2605.17267'
+    paper_title: 'RAGR: Review-Augmented Generative Recommendation'
+    source: https://arxiv.org/abs/2605.17267v1
+    post_url: /2026/05/17/ragr-review-augmented-generative-recommendation/
+    results: {}
+    paper_date: 2026-05-17

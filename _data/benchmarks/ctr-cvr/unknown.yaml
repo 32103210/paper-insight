@@ -177,3 +177,11 @@ entries:
     post_url: /2026/05/11/a-cascaded-generative-approach-for-e-commerce-reco/
     results: {}
     paper_date: 2026-05-11
+- algorithm: Uncertainty-Calibrated Recommendations for Low-Active Users
+  sources:
+  - arxiv_id: '2605.17788'
+    paper_title: Uncertainty-Calibrated Recommendations for Low-Active Users
+    source: https://arxiv.org/abs/2605.17788v1
+    post_url: /2026/05/18/uncertainty-calibrated-recommendations-for-low-act/
+    results: {}
+    paper_date: 2026-05-18
